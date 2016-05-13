@@ -114,7 +114,6 @@ function setPrompts () {
     local INVERSE='\[\e[7m\]'
     local RESET='\[\e[0m\]'
     local ITALIC='\[\e[6m\]'
-    local COLOR='\[\e[37;44m\]'
     case $TERM in
         xterm*)
             local TITLE='\[\e]0;\W\a\]' # Put working dir in title & icon
@@ -125,8 +124,7 @@ function setPrompts () {
     esac
 
     # Customize! 
-    #PS1="${TITLE}${RESET}${BOLD}\u@\h${RESET}:${INVERSE}\w${RESET}\$ "
-    PS1="${TITLE}${RESET}${COLOR}\u@\h${RESET}:${INVERSE}\w${RESET}\$ "
+    PS1="${TITLE}${RESET}${BOLD}\u@\h${RESET}:${INVERSE}\w${RESET}> "
     PS2="${RESET}> ${ITALIC}"
 }
 
