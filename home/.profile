@@ -124,7 +124,7 @@ function setPrompts () {
     esac
 
     # Customize! 
-    PS1="${TITLE}${RESET}${BOLD}\u@\h${RESET}:${INVERSE}\w${RESET}> "
+    PS1="${TITLE}${RESET}${INVERSE}${BOLD}\u@\h${RESET}:${INVERSE}\w${RESET}> "
     PS2="${RESET}> ${ITALIC}"
 }
 
