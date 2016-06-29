@@ -21,5 +21,10 @@ function jiraAccount.getBaseUrl()
    return "https://undefined-SetMeFirst"
 end
 
+-- Returns the default search string to set in the Jira issue chooser. Can be empty.
+function jiraAccount.getDefaultIssueSearch()
+   return "defaultSearchInputToSet"
+end
+
 return jiraAccount
 

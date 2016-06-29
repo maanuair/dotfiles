@@ -53,7 +53,7 @@ end
 function jira.browseIssue()
    local key = utils.getTrimmedSelectedText()
    if key == "" then
-      log.f("browseIssue: no selection: invoking UI")
+      log.f("browseIssue: no selection: invoking graphical chooser")
       lookupJiraIssue()
    else
       log.f("browseIssue: browse issue '%s'", key)
@@ -107,6 +107,8 @@ function lookupJiraIssue()
 	    end
       end)
 
+      picker:query(jiraAccount.getDefaultIssueSearch())
+      
       picker:queryChangedCallback(
 	 function(query)
 	    log.f("queryChangedCallback(): query is '%s'", query)
