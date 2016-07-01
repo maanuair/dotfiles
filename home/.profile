@@ -24,7 +24,7 @@ function getOS() {
 	CYGWIN*)
 	    echo 'cygwin';;
 	*) # Including MINGW32*|MSYS*...
-	    echo "$(uname -s) Unsupported !";;
+	    echo "$(uname -s) Unsupported !" 1>&2 ;;
     esac
 }
 
@@ -128,13 +128,28 @@ function setPrompts () {
     PS2="${RESET}> ${ITALIC}"
 }
 
+# Set some env vars
+function setEnvVars () {
+    # Common env vars
+    export PAGER=/usr/bin/less
+    
+    # OSX specific env vars
+    if [[ "$(uname -s)" == "Darwin" ]]
+    then
+	export EDITOR="/Applications/Emacs.app/Contents/MacOS/Emacs"
+    fi
+}
+    
 # Main entry point, because I like unique entry point
 function main () {
     myInfo "Running bash setup..."
 
     # Cygwin has a particular setup
-    [[ "$(getOS)" == "cygwin" ]] && setupCygwin
+    [[ "$(uname -s)" == "CYGWIN*" ]] && setupCygwin
 
+    # Set up some env vars
+    setEnvVars
+    
     # Source aliases
     setupAliases
 	
