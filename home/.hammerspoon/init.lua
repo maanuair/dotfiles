@@ -19,12 +19,12 @@ hs.hotkey.bind(myModifiers, "V", "Paste text only", utils.pasteTextOnly)
 hs.hotkey.bind(myModifiers, "D", "Dictionary: define highlighted selection (or ask)", utils.openDict)
 
 -- JIRA hot keys
-hs.hotkey.bind(myModifiers, "B", "JIRA: Type a bug template", jira.typeBugTemplate)
-hs.hotkey.bind(myModifiers, "O", "JIRA: Browse highlighted issue (or ask)", jira.browseIssue)
-hs.hotkey.bind(myModifiers, "J", "JIRA: Search highlighted selection", jira.search)
-hs.hotkey.bind(myModifiers, "T", "JIRA: Log Product Task work (TT-94 - Team)", function () jira.logWork("64369") end)
-hs.hotkey.bind(myModifiers, "P", "JIRA: Log Product Process work (TT-95 - Process)", function () jira.logWork("64405") end)
-hs.hotkey.bind(myModifiersShift, "J", "JIRA: type URL for highlighted issue", jira.typeBrowseUrl)
+hs.hotkey.bind(myModifiers, 	"B", "JIRA: Type a bug template", jira.typeBugTemplate)
+hs.hotkey.bind(myModifiers, 	"O", "JIRA: Immediate or interactive JIRA lookup", jira.browseIssue)
+hs.hotkey.bind(myModifiers, 	"J", "JIRA: Search highlighted selection", jira.search)
+hs.hotkey.bind(myModifiers, 	"T", "JIRA: Log Product Task work (TT-94 - Team)", function () jira.logWork("64369") end)
+hs.hotkey.bind(myModifiers, 	"P", "JIRA: Log Product Process work (TT-95 - Process)", function () jira.logWork("64405") end)
+hs.hotkey.bind(myModifiersShift,"J", "JIRA: type URL for highlighted issue", jira.typeBrowseUrl)
 
 -- Confluence hot keys
 hs.hotkey.bind(myModifiers, "C", "Confluence: Search highlighted selection", confluence.search)

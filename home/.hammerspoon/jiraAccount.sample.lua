@@ -26,5 +26,10 @@ function jiraAccount.getDefaultIssueSearch()
    return "defaultSearchInputToSet"
 end
 
+-- Returns the prefix for the default JIRA project
+function jiraAccount.getDefaultProjectPrefix()
+   return "defaultProjectPrefix"
+end
+
 return jiraAccount
 
