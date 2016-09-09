@@ -56,10 +56,11 @@ function jira.browseIssue()
       log.f("browseIssue: no selection: invoking graphical chooser")
       lookupJiraIssue()
    else
-      -- Does the key starts with only digits ?
-      local char = string.sub(1,1)
-      if string.match(char, "^%d") ~= nil then
-	 -- Yes: add the default project prefix
+      -- Does the key starts with only a digit ?
+      local c1 = string.sub(key, 1,1)
+      if string.match(c1, "^%d") ~= nil then
+	 -- Yes: add the default project prefix !
+	 log.f("browseIssue: first char '%s' is a digit, adding prefix '%s'", c1, jiraAccount.getDefaultProjectPrefix())
 	 key = jiraAccount.getDefaultProjectPrefix() .. key
       end
       log.f("browseIssue: browse issue '%s'", key)
