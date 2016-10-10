@@ -28,7 +28,7 @@ function getOS() {
     esac
 }
 
-# Ask the given $1 prompt, and read choice until it matches a choice in given $2 array.
+# Ask the given $1 question, and read choice until it matches a choice in given $2 array.
 # The empty response (i.e: Enter) would match $3 choice if given, otherwise it asks again.
 function ask () {
     # Inputs check
@@ -107,25 +107,39 @@ function setupAliases () {
     fi
 }
 
+# Function to customize PS1 when using powerline-shell.
+# C.f. https://github.com/banga/powerline-shell for more info, or c.f  https://github.com/powerline/fonts for compatible fonts
+# NB: Preferred font is Cousine
+function _update_ps1() {
+    PS1="$(~/powerline-shell.py $? 2> /dev/null)"
+}
+
 # Set my favorite PS1 prompt
 function setPrompts () {
-    # Inits desired codes
-    local BOLD='\[\e[1m\]'
-    local INVERSE='\[\e[7m\]'
-    local RESET='\[\e[0m\]'
-    local ITALIC='\[\e[6m\]'
-    case $TERM in
-        xterm*)
-            local TITLE='\[\e]0;\W\a\]' # Put working dir in title & icon
-            ;;
-        *)
-            local TITLE=''
-            ;;
-    esac
-
-    # Customize! 
-    PS1="${TITLE}${RESET}${INVERSE}${BOLD}\u@\h${RESET}:${INVERSE}\w${RESET}> "
-    PS2="${RESET}> ${ITALIC}"
+    # Use powerline-shell.py if it exists, otherwise default to a simpler one
+    if [[ -f "${HOME}/powerline-shell.py" ]]; then
+	if [ "$TERM" != "linux" ]; then
+	    PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
+	fi
+    else
+	# Inits desired codes
+	local BOLD='\[\e[1m\]'
+	local INVERSE='\[\e[7m\]'
+	local RESET='\[\e[0m\]'
+	local ITALIC='\[\e[6m\]'
+	case $TERM in
+            xterm*)
+		local TITLE='\[\e]0;\W\a\]' # Put working dir in title & icon
+		;;
+            *)
+		local TITLE=''
+		;;
+	esac
+	
+	# Customize! 
+	PS1="${TITLE}${RESET}${INVERSE}${BOLD}\u@\h${RESET}:${INVERSE}\w${RESET}> "
+	PS2="${RESET}> ${ITALIC}"
+    fi
 }
 
 # Set some env vars
