@@ -25,18 +25,24 @@ end
 -- Type a JIRA bug template
 function jira.typeBugTemplate()
    local source=[[
-# *Steps to reproduce*
-  ##
-  ##
-# *Expected result*
-  ##
-  ##
-# *Actual*
-  ##
-  ##
-# *Extra information*
-  ##
-  ##
+# *Steps to reproduce* 
+  ## 
+  ## 
+# *Expected result* 
+  ## 
+  ## 
+# *Actual* 
+  ## 
+  ## 
+# *Reproducibility* 
+  ## 100% 
+# *Traces* 
+  ## File attached foobar.log 
+  ## {code}Or traces captured directly pasted here, between "code" tag elements, maybe multi lines. {code} 
+  ## !Foobar Sreenshot.png|thumbnail! 
+# *Extra Information* 
+  ## 
+  ## 
 ]]
    hs.eventtap.keyStrokes(source)
 end
