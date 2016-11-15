@@ -72,11 +72,11 @@
 (when (is-mac)
   ;;(add-to-list 'default-frame-alist '(font . "Monaco-11"))
   ;;(set-face-attribute 'default t :font "Monaco-11"))
-  (add-to-list 'default-frame-alist '(font . "Cousine for Powerline-12"))
-  (set-face-attribute 'default t :font "Cousine for Powerline-12"))
+  (add-to-list 'default-frame-alist '(font . "Cousine for Powerline-14"))
+  (set-face-attribute 'default t :font "Cousine for Powerline-14"))
 (when (is-win)
-  (add-to-list 'default-frame-alist '(font . "Inconsolata-10"))
-  (set-face-attribute 'default t :font "Inconsolata-10"))
+  (add-to-list 'default-frame-alist '(font . "Inconsolata-12"))
+  (set-face-attribute 'default t :font "Inconsolata-12"))
 
 (provide 'my-ui)
 				   
