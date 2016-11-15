@@ -145,6 +145,7 @@ function setPrompts () {
 # Set some env vars
 function setEnvVars () {
     # Common env vars
+    export PATH="$PATH:$HOME/.npm-packages/bin"
     export PAGER=/usr/bin/less
     
     # OSX specific env vars
