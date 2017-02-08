@@ -1,5 +1,4 @@
 # -*- mode: shell-script ;-*-
-myInfo "Loading aliases..."
 
 alias cp="cp -i"
 
