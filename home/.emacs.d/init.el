@@ -27,7 +27,7 @@
 (require 'my-ui)
 
 ;; TODO:
-;; Check out ido-mode / org-mode / anything (aka spotlight for emacs) / gnus
+;; Check out ido-mode / anything (aka spotlight for emacs) / gnus
 
 ;; Some emacs links to learn more:
 ;;

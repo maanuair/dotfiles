@@ -18,15 +18,15 @@
 (global-set-key (quote [f5]) 'reformat)
 (global-set-key (quote [f12]) 'auto-revert-tail-mode)
 
-;; Specific mac beahviors
+;; Specific mac behaviors
 (when (is-mac)
   (setq
-   delete-by-moving-to-trash t     ;; Move to trash when deleting stuff
-   trash-directory "~/.Trash/"     ;; Trash folder on OSX is ~/.Trash/)
-   mac-right-option-modifier 'none ;; Make the right option (Alt) key native
+   delete-by-moving-to-trash t      ;; Move to trash when deleting stuff
+   trash-directory "~/.Trash/"      ;; Trash folder on OSX is ~/.Trash/)
+   mac-right-option-modifier  'none ;; Make the right option (Alt) key native
    ))
 
-;; Specific Win beahviors
+;; Specific Win behaviors
 (when (is-win)
   (setq
    delete-by-moving-to-trash t     ;; Move to trash when deleting stuff
@@ -38,7 +38,7 @@
 (put 'narrow-to-region 'disabled nil)
 (put 'narrow-to-page 'disabled nil)
 
-;; Aappearance
+;; Appearance
 ;;;;;;;;;;;;;;
 
 (setq
