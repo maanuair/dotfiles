@@ -1,7 +1,9 @@
 ;; Automatic install of packages
 (defvar
   my-packages
-  '(js2-mode
+  '(
+    groovy-mode
+    js2-mode
     json-mode
     lua-mode
     markdown-mode

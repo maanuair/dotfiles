@@ -182,9 +182,16 @@ function setEnvVars () {
     
     # OSX specific env vars
     if [[ "$(uname -s)" == "Darwin" ]]
-    then
-	export EDITOR="/Applications/Emacs.app/Contents/MacOS/Emacs"
+    then set -x
+	# Emacs
+	local EMACS="/Applications/Emacs.app/Contents/MacOS/Emacs"
+	[ -x "$EMACS" ] && export EDITOR="$EMACS"
+
+	# Groovy
+	local GROOVY_HOME="/usr/local/opt/groovy/libexec"
+	[ -d "$GROOVY_HOME" ] && export GROOVY_HOME="$GROOVY_HOME"
     fi
+    set +x
 }
     
 # Main entry point, because I like unique entry point
