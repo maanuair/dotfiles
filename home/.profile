@@ -106,7 +106,8 @@ function setupPasswordStore() {
     local PASSWORDSTORE_CMD="brew install pass"
 
     # Loads password store completion, if installed, otherwise suggests install it
-    if [[ -f "${PASSWORDSTORE_COMPL}" ]]; then
+    if [[ -f "${PASSWORDSTORE_COMPL}" ]]
+    then
 	# Loads completion..
 	source "${PASSWORDSTORE_COMPL}"
     else
@@ -182,16 +183,15 @@ function setEnvVars () {
     
     # OSX specific env vars
     if [[ "$(uname -s)" == "Darwin" ]]
-    then set -x
+    then
 	# Emacs
 	local EMACS="/Applications/Emacs.app/Contents/MacOS/Emacs"
 	[ -x "$EMACS" ] && export EDITOR="$EMACS"
 
-	# Groovy
-	local GROOVY_HOME="/usr/local/opt/groovy/libexec"
-	[ -d "$GROOVY_HOME" ] && export GROOVY_HOME="$GROOVY_HOME"
+	# I had to use Groovy sometimes...
+	local GHOME="/usr/local/opt/groovy/libexec"
+	[[ -d "$GHOME" ]] && export GROOVY_HOME="$GHOME" 
     fi
-    set +x
 }
     
 # Main entry point, because I like unique entry point
