@@ -1,6 +1,6 @@
 -- Private part
 local log = hs.logger.new('oblique-strategies.lua', 'debug')
-local imagePath = os.getenv('HOME') .. '/.hammerspoon/obliqueStrategies.png'
+local imagePath = os.getenv('HOME') .. '/.hammerspoon/oblique_strategies.png'
 
 -- Oblique Strategies are © 1975, 1978, and 1979 by Brian Eno/Peter Schmidt
 local cards = {
