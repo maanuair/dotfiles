@@ -1,9 +1,8 @@
+-- Requirements and local vars
 local utils = require('utils')
 local jiraAccount = require ('jiraAccount')
-
 local log = hs.logger.new('init.lua', 'debug')
 
--- Public part
 local jira = {}
 
 -- Returns a Jira URL to browse the given issue Key
@@ -78,8 +77,6 @@ end
 function jira.logWork(id)
    utils.browseUrl(jira.getLogWorkUrl(id))
 end
-
--- Private part
 
 -- Below from https://github.com/CasperKoning/dothammerspoon/blob/master/jira.lua
 

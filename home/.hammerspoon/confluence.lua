@@ -1,11 +1,9 @@
+-- Requirements and local vars
 local utils = require('utils')
 local confluenceAccount = require ('confluenceAccount')
-
 local log = hs.logger.new('confluence.lua', 'debug')
 
--- Public part
 local confluence = {}
-
 
 -- Search the highlighted selection in Confluence
 function confluence.search()
@@ -21,7 +19,4 @@ function confluence.addEpic()
    utils.browseUrl(url)
 end
 
--- Private part
-
 return confluence
-

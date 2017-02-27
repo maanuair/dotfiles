@@ -1,12 +1,11 @@
 local utils = require('utils')
 local jira = require('jira')
 local confluence = require('confluence')
+local oblique_strategies = require('oblique_strategies')
+local log = hs.logger.new('init.lua', 'debug')
 
 -- Starts fresh
 hs.console.setConsole()
-
--- Logger stuffs
-local log = hs.logger.new('init.lua', 'debug')
 log.i("Fresh Hammerspoon's config loaded !")
 
 -- Inits for key bindings...
@@ -29,6 +28,9 @@ hs.hotkey.bind(myModifiersShift,"J", "JIRA: type URL for highlighted issue", jir
 -- Confluence hot keys
 hs.hotkey.bind(myModifiers, "C", "Confluence: Search highlighted selection", confluence.search)
 hs.hotkey.bind(myModifiers, "E", "Confluence: Add an Epic in Product space.", confluence.addEpic)
+
+-- Oblique Strategies hot keys
+hs.hotkey.bind(myModifiersShift,"O", "Show an Oblique Strategy", oblique_strategies.showStrategy)
 
 -- Experimental below
 function dlFinished(exitcode, stdout, stderr)
