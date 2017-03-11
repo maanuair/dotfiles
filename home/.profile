@@ -73,64 +73,6 @@ function setupCygwin () {
     fi
 }
 
-# Set up homeshick
-function setupHomeshick () {
-    myOut "Setting up homeshick..."
-    
-    # Some constants
-    local HOMESHICK="${HOME}/.homesick/repos/homeshick/homeshick.sh"
-    local HOMESHICK_COMPL="${HOME}/.homesick/repos/homeshick/completions/homeshick-completion.bash"
-    local GITCMD="git clone git://github.com/andsens/homeshick.git \"${HOME}/.homesick/repos/homeshick\""
-
-    # Go through setup...
-    if [[ -f "${HOMESHICK}" ]]; then
-	# Loads homeshick and its completion, plus refresh repos...
-	source "${HOMESHICK}"
-	source "${HOMESHICK_COMPL}"
-	homeshick --quiet refresh
-    else
-	myErr "${INDENT} Not found: ${HOMESHICK}"
-	# Clone it now ?
-	if [[ $(ask "${INDENT} Clone it from github now?" "[Y|n]" Y) == Y ]]; then
-	    eval "${GITCMD}" && echo && myOut "${INDENT} You will have to source \"${HOMESHICK}\" and \"${HOMESHICK_COMPL}\" manually" && echo
-	else
-	    myOut "${INDENT} You may want to clone it later with following command:"
-	    myOut "${INDENT} ${GITCMD}"
-	fi
-    fi
-}
-
-# Set up password store, c.f.
-function setupPasswordStore() {
-    local PASSWORDSTORE_COMPL="/usr/local/etc/bash_completion.d/pass"
-    local PASSWORDSTORE_CMD="brew install pass"
-
-    # Loads password store completion, if installed, otherwise suggests install it
-    if [[ -f "${PASSWORDSTORE_COMPL}" ]]
-    then
-	# Loads completion..
-	source "${PASSWORDSTORE_COMPL}"
-    else
-	myErr "Not found: ${PASSWORDSTORE_COMPL}"
-	myOut "${INDENT} You may want to install password store through Homebrew package Manager with:"
-	myOut "${INDENT} ${PASSWORDSTORE_CMD}"
-	myOut "${INDENT} echo \"source /usr/local/etc/bash_completion.d/pass\" >> ~/.bashrc"
-    fi
-}
-
-# Set up aliases
-function setupAliases () {
-    myOut "Setting up aliases..."
-
-    local ALIASES="${HOME}/.bash_aliases"
-
-    if [[ -f "${ALIASES}" ]]; then
-	source "${ALIASES}"
-    else
-	myErr "Not found: ${ALIASES}. Consider restoring aliases."
-    fi
-}
-
 # Function to customize PS1 when using powerline-shell.
 # C.f. https://github.com/banga/powerline-shell for more info
 # Since preferred font is "Cousine for Powerline" (not "Cousine" !), install it from https://github.com/powerline/fonts
@@ -140,7 +82,7 @@ function _update_ps1() {
 }
 
 # Set my favorite PS1 prompt
-function setPrompts () {
+function setupPrompts () {
     myOut "Setting up shell prompts..."
     
     local POWERLINE_URL="https://github.com/banga/powerline-shell"
@@ -175,8 +117,103 @@ function setPrompts () {
     fi
 }
 
+# Set up bash-completion
+function setupBashCompletion() {
+    myOut "Setting up bash-completion..."
+    
+    local BASH_COMPL="$(brew --prefix)/etc/bash_completion"
+    local BASH_COMPL_CMD="brew install bash-completion"
+
+    # Loads bash-completion, if installed, otherwise suggests to install it
+    if [[ -f "${BASH_COMPL}" ]]
+    then
+	# Loads completion..
+	source "${BASH_COMPL}"
+    else
+	myErr "Not found: ${BASH_COMPL}"
+	myOut "${INDENT} You may want to install bash-completion through Homebrew package manager with:"
+	myOut "${INDENT} ${BASH_COMPL_CMD}"
+    fi
+}
+
+# Set up git
+function setupGit() {
+    myOut "Setting up git..."
+
+    local GIT_CMD="brew install git"
+
+    if brew ls --versions git > /dev/null
+    then
+	# Git is already installed !
+	myOut "${INDENT} Git has been already installed with Homebrew package manager."
+    else
+	# Git not installed with brew
+	myErr "Git is not installed with brew, version is \"`git --version`\""
+	myOut "${INDENT} You may want to install git through Homebrew package manager with (otherwise, completions will not work):"
+	myOut "${INDENT} ${GIT_CMD}"
+    fi
+}
+
+# Set up password store, c.f. https://www.passwordstore.org
+function setupPass() {
+    local PASSWORDSTORE_COMPL="/usr/local/etc/bash_completion.d/pass"
+    local PASSWORDSTORE_CMD="brew install pass"
+    
+    # Loads password store completion, if installed, otherwise suggests install it
+    if [[ -f "${PASSWORDSTORE_COMPL}" ]]
+    then
+	# Loads completion..
+	source "${PASSWORDSTORE_COMPL}"
+    else
+	myErr "Not found: ${PASSWORDSTORE_COMPL}"
+	myOut "${INDENT} You may want to install password store through Homebrew package Manager with:"
+	myOut "${INDENT} ${PASSWORDSTORE_CMD}"
+	myOut "${INDENT} echo \"source /usr/local/etc/bash_completion.d/pass\" >> ~/.bashrc"
+    fi
+}
+
+# Set up homeshick
+function setupHomeshick () {
+    myOut "Setting up homeshick..."
+    
+    # Some constants
+    local HOMESHICK="${HOME}/.homesick/repos/homeshick/homeshick.sh"
+    local HOMESHICK_COMPL="${HOME}/.homesick/repos/homeshick/completions/homeshick-completion.bash"
+    local GITCMD="git clone git://github.com/andsens/homeshick.git \"${HOME}/.homesick/repos/homeshick\""
+
+    # Go through setup...
+    if [[ -f "${HOMESHICK}" ]]; then
+	# Loads homeshick and its completion, plus refresh repos...
+	source "${HOMESHICK}"
+	source "${HOMESHICK_COMPL}"
+	homeshick --quiet refresh
+    else
+	myErr "${INDENT} Not found: ${HOMESHICK}"
+	# Clone it now ?
+	if [[ $(ask "${INDENT} Clone it from github now?" "[Y|n]" Y) == Y ]]; then
+	    eval "${GITCMD}" && echo && myOut "${INDENT} You will have to source \"${HOMESHICK}\" and \"${HOMESHICK_COMPL}\" manually" && echo
+	else
+	    myOut "${INDENT} You may want to clone it later with following command:"
+	    myOut "${INDENT} ${GITCMD}"
+	fi
+    fi
+}
+
+# Set up aliases
+function setupAliases () {
+    myOut "Setting up aliases..."
+
+    local ALIASES="${HOME}/.bash_aliases"
+
+    if [[ -f "${ALIASES}" ]]; then
+	source "${ALIASES}"
+    else
+	myErr "Not found: ${ALIASES}. Consider restoring aliases."
+    fi
+}
+
 # Set some env vars
-function setEnvVars () {
+function setupEnvVars () {
     myOut "Setting up environment variables..."
 
     # Common env vars
@@ -191,7 +228,7 @@ function setEnvVars () {
 	[ -x "$EMACS" ] && export EDITOR="$EMACS"
 
 	# I had to use Groovy sometimes...
-	local GHOME="/usr/local/opt/groovy/libexec"
+	local GHOME="$(brew --prefix)/opt/groovy/libexec"
 	[[ -d "$GHOME" ]] && export GROOVY_HOME="$GHOME" 
     fi
 }
@@ -205,11 +242,12 @@ function main () {
 
     # Now set all up!
     local INDENT="  \033[2m==>"
-    setEnvVars
+    setupEnvVars
     setupAliases
     setupHomeshick
-    setupPasswordStore
-    setPrompts
+    setupPass
+    setupBashCompletion
+    setupPrompts
 
     # Umask: neither group nor others have any perms:
     umask 077
