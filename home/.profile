@@ -246,6 +246,7 @@ function main () {
     setupAliases
     setupHomeshick
     setupPass
+    setupGit
     setupBashCompletion
     setupPrompts
 
