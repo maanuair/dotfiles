@@ -102,7 +102,7 @@ function setupHomeshick () {
 
 # Set up password store, c.f.
 function setupPasswordStore() {
-    local PASSWORDSTORE_COMPL="/usr/local/etc/bash_completion.d/password-store"
+    local PASSWORDSTORE_COMPL="/usr/local/etc/bash_completion.d/pass"
     local PASSWORDSTORE_CMD="brew install pass"
 
     # Loads password store completion, if installed, otherwise suggests install it
@@ -114,6 +114,7 @@ function setupPasswordStore() {
 	myErr "Not found: ${PASSWORDSTORE_COMPL}"
 	myOut "${INDENT} You may want to install password store through Homebrew package Manager with:"
 	myOut "${INDENT} ${PASSWORDSTORE_CMD}"
+	myOut "${INDENT} echo \"source /usr/local/etc/bash_completion.d/pass\" >> ~/.bashrc"
     fi
 }
 
@@ -131,8 +132,9 @@ function setupAliases () {
 }
 
 # Function to customize PS1 when using powerline-shell.
-# C.f. https://github.com/banga/powerline-shell for more info, or c.f  https://github.com/powerline/fonts for compatible fonts
-# NB: Preferred font is Cousine
+# C.f. https://github.com/banga/powerline-shell for more info
+# Since preferred font is "Cousine for Powerline" (not "Cousine" !), install it from https://github.com/powerline/fonts
+# Just select it in iTerm, in the current / default profile
 function _update_ps1() {
     PS1="$(~/powerline-shell.py $? 2> /dev/null)"
 }
@@ -151,7 +153,7 @@ function setPrompts () {
 	    PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
 	fi
     else
-	myErr "${INDENT} Powerline not found. You may want to install it from ${POWERLINE_URL}" 
+	myErr "${INDENT} Powerline not found. You may want to install it from ${POWERLINE_URL} (and also install "Cousine for Powerline" font from https://github.com/powerline/font)" 
 	myOut "${INDENT} Using my default PS1 and PS2 instead."
 	# Inits desired codes
 	local BOLD='\[\e[1m\]'
