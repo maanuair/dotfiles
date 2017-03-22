@@ -78,5 +78,8 @@
   (add-to-list 'default-frame-alist '(font . "Inconsolata-12"))
   (set-face-attribute 'default t :font "Inconsolata-12"))
 
+;; Maggit shortcuts
+(global-set-key (kbd "C-x g") 'magit-status)
+
 (provide 'my-ui)
 				   
