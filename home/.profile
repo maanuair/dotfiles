@@ -10,7 +10,7 @@ function myErr () {
 }
 
 function myDebug () {
-    printf "%s [\033[30m\033[42mDOT-DEBUG\033[0m] ${@}\033[0m\n" `date "+%H:%M:%S"` 
+    printf "%s [\033[30m\033[42mDOT-DEBUG\033[0m] ${@}\033[0m\n" `date "+%H:%M:%S"`
 }
 
 # Echo OS detected: osx, linux or windows (cygwin, MinGW...)
@@ -59,10 +59,10 @@ function ask () {
 # Turn on native strict symbolic links on Cygwin
 function setupCygwin () {
     myOut "Setting up Cygwin..."
-    
+
     # We want to use Windows native symbolink links on Cygwin!
     export CYGWIN="winsymlinks:nativestrict ${CYGWIN}"
-    
+
     # But we must be Windows Administrator to make them work...
     id -G | grep -qE '\<(544|0)\>'; # Group 544 or 0 does mean Windows Administrator
     if [[ $? != 0 ]]; then
@@ -84,10 +84,10 @@ function _update_ps1() {
 # Set my favorite PS1 prompt
 function setupPrompts () {
     myOut "Setting up shell prompts..."
-    
+
     local POWERLINE_URL="https://github.com/banga/powerline-shell"
     local POWERLINE_SHELL_PY="${HOME}/powerline-shell.py"
-    
+
     # Use powerline-shell.py if it exists, otherwise default to a simpler one
     if [[ -f "${POWERLINE_SHELL_PY}" ]]; then
 	myOut "${INDENT} Powerline found, using it"
@@ -95,7 +95,7 @@ function setupPrompts () {
 	    PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
 	fi
     else
-	myErr "${INDENT} Powerline not found. You may want to install it from ${POWERLINE_URL} (and also install "Cousine for Powerline" font from https://github.com/powerline/font)" 
+	myErr "${INDENT} Powerline not found. You may want to install it from ${POWERLINE_URL} (and also install "Cousine for Powerline" font from https://github.com/powerline/font)"
 	myOut "${INDENT} Using my default PS1 and PS2 instead."
 	# Inits desired codes
 	local BOLD='\[\e[1m\]'
@@ -110,8 +110,8 @@ function setupPrompts () {
 		local TITLE=''
 		;;
 	esac
-	
-	# Customize! 
+
+	# Customize!
 	PS1="${TITLE}${RESET}${INVERSE}${BOLD}\u@\h${RESET}:${INVERSE}\w${RESET}> "
 	PS2="${RESET}> ${ITALIC}"
     fi
@@ -120,7 +120,7 @@ function setupPrompts () {
 # Set up bash-completion
 function setupBashCompletion() {
     myOut "Setting up bash-completion..."
-    
+
     local BASH_COMPL="$(brew --prefix)/etc/bash_completion"
     local BASH_COMPL_CMD="brew install bash-completion"
 
@@ -158,7 +158,7 @@ function setupGit() {
 function setupPass() {
     local PASSWORDSTORE_COMPL="/usr/local/etc/bash_completion.d/pass"
     local PASSWORDSTORE_CMD="brew install pass"
-    
+
     # Loads password store completion, if installed, otherwise suggests install it
     if [[ -f "${PASSWORDSTORE_COMPL}" ]]
     then
@@ -172,10 +172,49 @@ function setupPass() {
     fi
 }
 
+# Set up NodeJS
+function setupNode() {
+    myOut "Setting up node + npm..."
+
+    # Is NodeJS installed ?
+    if [[ `getOS` == 'osx' ]]
+    then
+	local NODEJS_BIN="$(brew --prefix)/bin/node"
+	local NODEJS_CMD1="brew install node --without-npm"
+	local NODEJS_CMD2="echo prefix=${NODEJS_NPMPACK_DIR} >> ~/.npmrc"
+	local NODEJS_CMD3="curl -L https://www.npmjs.com/install.sh | sh"
+	local NPMPACKAGES_DIR="${HOME}/.npm_packages"
+	if [[ -f "${NODEJS_BIN}" ]]
+	then
+	    # OK, node installed, but is NPM installed correctly ?
+	    local NODEJS_NPM_DIR="$(brew --prefix)/lib/node_modules/"
+	    if [[ -f "${NODEJS_NPM_DIR}" ]]
+	    then
+		myErr "Node has been installed correclty via brew, and so do npm (in ${NODEJS_NPM_DIR}) for which this is an issue. Consider a resinstall as specified at https://gist.github.com/DanHerbert/9520689 and summarized below:"
+		myOut "${INDENT} rm -rf /usr/local/lib/node_modules  # Warning: note your installed modules, for later reinstall"
+		myOut "${INDENT} brew uninstall node"
+		myOut "${INDENT} ${NODEJS_CMD1}"
+		myOut "${INDENT} ${NODEJS_CMD2}"
+		myOut "${INDENT} ${NODEJS_CMD3}"
+		myOut "${INDENT} # Now reinstall previous modules noted above..."
+	    else
+		export PATH="${NPMPACKAGES_DIR}/bin:${PATH}"
+		myOut "${INDENT} Node (`node --version`) and npm (`npm --version`) installed correctly."
+	    fi
+	else
+	    myErr "Not found: ${NODEJS_BIN}"
+	    myOut "${INDENT} You may want to install node through Homebrew package Manager with:"
+	    myOut "${INDENT} ${NODEJS_CMD1}"
+	    myOut "${INDENT} ${NODEJS_CMD2}"
+	    myOut "${INDENT} ${NODEJS_CMD3}"
+	fi
+    fi
+}
+
 # Set up homeshick
 function setupHomeshick () {
     myOut "Setting up homeshick..."
-    
+
     # Some constants
     local HOMESHICK="${HOME}/.homesick/repos/homeshick/homeshick.sh"
     local HOMESHICK_COMPL="${HOME}/.homesick/repos/homeshick/completions/homeshick-completion.bash"
@@ -219,9 +258,9 @@ function setupEnvVars () {
     # Common env vars
     export PATH="$PATH:$HOME/.npm-packages/bin"
     export PAGER=/usr/bin/less
-    
+
     # OSX specific env vars
-    if [[ "$(uname -s)" == "Darwin" ]]
+    if [[ `getOS` == 'osx' ]]
     then
 	# Emacs
 	local EMACS="/Applications/Emacs.app/Contents/MacOS/Emacs"
@@ -229,10 +268,10 @@ function setupEnvVars () {
 
 	# I had to use Groovy sometimes...
 	local GHOME="$(brew --prefix)/opt/groovy/libexec"
-	[[ -d "$GHOME" ]] && export GROOVY_HOME="$GHOME" 
+	[[ -d "$GHOME" ]] && export GROOVY_HOME="$GHOME"
     fi
 }
-    
+
 # Main entry point, because I like unique entry point
 function main () {
     myOut "Starting bash setup..."
@@ -245,6 +284,7 @@ function main () {
     setupEnvVars
     setupAliases
     setupHomeshick
+    setupNode
     setupPass
     setupGit
     setupBashCompletion
