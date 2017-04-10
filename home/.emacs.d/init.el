@@ -20,7 +20,7 @@
 (package-initialize)
 (require 'my-packages)
 
-;; Load dsome  common functions
+;; Load some common functions
 (require 'my-functions)
 
 ;; Finally set up ui and some behaviors

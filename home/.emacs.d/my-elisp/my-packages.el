@@ -2,6 +2,7 @@
 (defvar
   my-packages
   '(
+    emmet-mode
     groovy-mode
     js2-mode
     json-mode
