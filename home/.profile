@@ -179,11 +179,12 @@ function setupNode() {
     # Is NodeJS installed ?
     if [[ `getOS` == 'osx' ]]
     then
+	local NPMPACKAGES_DIR="~/.npm_packages"
+
 	local NODEJS_BIN="$(brew --prefix)/bin/node"
 	local NODEJS_CMD1="brew install node --without-npm"
-	local NODEJS_CMD2="echo prefix=${NODEJS_NPMPACK_DIR} >> ~/.npmrc"
+	local NODEJS_CMD2="echo prefix = ${NPMPACKAGES_DIR} >> ~/.npmrc"
 	local NODEJS_CMD3="curl -L https://www.npmjs.com/install.sh | sh"
-	local NPMPACKAGES_DIR="${HOME}/.npm_packages"
 	if [[ -f "${NODEJS_BIN}" ]]
 	then
 	    # OK, node installed, but is NPM installed correctly ?
