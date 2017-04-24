@@ -2,14 +2,17 @@
 
 # Some log helpers
 function myOut () {
+    # A litle bit of blue
     printf "%s [\033[34mDOT-INFOR\033[0m] ${@}\033[0m\n" `date "+%H:%M:%S"`
 }
 
 function myErr () {
+    # A little bit of red, redirected to stderr
     printf "%s [\033[31mDOT-ERROR\033[0m] ${@}\033[0m\n" `date "+%H:%M:%S"` 1>&2
 }
 
 function myDebug () {
+    # And a little bit of highlighted green
     printf "%s [\033[30m\033[42mDOT-DEBUG\033[0m] ${@}\033[0m\n" `date "+%H:%M:%S"`
 }
 
