@@ -2,6 +2,7 @@
 (defvar
   my-packages
   '(
+    editorconfig
     emmet-mode
     groovy-mode
     js2-mode

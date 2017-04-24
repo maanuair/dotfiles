@@ -9,6 +9,10 @@
 (require 'recentf)
 (recentf-mode 1)
 
+;; Use editor config
+(require 'editorconfig)
+(editorconfig-mode 1)
+
 ;; Customize behavior
 (load-library "paren")    ;; We use paren lib...
 (show-paren-mode 1 )      ;; Visually match parentheses
