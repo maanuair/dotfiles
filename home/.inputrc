@@ -1,0 +1,6 @@
+# TAB to cycle through completions, instead of completing to next charcater choice
+TAB: menu-complete
+
+# Keep the completions list available upon SHIFT-TAB
+"\e[Z": complete
+
