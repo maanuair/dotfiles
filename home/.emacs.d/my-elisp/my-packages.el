@@ -10,8 +10,10 @@
     lua-mode
     markdown-mode
     magit
+    restclient
+    solarized-theme
     web-mode
-    solarized-theme)
+    )
   "The list of packages that should be installed, and verified as such at startup")
 
 (defvar my-missing-packages '()
