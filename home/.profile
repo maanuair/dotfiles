@@ -157,24 +157,6 @@ function setupGit() {
     fi
 }
 
-# Set up password store, c.f. https://www.passwordstore.org
-function setupPass() {
-    local PASSWORDSTORE_COMPL="/usr/local/etc/bash_completion.d/pass"
-    local PASSWORDSTORE_CMD="brew install pass"
-
-    # Loads password store completion, if installed, otherwise suggests install it
-    if [[ -f "${PASSWORDSTORE_COMPL}" ]]
-    then
-	# Loads completion..
-	source "${PASSWORDSTORE_COMPL}"
-    else
-	myErr "Not found: ${PASSWORDSTORE_COMPL}"
-	myOut "${INDENT} You may want to install password store through Homebrew package Manager with:"
-	myOut "${INDENT} ${PASSWORDSTORE_CMD}"
-	myOut "${INDENT} echo \"source /usr/local/etc/bash_completion.d/pass\" >> ~/.bashrc"
-    fi
-}
-
 # Set up NodeJS
 function setupNode() {
     myOut "Setting up node + npm..."
@@ -289,7 +271,6 @@ function main () {
     setupAliases
     setupHomeshick
     setupNode
-    setupPass
     setupGit
     setupBashCompletion
     setupPrompts
