@@ -10,6 +10,7 @@
     lua-mode
     markdown-mode
     magit
+    mocha
     restclient
     solarized-theme
     web-mode
