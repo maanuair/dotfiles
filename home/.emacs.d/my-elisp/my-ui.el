@@ -13,6 +13,10 @@
 (require 'editorconfig)
 (editorconfig-mode 1)
 
+;; Use ido-mode
+(require 'ido)
+(ido-mode t)
+
 ;; Customize behavior
 (load-library "paren")    ;; We use paren lib...
 (show-paren-mode 1 )      ;; Visually match parentheses
