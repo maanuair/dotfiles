@@ -4,10 +4,11 @@
   (interactive)
   (indent-region (point-min) (point-max)))
 (defun reformat ()
-  "Indent whole buffer, removes trailing spaces, and refontify it."
+  "Indent whole buffer, removes trailing spaces, and refontify it. Note that the EditorConfig package has its own formating settings."
   (interactive)
   (indent-buffer)
-  (delete-trailing-whitespace)
+  (delete-trailing-whitespace)       ;; EditorConfig may override
+  (untabify (point-min) (point-max)) ;; EditorConfig may override
   (font-lock-fontify-buffer)
   )
 
