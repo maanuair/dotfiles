@@ -5,10 +5,10 @@ root = true
 
 # For all files...
 [*]
-charset = utf-8	       		# Prefer utf-8
-end_of_line = lf		# Unix-style newlines with a newline ending every file
-indent_size = 2			# 2 spaces, please
-indent_style = space	   	# Indent with soft tabs
+charset = utf-8	    	          # Prefer utf-8
+end_of_line = lf                # Unix-style newlines with a newline ending every file
+indent_size = 2                 # 2 spaces, please
+indent_style = space            # Indent with soft tabs
 insert_final_newline = true     # Put a newline at end of file
 trim_trailing_whitespace = true # No trailing white space
 
