@@ -1,0 +1,28 @@
+# EditorConfig is awesome: http://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# For all files...
+[*]
+charset = utf-8	       		# Prefer utf-8
+end_of_line = lf		# Unix-style newlines with a newline ending every file
+indent_size = 2			# 2 spaces, please
+indent_style = space	   	# Indent with soft tabs
+insert_final_newline = true     # Put a newline at end of file
+trim_trailing_whitespace = true # No trailing white space
+
+# Markdown cannot be more than 80 chars to keep it human readable
+[*.md]
+max_line_length = 80
+trim_trailing_whitespace = false
+
+# The indent size used in the `package.json` file cannot be changed
+# https://github.com/npm/npm/pull/3180#issuecomment-16336516
+[{.travis.yml,package.json}]
+indent_size = 2
+indent_style = space
+
+# Makefiles have specific Tab indentation (no size specified)
+[Makefile]
+indent_style = tab
