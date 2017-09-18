@@ -241,9 +241,12 @@ function setupAliases () {
 function setupEnvVars () {
     myOut "Setting up environment variables..."
 
-    # Common env vars
-    export PATH="$PATH:$HOME/.npm-packages/bin"
+    # Set up the PAGER
     export PAGER=/usr/bin/less
+
+    # Set up the PATHs
+    [[ -d $HOME/.npm-packages/bin ]] && export PATH="$PATH:$HOME/.npm-packages/bin"
+    [[ -d $HOME/bin ]] && export PATH="$PATH:$HOME/bin"
 
     # OSX specific env vars
     if [[ `getOS` == 'osx' ]]
