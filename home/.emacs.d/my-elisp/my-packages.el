@@ -1,20 +1,22 @@
+;; Hmmmmmm, use instead https://github.com/jwiegley/use-package ?
+
 ;; Automatic install of packages
 (defvar
   my-packages
   '(
-    editorconfig
-    emmet-mode
-    groovy-mode
-    js2-mode
-    json-mode
-    lua-mode
-    markdown-mode
-    magit
-    mocha
-    restclient
-    solarized-theme
-    web-mode
-    )
+     editorconfig
+     emmet-mode
+     groovy-mode
+     js2-mode
+     json-mode
+     lua-mode
+     markdown-mode
+     magit
+     mocha
+     restclient
+     solarized-theme
+     web-mode
+     )
   "The list of packages that should be installed, and verified as such at startup")
 
 (defvar my-missing-packages '()
@@ -28,13 +30,13 @@
 ;; Check internet connection
 (setq my-onlinep nil)
 (unless
-    (condition-case nil
-        (delete-process
-         (make-network-process
-          :name "my-check-internet"
-          :host "elpa.gnu.org"
-          :service 80))
-      (error t))
+  (condition-case nil
+    (delete-process
+      (make-network-process
+        :name "my-check-internet"
+        :host "elpa.gnu.org"
+        :service 80))
+    (error t))
   (setq my-onlinep t))
 
 ;; Automatically install the missing packages
