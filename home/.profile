@@ -176,7 +176,7 @@ function setupNode() {
       local NODEJS_NPM_DIR="$(brew --prefix)/lib/node_modules/"
       if [[ -f "${NODEJS_NPM_DIR}" ]]
       then
-        myErr "Node has been installed correclty via brew, and so do npm (in ${NODEJS_NPM_DIR}) for which this is an issue. Consider a resinstall as specified at https://gist.github.com/DanHerbert/9520689 and summarized below:"
+        myErr "Node has been installed correctly via brew, and so do npm (in ${NODEJS_NPM_DIR}) for which this is an issue. Consider a resinstall as specified at https://gist.github.com/DanHerbert/9520689 and summarized below:"
         myOut "${INDENT} rm -rf /usr/local/lib/node_modules  # Warning: note your installed modules, for later reinstall"
         myOut "${INDENT} brew uninstall node"
         myOut "${INDENT} ${NODEJS_CMD1}"
