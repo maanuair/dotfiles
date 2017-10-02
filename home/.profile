@@ -88,16 +88,15 @@ function _update_ps1() {
 function setupPrompts () {
   myOut "Setting up shell prompts..."
 
-  local POWERLINE_URL="https://github.com/banga/powerline-shell"
-  local POWERLINE_SHELL_PY="${HOME}/powerline-shell.py"
-
   # Use powerline-shell.py if it exists, otherwise default to a simpler one
+  local POWERLINE_SHELL_PY="${HOME}/powerline-shell.py"
   if [[ -f "${POWERLINE_SHELL_PY}" ]]; then
     myOut "${INDENT} Powerline found, using it"
     if [ "$TERM" != "linux" ]; then
       PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
     fi
   else
+    local POWERLINE_URL="https://github.com/banga/powerline-shell"
     myErr "${INDENT} Powerline not found. You may want to install it from ${POWERLINE_URL} (and also install "Cousine for Powerline" font from https://github.com/powerline/font)"
     myOut "${INDENT} Using my default PS1 and PS2 instead."
     # Inits desired codes
@@ -124,15 +123,14 @@ function setupPrompts () {
 function setupBashCompletion() {
   myOut "Setting up bash-completion..."
 
-  local BASH_COMPL="$(brew --prefix)/etc/bash_completion"
-  local BASH_COMPL_CMD="brew install bash-completion"
-
   # Loads bash-completion, if installed, otherwise suggests to install it
+  local BASH_COMPL="$(brew --prefix)/etc/bash_completion"
   if [[ -f "${BASH_COMPL}" ]]
   then
     # Loads completion..
     source "${BASH_COMPL}"
   else
+    local BASH_COMPL_CMD="brew install bash-completion"
     myErr "Not found: ${BASH_COMPL}"
     myOut "${INDENT} You may want to install bash-completion through Homebrew package manager with:"
     myOut "${INDENT} ${BASH_COMPL_CMD}"
@@ -143,14 +141,13 @@ function setupBashCompletion() {
 function setupGit() {
   myOut "Setting up git..."
 
-  local GIT_CMD="brew install git"
-
   if brew ls --versions git > /dev/null
   then
     # Git is already installed !
     myOut "${INDENT} Git has been already installed with Homebrew package manager."
   else
     # Git not installed with brew
+    local GIT_CMD="brew install git"
     myErr "Git is not installed with brew, version is \"`git --version`\""
     myOut "${INDENT} You may want to install git through Homebrew package manager with (otherwise, completions will not work):"
     myOut "${INDENT} ${GIT_CMD}"
@@ -164,50 +161,19 @@ function setupNode() {
   # Is NodeJS installed ?
   if [[ `getOS` == 'osx' ]]
   then
-    # local NPMPACKAGES_DIR="~/.npm_packages"
-
-    # local NODEJS_BIN="$(brew --prefix)/bin/node"
-    # local NODEJS_CMD1="brew install node --without-npm"
-    # local NODEJS_CMD2="echo prefix = ${NPMPACKAGES_DIR} >> ~/.npmrc"
-    # local NODEJS_CMD3="curl -L https://www.npmjs.com/install.sh | sh"
-    # if [[ -f "${NODEJS_BIN}" ]]
-    # then
-    #   # OK, node installed, but is NPM installed correctly ?
-    #   local NODEJS_NPM_DIR="$(brew --prefix)/lib/node_modules/"
-    #   if [[ -f "${NODEJS_NPM_DIR}" ]]
-    #   then
-    #     myErr "Node has been installed correctly via brew, and so do npm (in ${NODEJS_NPM_DIR}) for which this is an issue. Consider a resinstall as specified at https://gist.github.com/DanHerbert/9520689 and summarized below:"
-    #     myOut "${INDENT} rm -rf /usr/local/lib/node_modules  # Warning: note your installed modules, for later reinstall"
-    #     myOut "${INDENT} brew uninstall node"
-    #     myOut "${INDENT} ${NODEJS_CMD1}"
-    #     myOut "${INDENT} ${NODEJS_CMD2}"
-    #     myOut "${INDENT} ${NODEJS_CMD3}"
-    #     myOut "${INDENT} # Now reinstall previous modules noted above..."
-    #   else
-    #     export PATH="${NPMPACKAGES_DIR}/bin:${PATH}"
-    #     myOut "${INDENT} Node (`node --version`) and npm (`npm --version`) installed correctly."
-    #   fi
-    # else
-    #   myErr "Not found: ${NODEJS_BIN}"
-    #   myOut "${INDENT} You may want to install node through Homebrew package Manager with:"
-    #   myOut "${INDENT} ${NODEJS_CMD1}"
-    #   myOut "${INDENT} ${NODEJS_CMD2}"
-    #   myOut "${INDENT} ${NODEJS_CMD3}"
-    # fi
     export NVM_DIR="$HOME/.nvm"
-    local NVM_SH="$NVM_DIR/nvm.sh"
-    local NVM_COMP="$NVM_DIR/bash_completion"
-    local NVM_INSTALL_CMD='export NVM_DIR="$HOME/.nvm" && mkdir "$NVM_DIR" && ( git clone https://github.com/creationix/nvm.git "$NVM_DIR"; cd "$NVM_DIR"; git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`;) && . "$NVM_DIR/nvm.sh"'
-    local NVM_UPGRADE_CMD='( cd "$NVM_DIR"; git fetch origin; git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`; ) && . "$NVM_DIR/nvm.sh"'
     if [[ -d "${NVM_DIR}" ]]
     then
-      export NVM_DIR
+      local NVM_SH="$NVM_DIR/nvm.sh"
+      local NVM_UPGRADE_CMD='( cd "$NVM_DIR"; git fetch origin; git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`; ) && . "$NVM_DIR/nvm.sh"'
+      local NVM_COMP="$NVM_DIR/bash_completion"
       myOut "${INDENT} Sourcing $NVM_SH..."
       . "${NVM_SH}"
       myOut "${INDENT} Reminder: to manually upgrade, run: ${NVM_UPGRADE_CMD}"
       myOut "${INDENT} Sourcing bash completions ${NVM_COMP}..."
       [[ -r ${NVM_COMP} ]] && . ${NVM_COMP} || myErr "Not found: ${NVM_COMP}"
     else
+      local NVM_INSTALL_CMD='export NVM_DIR="$HOME/.nvm" && mkdir "$NVM_DIR" && ( git clone https://github.com/creationix/nvm.git "$NVM_DIR"; cd "$NVM_DIR"; git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`;) && . "$NVM_DIR/nvm.sh"'
       myErr "Not found: ${NVM_DIR}"
       myOut "${INDENT} You may want to install nvm first, by running: "
       myOut "${INDENT} ${NVM_INSTALL_CMD}"
@@ -223,12 +189,11 @@ function setupHomeshick () {
 
   # Some constants
   local HOMESHICK="${HOME}/.homesick/repos/homeshick/homeshick.sh"
-  local HOMESHICK_COMPL="${HOME}/.homesick/repos/homeshick/completions/homeshick-completion.bash"
-  local GITCMD="git clone git://github.com/andsens/homeshick.git \"${HOME}/.homesick/repos/homeshick\""
 
   # Go through setup...
   if [[ -f "${HOMESHICK}" ]]; then
     # Loads homeshick and its completion, plus refresh repos...
+    local HOMESHICK_COMPL="${HOME}/.homesick/repos/homeshick/completions/homeshick-completion.bash"
     source "${HOMESHICK}"
     source "${HOMESHICK_COMPL}"
     homeshick --quiet refresh
@@ -236,6 +201,7 @@ function setupHomeshick () {
   else
     myErr "${INDENT} Not found: ${HOMESHICK}"
     # Clone it now ?
+    local GITCMD="git clone git://github.com/andsens/homeshick.git \"${HOME}/.homesick/repos/homeshick\""
     if [[ $(ask "${INDENT} Clone it from github now?" "[Y|n]" Y) == Y ]]; then
       eval "${GITCMD}" && echo && myOut "${INDENT} You will have to source \"${HOMESHICK}\" and \"${HOMESHICK_COMPL}\" manually" && echo
     else
@@ -249,8 +215,8 @@ function setupHomeshick () {
 function setupAliases () {
   myOut "Setting up aliases..."
 
+  # Loading aliases if they exist...
   local ALIASES="${HOME}/.bash_aliases"
-
   if [[ -f "${ALIASES}" ]]; then
     source "${ALIASES}"
   else
@@ -282,7 +248,11 @@ function setupEnvVars () {
 
     # This is to setup the RuvyGems env, for sudo-less cocoapods
     export GEM_HOME=$HOME/.gem
-    export PATH=$GEM_HOME/ruby/2.0.0/bin:$PATH
+    export PATH=$PATH:$GEM_HOME/ruby/2.0.0/bin
+
+    # I even tried Android Studio at some point :)
+    local AHOME="$HOME/Library/Android/sdk"
+    [[ -d "$AHOME" ]] && export ANDROID_HOME="$AHOME" && export PATH="$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools"
   fi
 }
 
