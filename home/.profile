@@ -159,41 +159,61 @@ function setupGit() {
 
 # Set up NodeJS
 function setupNode() {
-  myOut "Setting up node + npm..."
+  myOut "Setting up Node env..."
 
   # Is NodeJS installed ?
   if [[ `getOS` == 'osx' ]]
   then
-    local NPMPACKAGES_DIR="~/.npm_packages"
+    # local NPMPACKAGES_DIR="~/.npm_packages"
 
-    local NODEJS_BIN="$(brew --prefix)/bin/node"
-    local NODEJS_CMD1="brew install node --without-npm"
-    local NODEJS_CMD2="echo prefix = ${NPMPACKAGES_DIR} >> ~/.npmrc"
-    local NODEJS_CMD3="curl -L https://www.npmjs.com/install.sh | sh"
-    if [[ -f "${NODEJS_BIN}" ]]
+    # local NODEJS_BIN="$(brew --prefix)/bin/node"
+    # local NODEJS_CMD1="brew install node --without-npm"
+    # local NODEJS_CMD2="echo prefix = ${NPMPACKAGES_DIR} >> ~/.npmrc"
+    # local NODEJS_CMD3="curl -L https://www.npmjs.com/install.sh | sh"
+    # if [[ -f "${NODEJS_BIN}" ]]
+    # then
+    #   # OK, node installed, but is NPM installed correctly ?
+    #   local NODEJS_NPM_DIR="$(brew --prefix)/lib/node_modules/"
+    #   if [[ -f "${NODEJS_NPM_DIR}" ]]
+    #   then
+    #     myErr "Node has been installed correctly via brew, and so do npm (in ${NODEJS_NPM_DIR}) for which this is an issue. Consider a resinstall as specified at https://gist.github.com/DanHerbert/9520689 and summarized below:"
+    #     myOut "${INDENT} rm -rf /usr/local/lib/node_modules  # Warning: note your installed modules, for later reinstall"
+    #     myOut "${INDENT} brew uninstall node"
+    #     myOut "${INDENT} ${NODEJS_CMD1}"
+    #     myOut "${INDENT} ${NODEJS_CMD2}"
+    #     myOut "${INDENT} ${NODEJS_CMD3}"
+    #     myOut "${INDENT} # Now reinstall previous modules noted above..."
+    #   else
+    #     export PATH="${NPMPACKAGES_DIR}/bin:${PATH}"
+    #     myOut "${INDENT} Node (`node --version`) and npm (`npm --version`) installed correctly."
+    #   fi
+    # else
+    #   myErr "Not found: ${NODEJS_BIN}"
+    #   myOut "${INDENT} You may want to install node through Homebrew package Manager with:"
+    #   myOut "${INDENT} ${NODEJS_CMD1}"
+    #   myOut "${INDENT} ${NODEJS_CMD2}"
+    #   myOut "${INDENT} ${NODEJS_CMD3}"
+    # fi
+    export NVM_DIR="$HOME/.nvm"
+    local NVM_SH="$NVM_DIR/nvm.sh"
+    local NVM_COMP="$NVM_DIR/bash_completion"
+    local NVM_INSTALL_CMD='export NVM_DIR="$HOME/.nvm" && mkdir "$NVM_DIR" && ( git clone https://github.com/creationix/nvm.git "$NVM_DIR"; cd "$NVM_DIR"; git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`;) && . "$NVM_DIR/nvm.sh"'
+    local NVM_UPGRADE_CMD='( cd "$NVM_DIR"; git fetch origin; git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`; ) && . "$NVM_DIR/nvm.sh"'
+    if [[ -d "${NVM_DIR}" ]]
     then
-      # OK, node installed, but is NPM installed correctly ?
-      local NODEJS_NPM_DIR="$(brew --prefix)/lib/node_modules/"
-      if [[ -f "${NODEJS_NPM_DIR}" ]]
-      then
-        myErr "Node has been installed correctly via brew, and so do npm (in ${NODEJS_NPM_DIR}) for which this is an issue. Consider a resinstall as specified at https://gist.github.com/DanHerbert/9520689 and summarized below:"
-        myOut "${INDENT} rm -rf /usr/local/lib/node_modules  # Warning: note your installed modules, for later reinstall"
-        myOut "${INDENT} brew uninstall node"
-        myOut "${INDENT} ${NODEJS_CMD1}"
-        myOut "${INDENT} ${NODEJS_CMD2}"
-        myOut "${INDENT} ${NODEJS_CMD3}"
-        myOut "${INDENT} # Now reinstall previous modules noted above..."
-      else
-        export PATH="${NPMPACKAGES_DIR}/bin:${PATH}"
-        myOut "${INDENT} Node (`node --version`) and npm (`npm --version`) installed correctly."
-      fi
+      export NVM_DIR
+      myOut "${INDENT} Sourcing $NVM_SH..."
+      . "${NVM_SH}"
+      myOut "${INDENT} Reminder: to manually upgrade, run: ${NVM_UPGRADE_CMD}"
+      myOut "${INDENT} Sourcing bash completions ${NVM_COMP}..."
+      [[ -r ${NVM_COMP} ]] && . ${NVM_COMP} || myErr "Not found: ${NVM_COMP}"
     else
-      myErr "Not found: ${NODEJS_BIN}"
-      myOut "${INDENT} You may want to install node through Homebrew package Manager with:"
-      myOut "${INDENT} ${NODEJS_CMD1}"
-      myOut "${INDENT} ${NODEJS_CMD2}"
-      myOut "${INDENT} ${NODEJS_CMD3}"
+      myErr "Not found: ${NVM_DIR}"
+      myOut "${INDENT} You may want to install nvm first, by running: "
+      myOut "${INDENT} ${NVM_INSTALL_CMD}"
     fi
+  else
+    myErr "Not checking node env on non-macOS systems, sorry."
   fi
 }
 
@@ -259,6 +279,10 @@ function setupEnvVars () {
     # I had to use Groovy sometimes...
     local GHOME="$(brew --prefix)/opt/groovy/libexec"
     [[ -d "$GHOME" ]] && export GROOVY_HOME="$GHOME"
+
+    # This is to setup the RuvyGems env, for sudo-less cocoapods
+    export GEM_HOME=$HOME/.gem
+    export PATH=$GEM_HOME/ruby/2.0.0/bin:$PATH
   fi
 }
 
