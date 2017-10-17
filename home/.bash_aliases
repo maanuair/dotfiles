@@ -17,6 +17,8 @@ alias fgrep="fgrep --color=auto"
 
 alias grep="grep --color=auto"
 
+alias j=jobs
+
 # OS dependent aliases for colorized ls. Test the *BSD + Darwin "ls -G" color option vs GNU's one "ls --color=auto"
 if [[ "$(uname -s)" == "Darwin" ]]
 then
