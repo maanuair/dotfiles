@@ -196,8 +196,22 @@ function setupHomeshick () {
     local HOMESHICK_COMPL="${HOME}/.homesick/repos/homeshick/completions/homeshick-completion.bash"
     source "${HOMESHICK}"
     source "${HOMESHICK_COMPL}"
+
+    myOut "${INDENT} homeshick --quiet refresh..."
     homeshick --quiet refresh
-    homeshick check
+
+    # Check whether we need to... "homeshick chek"
+    local file="$HOME/.lastHomeshickCheckTimestamp"
+
+    # Already checked in last 24h or not?
+    if [[ ! -f "$file" || $(find "$file" -mtime +1 -print) ]]; then
+      myOut "${INDENT} homeshick check..."
+      homeshick check
+      [[ ! -f "$file" ]] && myOut "${INDENT} Future \"homeshich check\" will be done after 24h, using file's timestamp: \"$file\"..."
+      touch "$file"
+    else
+      myOut "${INDENT} homeshick check already done in last 24h, no need to check again..."
+    fi
   else
     myErr "${INDENT} Not found: ${HOMESHICK}"
     # Clone it now ?
@@ -239,8 +253,26 @@ function setupEnvVars () {
   if [[ `getOS` == 'osx' ]]
   then
     # Emacs
+    myOut "${INDENT} Choosing EDITOR to use..."
     local EMACS="/Applications/Emacs.app/Contents/MacOS/Emacs"
-    [ -x "$EMACS" ] && export EDITOR="$EMACS"
+    local EMACSCLIENT="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
+    if [[ -x "$EMACSCLIENT" ]]
+    then
+      myOut "${INDENT} Starting emacs daemon..."
+      "$EMACS" --daemon 2>&1 | while read line
+      do
+        myOut "\t${INDENT} emacs daemon says: ($line)"
+      done
+      if [[ "$?" -eq 0 ]]
+      then
+        export EDITOR="$EMACSCLIENT -c"
+      else
+        myErr "${INDENT} Cannot start emacs as a daemon"
+        export EDITOR="$EMACS"
+      fi
+      myOut "${INDENT} Env var EDITOR is now \"$EDITOR\""
+      myOut "${INDENT} Alias  'emacs' is now \"$EDITOR\" as well"
+    fi
 
     # I had to use Groovy sometimes...
     local GHOME="$(brew --prefix)/opt/groovy/libexec"
