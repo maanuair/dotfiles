@@ -26,6 +26,9 @@
 (global-set-key (quote [f5]) 'reformat)
 (global-set-key (quote [f12]) 'auto-revert-tail-mode)
 
+;; Always follow symlinks
+(setq vc-follow-symlinks t)
+
 ;; Auto reformat on save
 (require 'my-functions)
 ;;(add-hook 'before-save-hook 'reformat)
