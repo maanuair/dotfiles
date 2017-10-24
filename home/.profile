@@ -271,7 +271,8 @@ function setupEnvVars () {
         export EDITOR="$EMACS"
       fi
       myOut "${INDENT} Env var EDITOR is now \"$EDITOR\""
-      myOut "${INDENT} Alias  'emacs' is now \"$EDITOR\" as well"
+      alias emacs="$EDITOR"
+      myOut "${INDENT} Alias  'emacs' is overriden to \"$EDITOR\" as well"
     fi
 
     # I had to use Groovy sometimes...
@@ -297,8 +298,8 @@ function main () {
 
   # Now set all up!
   local INDENT="  \033[2m==>"
-  setupEnvVars
   setupAliases
+  setupEnvVars
   setupHomeshick
   setupNode
   setupGit
