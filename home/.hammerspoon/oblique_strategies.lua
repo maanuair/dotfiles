@@ -207,8 +207,8 @@ function oblique_strategies.showStrategy()
 
    -- Sends the notification
    hs.notify.new({
-	 title = "Oblique Strategy",
-	 informativeText = card,
+	 title = card,
+	 informativeText = "(an Oblique Strategy)",
 	 contentImage = imagePath
    }):send()
 end
