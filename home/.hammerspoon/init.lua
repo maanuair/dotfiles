@@ -32,35 +32,13 @@ hs.hotkey.bind(myModifiers, "E", "Confluence: Add an Epic in Product space.", co
 -- Oblique Strategies hot keys
 hs.hotkey.bind(myModifiersShift,"O", "Show an Oblique Strategy", oblique_strategies.showStrategy)
 
--- Experimental below
-function dlFinished(exitcode, stdout, stderr)
-   utils.debug("Finished")
-end
+-- Timer attempts
 
-function dlOutputs()
-   utils.debug("Outputs...")
+function remind()
+  hs.notify.new({
+    title = "Reminder",
+	  informativeText = "Don't you remind ?\nTTD + PPL + MPC!",
+  }):send()
 end
-
-function youtubeDL()
-   local app = hs.application.frontmostApplication()
-   local appName = app:name(win);
-   utils.debug(string.format("Current application is \"%s\".", appName))
-   if appName ~= "Firefox" and appName ~= "Safari" and appName ~= "Chrome" then
-      hs.alert.show("Not a browser, shortcut ignored.")
-   else
-      hs.eventtap.keyStroke({"cmd"}, "l")
-      local url = utils.getSelectedText()
-      local pos = string.find(url, "https://www.youtube.")
-      if pos == nil or pos ~= 1 then
-	 hs.alert.show("Not on YouTube, shortcut ignored.")
-      else
-	 local cmd = string.format("/usr/local/bin/youtube-dl \"%s\" -x --metadata-from-title \"%%(artist)s - %%(title)s\" -o \"/Users/eroubion/Downloads/%%(title)s.%%(ext)s\" 2>&1", url)
-	 utils.debug(string.format("Command to launch: \n%s", cmd))
-	 local r = hs.execute(cmd)
-	 utils.debug(string.format("Command returned: %s", r))
-	 -- local args = {"" }
-	 --t = hs.task.new("/usr/local/bin/youtube-dl", dlFinished(exitcode, stdout, stderr))
-	 --t.start()
-      end
-   end
-end
+hs.hotkey.bind(myModifiers, 	"R", "Reminder", remind)
+hs.timer.doEvery(60*15 , remind)
