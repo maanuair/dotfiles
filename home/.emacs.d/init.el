@@ -1,11 +1,11 @@
-;;; init.el --- A regular emacs init file. 
+;;; init.el --- A regular emacs init file.
 
 ;; Copyright © 2016 Emmanuel Roubion
 
 ;; Author: Emmanuel Roubion
 ;; URL: https://github.com/maanuair/dotfiles
 
-;; This file is NOT part of GNU Emacs. 
+;; This file is NOT part of GNU Emacs.
 
 ;; Define my-elisp dir, and set up load path
 (setq my-elisp-dir (expand-file-name "my-elisp" user-emacs-directory))
