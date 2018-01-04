@@ -40,5 +40,12 @@ function remind()
 	  informativeText = "Don't you remind ?\nTTD + PPL + MPC!",
   }):send()
 end
-hs.hotkey.bind(myModifiers, 	"R", "Reminder", remind)
-hs.timer.doEvery(60*15 , remind)
+a = hs.fs.attributes('~/.hammerspoon.timer')
+if a == nil then
+  log.df("No timer set.")
+else
+  hs.hotkey.bind(myModifiers, 	"R", "Reminder", remind)
+  hs.timer.doEvery(60*15 , remind)
+  log.df("Reminder timer is set.")
+  remind()
+end
