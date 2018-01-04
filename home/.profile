@@ -288,12 +288,11 @@ function setupEnvVars () {
     [[ -d "$AHOME" ]] && export ANDROID_HOME="$AHOME" && export PATH="$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools"
   fi
 
-  # Loads source the local custom, add-on when it exists
+  # Loads the local custom add-on when it exists
   if [[ -f "$HOME/.profile.local" ]]
   then
     source "$HOME/.profile.local"
   fi
-
 }
 
 # Main entry point, because I like unique entry point
