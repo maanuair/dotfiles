@@ -12,6 +12,10 @@ indent_style = space            # Indent with soft tabs
 insert_final_newline = true     # Put a newline at end of file
 trim_trailing_whitespace = true # No trailing white space
 
+# JS must not be longer than 100 chars
+[*.{js,json}]
+max_line_length = 100
+
 # Markdown cannot be more than 80 chars to keep it human readable
 [*.md]
 max_line_length = 80
