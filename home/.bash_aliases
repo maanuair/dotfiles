@@ -1,5 +1,6 @@
 # -*- mode: shell-script ;-*-
 
+alias c="clear"
 alias cp="cp -i"
 
 alias df="df -h"
