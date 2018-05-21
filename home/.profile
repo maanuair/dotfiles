@@ -200,7 +200,7 @@ function setupHomeshick () {
     myOut "${INDENT} homeshick --quiet refresh..."
     homeshick --quiet refresh
 
-    # Check whether we need to... "homeshick chek"
+    # Check whether we need to... "homeshick check"
     local file="$HOME/.lastHomeshickCheckTimestamp"
 
     # Already checked in last 24h or not?
