@@ -61,3 +61,6 @@
 ;;
 ;;    Start using emacs:
 ;;    http://www.braveclojure.com/basic-emacs/
+;;
+;;    Company-mode (Complete anything)
+;;    http://company-mode.github.io
