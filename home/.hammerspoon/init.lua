@@ -16,6 +16,7 @@ local myModifiersShift = {"cmd", "alt", "ctrl", "shift"}
 hs.hotkey.showHotkeys(myModifiers, "H")
 hs.hotkey.bind(myModifiers, "V", "Paste text only", utils.pasteTextOnly)
 hs.hotkey.bind(myModifiers, "D", "Dictionary: define highlighted selection (or ask)", utils.openDict)
+hs.hotkey.bind(myModifiers,  "G", "Google: google the highlighted selection", utils.googleSelection)
 
 -- JIRA hot keys
 hs.hotkey.bind(myModifiers, 	"B", "JIRA: Type a bug template", jira.typeBugTemplate)
@@ -27,7 +28,7 @@ hs.hotkey.bind(myModifiersShift,"J", "JIRA: type URL for highlighted issue", jir
 
 -- Confluence hot keys
 hs.hotkey.bind(myModifiers, "C", "Confluence: Search highlighted selection", confluence.search)
-hs.hotkey.bind(myModifiers, "E", "Confluence: Add an Epic in Product space.", confluence.addEpic)
+-- hs.hotkey.bind(myModifiers, "E", "Confluence: Add an Epic in Product space.", confluence.addEpic)
 
 -- Oblique Strategies hot keys
 hs.hotkey.bind(myModifiersShift,"O", "Show an Oblique Strategy", oblique_strategies.showStrategy)

@@ -72,6 +72,15 @@ function utils.browseUrl (url)
    hs.execute("open " .. url)
 end
 
+-- Google the highlighted selection
+function utils.googleSelection ()
+  local search = utils.getTrimmedSelectedText()
+  log.f("Captured the search '%s'", search)
+  local uri = "https://www.google.fr/search?q=" .. search
+  log.f("Browse '%s'", uri)
+  utils.browseUrl(uri)
+end
+
 -- Wait a few millis seconds. Yes, hack.
 function utils.wait(ms)
    if ms == nil then ms = 250000 end
