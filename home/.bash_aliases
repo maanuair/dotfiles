@@ -36,6 +36,8 @@ alias mv="mv -i"
 
 alias rm="rm -i"
 
+alias t="todo.sh"
+
 # Special alias :-)
 read -d '' BASH_REMINDERS_TXT<<"EOF"
 Shortcuts:
