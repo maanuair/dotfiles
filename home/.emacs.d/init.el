@@ -64,3 +64,6 @@
 ;;
 ;;    Company-mode (Complete anything)
 ;;    http://company-mode.github.io
+;;
+;;    Indium is a JavaScript development environment for Emacs.
+;;    https://indium.readthedocs.io/en/latest/
