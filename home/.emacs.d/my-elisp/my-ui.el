@@ -70,6 +70,7 @@
 (size-indication-mode 1)      ;; Show size of buffer
 (toggle-indicate-empty-lines) ;; Show empty lines
 (tool-bar-mode -1)            ;; Remove toolbar
+(toggle-scroll-bar -1)          ;; Remove scrollbar
 (transient-mark-mode t)       ;; Highlight active region
 
 ;; Use visible bell, customized
