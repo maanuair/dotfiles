@@ -34,13 +34,16 @@ fi
 
 alias mv="mv -i"
 
-alias rm="rm -i"
+alias ncdu="ncdu --color dark -r"  # -rr to prevent deletion and spawning shell
+
+alias rm="rm -iv"
 
 alias t="todo.sh"
 
 # Special alias :-)
-read -d '' BASH_REMINDERS_TXT<<"EOF"
-Shortcuts:
+read -d '' REMIND_BASH_TXT<<"EOF"
+Bash shortcuts
+==============
   !!
     Repeats the last command typed, as is. So:
       $ echo foo1 bar2
@@ -56,7 +59,7 @@ Shortcuts:
       $ emacs !$
 
   ESC-.
-   Interestingly enough, rpessing ESC followed by "." (dot key) repeats
+   Interestingly enough, pressing ESC followed by "." (dot key) repeats
    the last argument as well, and repeating ESC-. takes the former though
    history
 
@@ -90,7 +93,7 @@ Shortcuts:
   `` vs $()
     Both forms substitute the output of the command contained
     within it into the command. $() is easier to read/write
-    when nesting though..
+    when nesting though.
 
   <(cmd)
     Executes the given cmd, and treat the output as a file. Like:
@@ -106,6 +109,9 @@ Shortcuts:
      Also:
      - word splitting and pathname expansion don't happen in [[...]];
      -  "==" does pattern matching in [[...]], but it does string comparison in [...].
+
+Bash interesting commands
+=========================
 
   set -x
     Outputs the commands that get run as they run
@@ -124,11 +130,65 @@ Shortcuts:
     ${name%.*.*}  polish.ostrich
     ${name#*.*.}                 racing.champion
 
-  Bash FAQ
-    Go to http://mywiki.wooledge.org/BashFAQ
+  help
+    There is a builtin help for builtin command!
+      $ help cd
 
-  Bash inline help
-    There is a help command!
-      $ help test
+Bash FAQ
+========
+
+  Go to http://mywiki.wooledge.org/BashFAQ
 EOF
-alias bash_reminders='echo "$BASH_REMINDERS_TXT" | less'
+alias remind-bash='echo "$REMIND_BASH_TXT" | less'
+
+read -d '' REMIND_BREW_TXT<<"EOF"
+Brew interesting packages:
+=========================
+
+  Interesting brew packages:
+    atomicparsley  - MPEG-4 command-line tool
+    bat            - A better cat with syntax highlighting
+    bitwarden-cli  - Secure and free password manager for all of your devices
+    diff-so-fancy  - Good-lookin' diffs with diff-highlight and more
+    fd             - Simple, fast and user-friendly alternative to find
+    git            - Yo know git, do you?
+    graphicsmagick - Image processing tools collection
+    htop           - Improved top
+    imagemagick    - Tools and libraries to manipulate images in many formats
+    markdown       - Text-to-HTML conversion tool
+    mps-youtube    - Terminal based YouTube player and downloader
+    ncdu           - NCurses Disk Usage
+    sox            - SOund eXchange: universal sound sample translator
+    tldr           - Simplified and community-driven man pages
+    todo-txt       - Minimal, todo.txt-focused editor
+    youtube-dl     - Download YouTube videos from the command-line
+
+Brew funny packages:
+===================
+    figlet         - Banner-like program prints strings as ASCII art (c.f. http://www.figlet.org/examples.html)
+    lolcat         - Rainbows and unicorns in your console!
+
+
+Brew intesting casks:
+====================
+
+  betterzip        - Most notably has a Quick Look for zip file
+  freeplane        - A mindmapper
+  gimp             - The GNU Image Manipulation Program
+  qlcolorcode      - Quick Look plugin that renders source code with syntax highlighting
+  qlmarkdown       - Quick Look plugin that renders markdown files
+  qlstephen        - QuickLook plugin that renders plain text files without a file extension
+  quicklook-json   - Quick Look plugin that renders json files
+  quicklookapk     - Quick Look plugin that renders APK files
+
+Brew interesting commands:
+========================
+
+  brew cleanup -s [--dry-run]
+    Delete the brew cache
+
+  brew update && brew upgrade && brew cleanup
+    Update the brew packages, and remove their cache
+
+EOF
+alias remind-brew='echo "$REMIND_BREW_TXT" | less'
