@@ -13,6 +13,7 @@
      markdown-mode
      magit
      mocha
+     org-kanban
      restclient
      solarized-theme
      web-mode
