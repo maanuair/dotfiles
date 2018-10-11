@@ -34,7 +34,7 @@ fi
 
 alias mv="mv -i"
 
-alias ncdu="ncdu --color dark -r"  # -rr to prevent deletion and spawning shell
+alias ncdu="ncdu --color dark"  # -rr to prevent deletion and spawning shell
 
 alias rm="rm -iv"
 
