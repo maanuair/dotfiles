@@ -161,6 +161,7 @@ Brew interesting packages:
     sox            - SOund eXchange: universal sound sample translator
     tldr           - Simplified and community-driven man pages
     todo-txt       - Minimal, todo.txt-focused editor
+    vlc            - VLC Media Player (c.f. sc68 plugin at hhttp://bit.ly/2yD8tQU)
     youtube-dl     - Download YouTube videos from the command-line
 
 Brew funny packages:
