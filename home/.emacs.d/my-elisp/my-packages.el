@@ -7,6 +7,7 @@
      editorconfig
      emmet-mode
      groovy-mode
+     hacker-news
      js2-mode
      json-mode
      lua-mode
