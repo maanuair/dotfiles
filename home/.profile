@@ -258,19 +258,19 @@ function setupEnvVars () {
     # Do we have emacs in $HOME/bin ?
     local EMACS="$HOME/bin/emacs"
     if [[ ! -x "$EMACS" ]]
-       then
-         EMACS="/Applications/Emacs.app/Contents/MacOS/Emacs"
-    fi
-
-    # Now, emacsclient
-    local EMACSCLIENT="$HOME/bin/ec"
-    if [[ ! -x "$EMACSCLIENT" ]]
-       then
-         EMACSCLIENT="/Applications/Emacs.app/Contents/MacOS/Emacs"
+    then
+      EMACS="/Applications/Emacs.app/Contents/MacOS/Emacs"
     fi
 
     # Set EDITOR
     export EDITOR="$EMACS"
+
+    # Now, emacsclient
+    local EMACSCLIENT="$HOME/bin/ec"
+    if [[ ! -x "$EMACSCLIENT" ]]
+    then
+      EMACSCLIENT="/Applications/Emacs.app/Contents/MacOS/Emacs"
+    fi
 
     # if [[ -x "$EMACSCLIENT" ]]
     # then
