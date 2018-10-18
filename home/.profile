@@ -230,7 +230,7 @@ function setupAliases () {
   myOut "Setting up aliases..."
 
   # Loading aliases if they exist...
-  local ALIASES="${HOME}/.bash_aliases"
+  local ALIASES="${HOME}/.aliases"
   if [[ -f "${ALIASES}" ]]; then
     source "${ALIASES}"
   else
@@ -247,33 +247,49 @@ function setupEnvVars () {
 
   # Set up the PATHs
   [[ -d $HOME/.npm-packages/bin ]] && export PATH="$PATH:$HOME/.npm-packages/bin"
-  [[ -d $HOME/bin ]] && export PATH="$PATH:$HOME/bin"
+  [[ -d $HOME/bin ]] && export PATH="$HOME/bin:$PATH"
 
   # OSX specific env vars
   if [[ `getOS` == 'osx' ]]
   then
     # Emacs
     myOut "${INDENT} Choosing EDITOR to use..."
-    local EMACS="/Applications/Emacs.app/Contents/MacOS/Emacs"
-    local EMACSCLIENT="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
-    if [[ -x "$EMACSCLIENT" ]]
-    then
-      myOut "${INDENT} Starting emacs daemon..."
-      "$EMACS" --daemon 2>&1 | while read line
-      do
-        myOut "\t${INDENT} emacs daemon says: ($line)"
-      done
-      if [[ "$?" -eq 0 ]]
-      then
-        export EDITOR="$EMACSCLIENT -c"
-      else
-        myErr "${INDENT} Cannot start emacs as a daemon"
-        export EDITOR="$EMACS"
-      fi
-      myOut "${INDENT} Env var EDITOR is now \"$EDITOR\""
-      alias emacs="$EDITOR"
-      myOut "${INDENT} Alias  'emacs' is overriden to \"$EDITOR\" as well"
+
+    # Do we have emacs in $HOME/bin ?
+    local EMACS="$HOME/bin/emacs"
+    if [[ ! -x "$EMACS" ]]
+       then
+         EMACS="/Applications/Emacs.app/Contents/MacOS/Emacs"
     fi
+
+    # Now, emacsclient
+    local EMACSCLIENT="$HOME/bin/ec"
+    if [[ ! -x "$EMACSCLIENT" ]]
+       then
+         EMACSCLIENT="/Applications/Emacs.app/Contents/MacOS/Emacs"
+    fi
+
+    # Set EDITOR
+    export EDITOR="$EMACS"
+
+    # if [[ -x "$EMACSCLIENT" ]]
+    # then
+    #   myOut "${INDENT} Starting emacs daemon..."
+    #   "$EMACS" --daemon 2>&1 | while read line
+    #   do
+    #     myOut "\t${INDENT} emacs daemon says: ($line)"
+    #   done
+    #   if [[ "$?" -eq 0 ]]
+    #   then
+    #     export EDITOR="$EMACSCLIENT -c"
+    #   else
+    #     myErr "${INDENT} Cannot start emacs as a daemon"
+    #     export EDITOR="$EMACS"
+    #   fi
+    #   myOut "${INDENT} Env var EDITOR is now \"$EDITOR\""
+    #   alias emacs="$EDITOR"
+    #   myOut "${INDENT} Alias  'emacs' is overriden to \"$EDITOR\" as well"
+    # fi
 
     # I had to use Groovy sometimes...
     local GHOME="$(brew --prefix)/opt/groovy/libexec"
