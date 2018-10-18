@@ -49,5 +49,5 @@ Brew interesting commands:
 
   brew rmtree formula
     Remove a formula and its unused dependencies.
-    Installaionis " brew tap beeftornado/rmtree"
+    Installation is "brew tap beeftornado/rmtree"
     C.f. https://github.com/beeftornado/homebrew-rmtree for warning.
