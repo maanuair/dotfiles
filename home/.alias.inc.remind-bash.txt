@@ -1,0 +1,97 @@
+Bash shortcuts
+==============
+
+  !!
+    Repeats the last command typed, as is. So:
+      $ echo foo1 bar2
+      $ !!        # Produce the same output "foo1 bar2"
+    While:
+      $ echo foo1 bar2
+      $ echo !!   # Produces the output "echo foo1 bar2"
+    (note the echo prefix above)
+
+  !$
+    Repeats the last argument of the last command, e.g.:
+      $ grep somestring /long/path/to/some/file/or/other.txt
+      $ emacs !$
+
+  ESC-.
+   Interestingly enough, pressing ESC followed by "." (dot key) repeats
+   the last argument as well, and repeating ESC-. takes the former though
+   history
+
+  !*
+    Takes all the arguments to the previous command and drops them in. So:
+      $ grep isthere /long/path/to/some/file/or/other.txt
+      $ egrep !*
+      $ fgrep !*
+
+  !:1-$
+    Same than !*, but controls the arguments to repeat:
+    - the ! means ‘look at the previous command’
+    - the : is a separator
+    - the 1 means ‘take the first word’
+    - the - means ‘until’
+    - the $ means ‘the last word’.
+    So:
+      $ grep isthere /long/path/to/some/file/or/other.txt
+      $ egrep !:1-$
+      $ fgrep !:1-$
+    Or also:
+      $ echo w1 w2 w3 && echo !:1-2 # will output w1 w2
+      $ echo w1 w2 w3 && echo !:2-3 # will output w2 w3
+
+  :h
+    Put it after a filename, it will change that filename
+    to remove everything up to the folder. Like this:
+      $ grep isthere /long/path/to/some/file/or/other.txt
+      $ cd !$:h
+
+  `` vs $()
+    Both forms substitute the output of the command contained
+    within it into the command. $() is easier to read/write
+    when nesting though.
+
+  <(cmd)
+    Executes the given cmd, and treat the output as a file. Like:
+      $ diff <(grep somestring file1) <(grep somestring file2)
+
+  [] or [[ ]] to test ?
+     [ is the original form for tests, and then [[ was introduced
+     to avoid treating the left operand as missing.
+     Typically, don't write:
+       if [ "x$(grep not_there /dev/null)" = "x" ]
+     But instead:
+       if [[ $(grep not_there /dev/null) = '' ]]
+     Also:
+     - word splitting and pathname expansion don't happen in [[...]];
+     -  "==" does pattern matching in [[...]], but it does string comparison in [...].
+
+Bash interesting commands
+=========================
+
+  set -x
+    Outputs the commands that get run as they run
+
+  set -e
+    Exits from a script if any command returned a non-zero exit code
+
+  parameter expansion sub-string retrieval
+    parameter     result
+    -----------   ------------------------------
+    $name         polish.ostrich.racing.champion
+    ${name#*.}           ostrich.racing.champion
+    ${name##*.}                         champion
+    ${name%%.*}   polish
+    ${name%.*}    polish.ostrich.racing
+    ${name%.*.*}  polish.ostrich
+    ${name#*.*.}                 racing.champion
+
+  help
+    There is a builtin help for builtin command!
+      $ help cd
+
+Bash FAQ
+========
+
+  Go to http://mywiki.wooledge.org/BashFAQ
