@@ -8,12 +8,6 @@ alias du="du -h"
 
 alias egrep="egrep --color=auto"
 
-# Emacs specific alias on OSX
-if [[ "$(uname -s)" == "Darwin" ]]
-then
-    alias emacs="/Applications/Emacs.app/Contents/MacOS/Emacs"
-fi
-
 alias fgrep="fgrep --color=auto"
 
 alias grep="grep --color=auto"
