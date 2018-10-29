@@ -302,6 +302,10 @@ function setupEnvVars () {
     # I even tried Android Studio at some point :)
     local AHOME="$HOME/Library/Android/sdk"
     [[ -d "$AHOME" ]] && export ANDROID_HOME="$AHOME" && export PATH="$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools"
+
+    # And this is Viual Studio Code
+    local CHOME="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+    [[ -d "$CHOME" ]] && export PATH="$PATH:$CHOME"
   fi
 
   # Loads the local custom add-on when it exists
