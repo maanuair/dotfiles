@@ -246,8 +246,10 @@ function setupEnvVars () {
   export PAGER=/usr/bin/less
 
   # Set up the PATHs
-  [[ -d $HOME/.npm-packages/bin ]] && export PATH="$PATH:$HOME/.npm-packages/bin"
-  [[ -d $HOME/bin ]] && export PATH="$HOME/bin:$PATH"
+  NPM_BIN="$HOME/.npm_packages/bin"
+  HOME_BIN="$HOME/bin"
+  [[ -d "$NPM_BIN" ]] && export PATH="$PATH:$NPM_BIN"
+  [[ -d "$HOME_BIN" ]] && export PATH="$HOME_BIN:$PATH"
 
   # OSX specific env vars
   if [[ `getOS` == 'osx' ]]
