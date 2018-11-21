@@ -35,3 +35,5 @@ alias remind-brew="less ~/.alias.inc.remind-brew.txt"
 alias rm="rm -iv"
 
 alias t="todo.sh"
+
+alias wthr="curl wttr.in"
