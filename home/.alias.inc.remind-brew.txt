@@ -16,6 +16,7 @@ Brew interesting packages:
     sox            - SOund eXchange: universal sound sample translator
     tldr           - Simplified and community-driven man pages
     todo-txt       - Minimal, todo.txt-focused editor
+    tunnelbclick   - Free and open source graphic user interface for OpenVPN®
     vlc            - VLC Media Player (c.f. sc68 plugin at hhttp://bit.ly/2yD8tQU)
     youtube-dl     - Download YouTube videos from the command-line
 
