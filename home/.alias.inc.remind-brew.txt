@@ -6,6 +6,7 @@ Brew interesting packages:
     bitwarden-cli  - Secure and free password manager for all of your devices
     diff-so-fancy  - Good-lookin' diffs with diff-highlight and more
     fd             - Simple, fast and user-friendly alternative to find
+    fx             - Command-line JSON processing tool
     git            - Yo know git, do you?
     graphicsmagick - Image processing tools collection
     htop           - Improved top
@@ -23,8 +24,10 @@ Brew interesting packages:
 Brew funny packages:
 ===================
 
+    browsh         - The modern, text-based browser (nb: brew tap browsh-org/homebrew-browsh)
     figlet         - Banner-like program prints strings as ASCII art(c.f. http://www.figlet.org/examples.html)
     lolcat         - Rainbows and unicorns in your console!
+    neofetch       - A command-line system information tool written in bash 3.2+
 
 
 Brew intesting casks:
