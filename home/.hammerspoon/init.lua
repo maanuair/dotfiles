@@ -9,26 +9,23 @@ hs.console.setConsole()
 log.i("Fresh Hammerspoon's config loaded !")
 
 -- Inits for key bindings...
-local myModifiers = {"cmd", "alt", "ctrl"}
-local myModifiersShift = {"cmd", "alt", "ctrl", "shift"}
+local m1 = {"cmd", "alt", "ctrl"}
+local m2 = {"cmd", "alt", "ctrl", "shift"}
 
 -- General hot keys
-hs.hotkey.showHotkeys(myModifiers, "H")
-hs.hotkey.bind(myModifiers,      "D", "Dictionary: define highlighted selection (or ask)", utils.openDict)
-hs.hotkey.bind(myModifiers,      "G", "Google: google the highlighted selection", utils.googleSelection)
-
+hs.hotkey.showHotkeys(m1,"H")
+hs.hotkey.bind(m1, "D", "Dictionary: define highlighted selection (or ask)", utils.openDict)
+hs.hotkey.bind(m1, "G", "Google: search the highlighted selection", utils.googleSelection)
+hs.hotkey.bind(m1, "T", "Google: translate the highlighted selection", utils.googleTranslateSelection)
 -- JIRA hot keys
-hs.hotkey.bind(myModifiers, 	   "B", "JIRA: Type a bug template", jira.typeBugTemplate)
-hs.hotkey.bind(myModifiers, 	   "O", "JIRA: Immediate or interactive JIRA issue lookup", jira.browseIssue)
-hs.hotkey.bind(myModifiers, 	   "J", "JIRA: Search highlighted selection", jira.search)
-hs.hotkey.bind(myModifiersShift, "J", "JIRA: type URL for highlighted issue", jira.typeBrowseUrl)
-
+hs.hotkey.bind(m1, "O", "JIRA: Immediate or interactive JIRA issue lookup", jira.browseIssue)
+hs.hotkey.bind(m1, "J", "JIRA: Search highlighted selection", jira.search)
+hs.hotkey.bind(m2, "J", "JIRA: Type the generic JIRA URL 'browse issue', and append highlighted selection", jira.typeBrowseUrl)
+hs.hotkey.bind(m2, "B", "JIRA: Type a bug template", jira.typeBugTemplate)
 -- Confluence hot keys
-hs.hotkey.bind(myModifiers,      "C", "Confluence: Search highlighted selection", confluence.search)
--- hs.hotkey.bind(myModifiers,   "E", "Confluence: Add an Epic in Product space.", confluence.addEpic)
-
+hs.hotkey.bind(m1, "C", "Confluence: Search highlighted selection", confluence.search)
 -- Oblique Strategies hot keys
-hs.hotkey.bind(myModifiersShift, "O", "Show an Oblique Strategy", oblique_strategies.showStrategy)
+hs.hotkey.bind(m2, "O", "Show an Oblique Strategy", oblique_strategies.showStrategy)
 
 -- Timer attempts
 
@@ -42,7 +39,7 @@ a = hs.fs.attributes('~/.hammerspoon.timer')
 if a == nil then
   log.df("No timer set.")
 else
-  hs.hotkey.bind(myModifiers, 	"R", "Reminder", remind)
+  hs.hotkey.bind(m1, 	"R", "Reminder", remind)
   hs.timer.doEvery(60*15 , remind)
   log.df("Reminder timer is set.")
   remind()

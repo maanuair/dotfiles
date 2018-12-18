@@ -1,3 +1,5 @@
+hs.osascript = require("hs.osascript")
+
 local utils = {}
 
 -- Private part
@@ -36,22 +38,6 @@ function utils.getTrimmedSelectedText()
    return utils.trim(utils.getSelectedText())
 end
 
--- URL encode the given string,a nd return it
-function utils.urlEncode(str)
-   if (str) then
-      log.f("urlEncode(): encoding '%s'", str)
-      str = string.gsub( str, "\n", "\r\n" )
-      str = string.gsub( str, "([^%w ])",
-			 function (c)
-			    return string.format("%%%02X", string.byte(c))
-			 end
-      )
-      str = string.gsub( str, " ", "+" )
-   end
-   log.f("urlEncode(): encoded string is '%s'", str)
-   return str
-end
-
 -- Look up current selection in dictionary
 function utils.openDict()
    local uri = "dict://" .. utils.getTrimmedSelectedText()
@@ -62,16 +48,37 @@ end
 -- Open the given URI in Safari
 function utils.browseUrl (url)
    log.df("browseUrl(\"%s\")", url)
-   hs.execute("open " .. url)
+   hs.execute("open \"" .. url .. "\"")
 end
 
 -- Google the highlighted selection
 function utils.googleSelection ()
-  local search = utils.getTrimmedSelectedText()
-  log.f("Captured the search '%s'", search)
-  local uri = "https://www.google.fr/search?q=" .. search
+  local text = utils.getTrimmedSelectedText()
+  log.f("Captured the text '%s'", text)
+  local uri = "https://www.google.fr/search?q=" .. text
   log.f("Browse '%s'", uri)
   utils.browseUrl(uri)
+end
+
+-- Google translate the highlighted selection
+function utils.googleTranslateSelection ()
+  local uri = "https://translate.google.fr/#view=home&op=translate&sl=fr&tl=en&text="
+  local text = utils.getTrimmedSelectedText()
+  log.f("URI is '%s'", uri)
+  log.f("Captured the highlighted text '%s'", text)
+
+  -- Run the JS encodeURIComponent on the captured text
+  local js = "encodeURIComponent('" .. text .. "')"
+  log.f("Running js code: %s", js)
+  local status, object, descriptor = hs.osascript.javascript(js)
+  if status == true then text = object end
+
+  -- local js = "encodeURI('" .. uri .. "')"
+  -- log.f("Running js code: %s", js)
+  -- status, object, descriptor = hs.osascript.javascript(js)
+  -- if status == true then uri = object end
+
+  utils.browseUrl(uri .. text)
 end
 
 -- Wait a few millis seconds. Yes, hack.
