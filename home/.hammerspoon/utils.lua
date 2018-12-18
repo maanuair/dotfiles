@@ -26,13 +26,6 @@ hs.pathwatcher.new("~/.homesick/repos/dotfiles/home/.hammerspoon/", reloadConfig
 -- Public part
 --------------
 
--- Paste clipboard in text only form (not rich text)
-function utils.pasteTextOnly()
-   local clipboard = hs.pasteboard.readString()
-   log.f("Read clipboard as '%s'", clipboard)
-   hs.eventtap.keyStrokes(clipboard)
-end
-
 -- A trim function, c.f. http://lua-users.org/wiki/StringTrim
 function utils.trim (s)
    return (s:gsub("^%s*(.-)%s*$", "%1"))

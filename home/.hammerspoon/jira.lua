@@ -10,11 +10,6 @@ function jira.getBrowseUrl(key)
    return string.format("%s%s%s", jiraAccount.getBaseUrl(), "browse/", key)
 end
 
--- Returns a Jira URL to log work onto given issue id
-function jira.getLogWorkUrl(id)
-   return string.format("%s%s%s", jiraAccount.getBaseUrl(), "secure/CreateWorklog!default.jspa?id=", id)
-end
-
 -- Type JIRA issue browsing base url
 function jira.typeBrowseUrl()
    local url = jira.getBrowseUrl(utils.getTrimmedSelectedText())
@@ -24,24 +19,24 @@ end
 -- Type a JIRA bug template
 function jira.typeBugTemplate()
    local source=[[
-# *Steps to reproduce* 
-  ## 
-  ## 
-# *Expected result* 
-  ## 
-  ## 
-# *Actual* 
-  ## 
-  ## 
-# *Reproducibility* 
-  ## 100% 
-# *Traces* 
-  ## File attached foobar.log 
-  ## {code}Or traces captured directly pasted here, between "code" tag elements, maybe multi lines. {code} 
-  ## !Foobar Sreenshot.png|thumbnail! 
-# *Extra Information* 
-  ## 
-  ## 
+# *Steps to reproduce*
+  ##
+  ##
+# *Expected result*
+  ##
+  ##
+# *Actual*
+  ##
+  ##
+# *Reproducibility*
+  ## 100%
+# *Traces*
+  ## File attached foobar.log
+  ## {code}Or traces captured directly pasted here, between "code" tag elements, maybe multi lines. {code}
+  ## !Foobar Sreenshot.png|thumbnail!
+# *Extra Information*
+  ##
+  ##
 ]]
    hs.eventtap.keyStrokes(source)
 end
@@ -71,11 +66,6 @@ function jira.browseIssue()
       log.f("browseIssue: browse issue '%s'", key)
       utils.browseUrl(jira.getBrowseUrl(key))
    end
-end
-
--- Log work for given issue id in browser
-function jira.logWork(id)
-   utils.browseUrl(jira.getLogWorkUrl(id))
 end
 
 -- Below from https://github.com/CasperKoning/dothammerspoon/blob/master/jira.lua
@@ -118,7 +108,7 @@ function lookupJiraIssue()
       end)
 
       picker:query(jiraAccount.getDefaultIssueSearch())
-      
+
       picker:queryChangedCallback(
 	 function(query)
 	    log.f("queryChangedCallback(): query is '%s'", query)
