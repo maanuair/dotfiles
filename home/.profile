@@ -303,7 +303,12 @@ function setupEnvVars () {
 
     # I even tried Android Studio at some point :)
     local AHOME="$HOME/Library/Android/sdk"
-    [[ -d "$AHOME" ]] && export ANDROID_HOME="$AHOME" && export PATH="$PATH:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools"
+    if [[ -d "$AHOME" ]]
+    then
+      export ANDROID_HOME="$AHOME"
+      export ANDROID_SDK_ROOT="$AHOME"
+      export PATH="$PATH:$AHOME/tools:$AHOME/tools/bin:$AHOME/platform-tools:$AHOME/emulator"
+    fi
 
     # And this is Viual Studio Code
     local CHOME="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
