@@ -30,7 +30,7 @@ alias mv="mv -i"
 
 alias ncdu="ncdu --color dark"  # -rr to prevent deletion and spawning shell
 
-alias ppath="echo "${PATH//:/$'\n'}" | sort"
+alias ppath="echo \"${PATH//:/$'\n'}\" | sort"
 
 alias remind-bash="less ~/.alias.inc.remind-bash.txt"
 alias remind-brew="less ~/.alias.inc.remind-brew.txt"
