@@ -4,6 +4,7 @@ Brew interesting packages:
     atomicparsley  - MPEG-4 command-line tool
     bat            - A better cat with syntax highlighting
     bitwarden-cli  - Secure and free password manager for all of your devices
+    clozure-cl     - Common Lisp implementation with a long history (https://ccl.clozure.com)
     diff-so-fancy  - Good-lookin' diffs with diff-highlight and more
     fd             - Simple, fast and user-friendly alternative to find
     fx             - Command-line JSON processing tool
@@ -14,6 +15,7 @@ Brew interesting packages:
     markdown       - Text-to-HTML conversion tool
     mps-youtube    - Terminal based YouTube player and downloader
     ncdu           - NCurses Disk Usage
+    sbcl           - Steel Bank Common Lisp system (http://www.sbcl.org)
     sox            - SOund eXchange: universal sound sample translator
     tldr           - Simplified and community-driven man pages
     todo-txt       - Minimal, todo.txt-focused editor
