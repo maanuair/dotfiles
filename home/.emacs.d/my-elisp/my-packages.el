@@ -16,6 +16,7 @@
      mocha
      org-kanban
      restclient
+     slime
      solarized-theme
      web-mode
      )
