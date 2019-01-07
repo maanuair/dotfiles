@@ -67,7 +67,7 @@ Bash shortcuts
      - word splitting and pathname expansion don't happen in [[...]];
      -  "==" does pattern matching in [[...]], but it does string comparison in [...].
 
-Bash interesting commands
+Bash interesting features
 =========================
 
   set -x
@@ -87,11 +87,18 @@ Bash interesting commands
     ${name%.*.*}  polish.ostrich
     ${name#*.*.}                 racing.champion
 
+  more parameter expansion
+    One should refer to https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html
+
   help
     There is a builtin help for builtin command!
       $ help cd
 
-Bash FAQ
-========
+Bash FAQ & Tools
+===============
 
-  Go to http://mywiki.wooledge.org/BashFAQ
+  FAQ
+    Go to http://mywiki.wooledge.org/BashFAQ
+
+  Shell check
+    https://www.shellcheck.net/

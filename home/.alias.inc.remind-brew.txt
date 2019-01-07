@@ -17,6 +17,7 @@ Brew interesting packages:
     mps-youtube    - Terminal based YouTube player and downloader
     ncdu           - NCurses Disk Usage
     sbcl           - Steel Bank Common Lisp system (http://www.sbcl.org)
+    shellcheck     - Static analysis and lint tool, for (ba)sh scripts
     sox            - SOund eXchange: universal sound sample translator
     tldr           - Simplified and community-driven man pages
     todo-txt       - Minimal, todo.txt-focused editor
