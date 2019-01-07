@@ -9,6 +9,7 @@ Brew interesting packages:
     fd             - Simple, fast and user-friendly alternative to find
     fx             - Command-line JSON processing tool
     git            - Yo know git, do you?
+    gradle         - Open-source build automation tool based on the Groovy and Kotlin DSL
     graphicsmagick - Image processing tools collection
     htop           - Improved top
     imagemagick    - Tools and libraries to manipulate images in many formats
