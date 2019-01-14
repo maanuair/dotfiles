@@ -45,6 +45,13 @@ function utils.openDict()
    utils.browseUrl(uri)
 end
 
+-- Browse the  current selection
+function utils.openBrowser()
+   local uri = utils.getTrimmedSelectedText()
+   log.f("Browse '%s'", uri)
+   utils.browseUrl(uri)
+end
+
 -- Open the given URI in Safari
 function utils.browseUrl (url)
    log.df("browseUrl(\"%s\")", url)
