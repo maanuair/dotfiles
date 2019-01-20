@@ -9,9 +9,11 @@ Brew interesting packages:
     fd             - Simple, fast and user-friendly alternative to find
     fx             - Command-line JSON processing tool
     git            - Yo know git, do you?
+    gitup          - The Git interface you've been missing all your life
     gradle         - Open-source build automation tool based on the Groovy and Kotlin DSL
     graphicsmagick - Image processing tools collection
     htop           - Improved top
+    hex-fiend       - A fast and clever open source hex editor for macOS
     imagemagick    - Tools and libraries to manipulate images in many formats
     markdown       - Text-to-HTML conversion tool
     mps-youtube    - Terminal based YouTube player and downloader
