@@ -43,7 +43,7 @@ end
 
 -- Search the highlighted selection in Request.jira.com
 function jira.search()
-   local url = string.format("%s%s%s%s", jiraAccount.getBaseUrl(), "issues/?jql=text%20~%20%22", utils.getTrimmedSelectedText(), "%22")
+   local url = jiraAccount.getBaseUrl() .. "issues/?jql=project IN " .. jiraAccount.getDefaultSearchProjects() .. " AND summary ~ \"" .. utils.getTrimmedSelectedText() .. "\" ORDER BY issueKey DESC"
    log.f("Searching '%s'", url)
    -- TODO: if empty, pop-up a chooser
    utils.browseUrl(url)

@@ -55,7 +55,9 @@ end
 -- Open the given URI in Safari
 function utils.browseUrl (url)
    log.df("browseUrl(\"%s\")", url)
-   hs.execute("open \"" .. url .. "\"")
+   local cmd = "open \"" .. url .. "\""
+   hs.execute(cmd)
+   log.df("hs.execute(\"" .. cmd .. "\")")
 end
 
 -- Google the highlighted selection
