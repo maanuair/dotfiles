@@ -18,9 +18,12 @@ Brew interesting packages:
     markdown       - Text-to-HTML conversion tool
     mps-youtube    - Terminal based YouTube player and downloader
     ncdu           - NCurses Disk Usage
+    neofetch       - Fast, highly customisable system info script
+    nnn            - Free, fast, friendly file browser
     sbcl           - Steel Bank Common Lisp system (http://www.sbcl.org)
     shellcheck     - Static analysis and lint tool, for (ba)sh scripts
     sox            - SOund eXchange: universal sound sample translator
+    testdisk       - Powerful free data recovery utility
     tldr           - Simplified and community-driven man pages
     todo-txt       - Minimal, todo.txt-focused editor
     tunnelbclick   - Free and open source graphic user interface for OpenVPN®
@@ -30,11 +33,11 @@ Brew interesting packages:
 Brew funny packages:
 ===================
 
+    bastet         - Bastard tettris
     browsh         - The modern, text-based browser (nb: brew tap browsh-org/homebrew-browsh)
     figlet         - Banner-like program prints strings as ASCII art(c.f. http://www.figlet.org/examples.html)
     lolcat         - Rainbows and unicorns in your console!
     neofetch       - A command-line system information tool written in bash 3.2+
-
 
 Brew intesting casks:
 ====================
@@ -57,7 +60,26 @@ Brew interesting commands:
   brew update && brew upgrade && brew cleanup
     Update the brew packages, and remove their cache
 
+  brew leaves
+    Show installed formulae that are not dependencies of another installed formula.
+    UNFORTUNATELY, while it does look for formulas' "dependencies", it ignores their "requirements" (a dependency is a specific formula, a requirement is "one of" formula when multiple exist)
+
+  brew list -1 | while read cask; do echo -ne "\x1B[1;34m $cask \x1B[0m"; brew uses $cask --installed | awk '{printf(" %s ", $0)}'; echo ""; done
+    List all formulas, along with which other fomula use it.
+    Any formula not used is either an orphaned formula (can be deleted), or has been installed on purpose (keep it).
+    It will hep to sort by number of usage:
+      awk '{print NF,$0}' "$file" | sort -nr | cut -d' ' -f 2-
+
   brew rmtree formula
     Remove a formula and its unused dependencies.
     Installation is "brew tap beeftornado/rmtree"
     C.f. https://github.com/beeftornado/homebrew-rmtree for warning.
+
+  brew deps --installed
+    Show dependencies of each formula that have some
+
+  brew deps --installed --tree --verbose ffmpeg
+    Show dependencies for the given formula
+
+  brew uses --installed --recursive ffmpeg
+    Show the formulae that specify formula as a dependency.
