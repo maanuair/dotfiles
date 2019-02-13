@@ -27,7 +27,7 @@ Brew interesting packages:
     tldr           - Simplified and community-driven man pages
     todo-txt       - Minimal, todo.txt-focused editor
     tunnelbclick   - Free and open source graphic user interface for OpenVPN®
-    vlc            - VLC Media Player (c.f. sc68 plugin at hhttp://bit.ly/2yD8tQU)
+    vlc            - VLC Media Player - c.f. sc68 plugin at http://bit.ly/2yD8tQU
     youtube-dl     - Download YouTube videos from the command-line
 
 Brew funny packages:
@@ -43,6 +43,7 @@ Brew intesting casks:
 ====================
 
   betterzip        - Most notably has a Quick Look for zip file
+  coverload        - Download cover art from the iTunes store - https://coverloadapp.com
   freeplane        - A mindmapper
   gimp             - The GNU Image Manipulation Program
   qlcolorcode      - Quick Look plugin that renders source code with syntax highlighting
