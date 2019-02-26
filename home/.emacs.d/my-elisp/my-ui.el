@@ -70,8 +70,24 @@
 (size-indication-mode 1)      ;; Show size of buffer
 (toggle-indicate-empty-lines) ;; Show empty lines
 (tool-bar-mode -1)            ;; Remove toolbar
-(toggle-scroll-bar -1)          ;; Remove scrollbar
+(toggle-scroll-bar -1)        ;; Remove scrollbar
 (transient-mark-mode t)       ;; Highlight active region
+
+;; Use doom modeline
+(doom-modeline-mode 1)
+(setq doom-modeline-icon t)                    ;; Whether show `all-the-icons' or not
+(setq doom-modeline-major-mode-icon t)         ;; Whether show the icon for major mode. It respects `doom-modeline-icon'.
+(setq doom-modeline-major-mode-color-icon t)   ;; Display color icons for `major-mode'. It respects `all-the-icons-color-icons'.
+(setq doom-modeline-minor-modes t)             ;; Whether display minor modes or not. Non-nil to display in mode-line.
+(setq doom-modeline-enable-word-count nil)     ;; If non-nil, a word count will be added to the selection-info modeline segment.
+(setq doom-modeline-checker-simple-format t)   ;; If non-nil, only display one number for checker information if applicable.
+(setq doom-modeline-persp-name t)              ;; Whether display perspective name or not. Non-nil to display in mode-line.
+(setq doom-modeline-lsp t)                     ;; Whether display `lsp' state or not. Non-nil to display in mode-line.
+(setq doom-modeline-github nil)                ;; Whether display github notifications or not. Requires `ghub` package.
+(setq doom-modeline-github-interval (* 30 60)) ;; The interval of checking github.
+(setq doom-modeline-env-version t)             ;; Whether display environment version or not.
+(setq doom-modeline-mu4e nil)                  ;; Whether display mu4e notifications or not. Requires `mu4e-alert' package.
+
 
 ;; Use visible bell, customized
 (defun my-terminal-visible-bell ()

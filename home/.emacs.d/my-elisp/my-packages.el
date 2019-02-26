@@ -1,9 +1,12 @@
+
 ;; Hmmmmmm, use instead https://github.com/jwiegley/use-package ?
 
 ;; Automatic install of packages
 (defvar
   my-packages
   '(
+     all-the-icons
+     doom-modeline
      editorconfig
      emmet-mode
      groovy-mode
