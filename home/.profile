@@ -297,7 +297,7 @@ function setupEnvVars () {
     local GHOME="$(brew --prefix)/opt/groovy/libexec"
     [[ -d "$GHOME" ]] && export GROOVY_HOME="$GHOME"
 
-    # This is to setup the RuvyGems env, for sudo-less cocoapods
+    # This is to setup the RubyGems env, for sudo-less cocoapods
     export GEM_HOME=$HOME/.gem
     export PATH=$PATH:$GEM_HOME/ruby/2.0.0/bin
 
@@ -310,9 +310,12 @@ function setupEnvVars () {
       export PATH="$PATH:$AHOME/tools:$AHOME/tools/bin:$AHOME/platform-tools:$AHOME/emulator"
     fi
 
-    # And this is Viual Studio Code
+    # This is Viual Studio Code
     local CHOME="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
     [[ -d "$CHOME" ]] && export PATH="$PATH:$CHOME"
+
+    # The next line comes from iTerm2 shell integration
+    test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
   fi
 
   # Loads the local custom add-on when it exists
