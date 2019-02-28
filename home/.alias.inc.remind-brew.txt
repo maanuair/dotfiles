@@ -58,7 +58,7 @@ Brew interesting commands:
   brew cleanup -s [--dry-run]
     Delete the brew cache
 
-  brew update && brew upgrade && brew cleanup
+  brew update && brew upgrade && brew cleanup -s
     Update the brew packages, and remove their cache
 
   brew leaves
