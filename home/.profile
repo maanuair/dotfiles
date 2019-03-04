@@ -313,9 +313,6 @@ function setupEnvVars () {
     # This is Viual Studio Code
     local CHOME="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
     [[ -d "$CHOME" ]] && export PATH="$PATH:$CHOME"
-
-    # The next line comes from iTerm2 shell integration
-    test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
   fi
 
   # Loads the local custom add-on when it exists
