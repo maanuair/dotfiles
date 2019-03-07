@@ -59,6 +59,7 @@ Brew audio apps:
   fission          - Fast & lossless audio editing
   hydrogen         - Software synthesizer emulating a drum machine based on patterns
   levelator        - Adjusts the audio levels within a recording for variations from one speaker to the next
+  lillypond        - Music engraving program
   lmms             - Digital audio workstation
   milkytracker     - Tracker music application
   ocenaudio        - Easy, fast and powerful audio editor
