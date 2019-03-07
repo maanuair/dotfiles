@@ -15,6 +15,7 @@ Brew interesting packages:
     htop           - Improved top
     hex-fiend       - A fast and clever open source hex editor for macOS
     imagemagick    - Tools and libraries to manipulate images in many formats
+    jq             - Lightweight and flexible command-line JSON processor
     markdown       - Text-to-HTML conversion tool
     mps-youtube    - Terminal based YouTube player and downloader
     ncdu           - NCurses Disk Usage
