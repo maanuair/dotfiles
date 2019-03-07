@@ -1,44 +1,44 @@
 Brew interesting packages:
 =========================
 
-    atomicparsley  - MPEG-4 command-line tool
-    bat            - A better cat with syntax highlighting
-    bitwarden-cli  - Secure and free password manager for all of your devices
-    clozure-cl     - Common Lisp implementation with a long history (https://ccl.clozure.com)
-    diff-so-fancy  - Good-lookin' diffs with diff-highlight and more
-    fd             - Simple, fast and user-friendly alternative to find
-    fx             - Command-line JSON processing tool
-    git            - Yo know git, do you?
-    gitup          - The Git interface you've been missing all your life
-    gradle         - Open-source build automation tool based on the Groovy and Kotlin DSL
-    graphicsmagick - Image processing tools collection
-    htop           - Improved top
-    hex-fiend       - A fast and clever open source hex editor for macOS
-    imagemagick    - Tools and libraries to manipulate images in many formats
-    jq             - Lightweight and flexible command-line JSON processor
-    markdown       - Text-to-HTML conversion tool
-    mps-youtube    - Terminal based YouTube player and downloader
-    ncdu           - NCurses Disk Usage
-    neofetch       - Fast, highly customisable system info script
-    nnn            - Free, fast, friendly file browser
-    sbcl           - Steel Bank Common Lisp system (http://www.sbcl.org)
-    shellcheck     - Static analysis and lint tool, for (ba)sh scripts
-    sox            - SOund eXchange: universal sound sample translator
-    testdisk       - Powerful free data recovery utility
-    tldr           - Simplified and community-driven man pages
-    todo-txt       - Minimal, todo.txt-focused editor
-    tunnelbclick   - Free and open source graphic user interface for OpenVPN®
-    vlc            - VLC Media Player - c.f. sc68 plugin at http://bit.ly/2yD8tQU
-    youtube-dl     - Download YouTube videos from the command-line
+  atomicparsley    - MPEG-4 command-line tool
+  bat              - A better cat with syntax highlighting
+  bitwarden-cli    - Secure and free password manager for all of your devices
+  clozure-cl       - Common Lisp implementation with a long history (https://ccl.clozure.com)
+  diff-so-fancy    - Good-lookin' diffs with diff-highlight and more
+  fd               - Simple, fast and user-friendly alternative to find
+  fx               - Command-line JSON processing tool
+  git              - Yo know git, do you?
+  gitup            - The Git interface you've been missing all your life
+  gradle           - Open-source build automation tool based on the Groovy and Kotlin DSL
+  graphicsmagick   - Image processing tools collection
+  htop             - Improved top
+  hex-fiend        - A fast and clever open source hex editor for macOS
+  imagemagick      - Tools and libraries to manipulate images in many formats
+  jq               - Lightweight and flexible command-line JSON processor
+  markdown         - Text-to-HTML conversion tool
+  mps-youtube      - Terminal based YouTube player and downloader
+  ncdu             - NCurses Disk Usage
+  neofetch         - Fast, highly customisable system info script
+  nnn              - Free, fast, friendly file browser
+  sbcl             - Steel Bank Common Lisp system (http://www.sbcl.org)
+  shellcheck       - Static analysis and lint tool, for (ba)sh scripts
+  sox              - SOund eXchange: universal sound sample translator
+  testdisk         - Powerful free data recovery utility
+  tldr             - Simplified and community-driven man pages
+  todo-txt         - Minimal, todo.txt-focused editor
+  tunnelbclick     - Free and open source graphic user interface for OpenVPN®
+  vlc              - VLC Media Player - c.f. sc68 plugin at http://bit.ly/2yD8tQU
+  youtube-dl       - Download YouTube videos from the command-line
 
 Brew funny packages:
 ===================
 
-    bastet         - Bastard tettris
-    browsh         - The modern, text-based browser (nb: brew tap browsh-org/homebrew-browsh)
-    figlet         - Banner-like program prints strings as ASCII art(c.f. http://www.figlet.org/examples.html)
-    lolcat         - Rainbows and unicorns in your console!
-    neofetch       - A command-line system information tool written in bash 3.2+
+  bastet           - Bastard tettris
+  browsh           - The modern, text-based browser (nb: brew tap browsh-org/homebrew-browsh)
+  figlet           - Banner-like program prints strings as ASCII art(c.f. http://www.figlet.org/examples.html)
+  lolcat           - Rainbows and unicorns in your console!
+  neofetch         - A command-line system information tool written in bash 3.2+
 
 Brew intesting casks:
 ====================
@@ -59,7 +59,7 @@ Brew audio apps:
   fission          - Fast & lossless audio editing
   hydrogen         - Software synthesizer emulating a drum machine based on patterns
   levelator        - Adjusts the audio levels within a recording for variations from one speaker to the next
-  lillypond        - Music engraving program
+  lilypond         - Music engraving program
   lmms             - Digital audio workstation
   milkytracker     - Tracker music application
   ocenaudio        - Easy, fast and powerful audio editor
