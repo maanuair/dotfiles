@@ -21,6 +21,11 @@ function jiraAccount.getBaseUrl()
    return "https://undefined-SetMeFirst"
 end
 
+-- Returns the alternative Jira base URL, the one to use when the issueKey does not match the one returned by getDefaultProjectPrefix()
+function jiraAccount.getAltBaseUrl()
+   return "https://undefined-SetMeFirst"
+end
+
 -- Returns the Jira projects in which to perform searches queries.
 -- Must be a list of comma separated project labels, included in parenthesis, to be used in a "project in" JQL clause.
 -- E.g.: return "'Undefined Project One', 'Undefined Project Two'"
@@ -41,4 +46,3 @@ function jiraAccount.getDefaultProjectPrefix()
 end
 
 return jiraAccount
-
