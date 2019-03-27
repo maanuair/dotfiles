@@ -5,17 +5,23 @@ local log = hs.logger.new('init.lua', 'debug')
 
 local jira = {}
 
+local function startsWith(str, start)
+   return str:sub(1, #start) == start
+end
+
 -- Returns a Jira URL to browse the given issue Key
 function jira.getBrowseUrl(key)
+  log.f("getBrowseUrl: Build url for issue key '%s'", key)
   local url = "";
   -- Accordig to the issue key, we use either the base or alt URL
-  local c2 = string.sub(key, 1, 2)
-  if string.match(c2, "^" .. jiraAccount.getDefaultProjectPrefix()) ~= nil then
-    url = string.format("%s%s%s", jiraAccount.getBaseUrl(), "browse/", key)
+  if startsWith(key, jiraAccount.getDefaultProjectPrefix()) then
+    url = jiraAccount.getBaseUrl()
   else
-    url = string.format("%s%s%s", jiraAccount.getAltBaseUrl(), "browse/", key)
+    url = jiraAccount.getAltBaseUrl()
   end
-  return url -- IRN-23450
+  log.f("getBrowseUrl: use base URL '%s'", url)
+  url = string.format("%sbrowse/%s", url, key)
+  return url -- IRN-940 IS-28800
 end
 
 -- Type JIRA issue browsing base url
