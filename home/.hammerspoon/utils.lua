@@ -117,6 +117,7 @@ function utils.getSelectedText()
    -- Copy text from clipboard
    local selection = hs.pasteboard.readString()
    if selection == nil then
+     log.df("Selection is nil, use empty string")
       selection = ""
    end
    log.df(string.format("Got highlighted selection \"%s\".", selection))

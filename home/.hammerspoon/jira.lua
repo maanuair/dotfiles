@@ -14,7 +14,8 @@ function jira.getBrowseUrl(key)
   log.f("getBrowseUrl: Build url for issue key '%s'", key)
   local url = "";
   -- Accordig to the issue key, we use either the base or alt URL
-  if startsWith(key, jiraAccount.getDefaultProjectPrefix()) then
+  if string.len(key) == 0 or startsWith(key, jiraAccount.getDefaultProjectPrefix()) then
+    -- It uses the ! above, so that when the key is empty, the test fails into the else :-)
     url = jiraAccount.getBaseUrl()
   else
     url = jiraAccount.getAltBaseUrl()
@@ -66,7 +67,7 @@ end
 -- Browse the issue key currently highlighted selection, or pop up a chooser
 function jira.browseIssue()
   local key = utils.getTrimmedSelectedText()
-  if key == "" then
+  if string.len(key) == 0 then
     log.f("browseIssue: no selection: invoking graphical chooser")
     lookupJiraIssue()
   else
