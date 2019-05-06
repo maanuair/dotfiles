@@ -1,4 +1,5 @@
-home/.hammerspoon/jiraAccount.lua
 home/.hammerspoon/confluenceAccount.lua
+home/.hammerspoon/jiraAccount.lua
+home/.hammerspoon/utilsAccount.lua
 home/.profile.local
 **/.DS_Store

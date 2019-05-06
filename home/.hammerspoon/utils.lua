@@ -1,3 +1,5 @@
+-- Requirements and local vars
+local utilsAccount = require ('utilsAccount')
 hs.osascript = require("hs.osascript")
 
 local utils = {}
@@ -129,6 +131,41 @@ function utils.getSelectedText()
    -- Returns the precious information!
    log.df(string.format("Returning selection \"%s\"", selection))
    return selection
+end
+
+-- Type my address
+function utils.typeAddress()
+  local s = utilsAccount.getAddress()
+  log.df("Going to type address \"%s\"", s)
+  hs.eventtap.keyStrokes(s)
+end
+
+-- Type my first name
+function utils.typeFirstName()
+  local s = utilsAccount.getFirstName()
+  log.df("Going to type first name \"%s\"", s)
+  hs.eventtap.keyStrokes(s)
+end
+
+-- Type my email
+function utils.typeEmail()
+  local s = utilsAccount.getEmail()
+  log.df("Going to type email \"%s\"", s)
+  hs.eventtap.keyStrokes(s)
+end
+
+-- Type my last name
+function utils.typeLastName()
+  local s = utilsAccount.getLastName()
+  log.df("Going to type last name \"%s\"", s)
+  hs.eventtap.keyStrokes(s)
+end
+
+-- Type my phone number
+function utils.typePhoneNumber()
+  local s = utilsAccount.getPhoneNumber()
+  log.df("Going to type phone number \"%s\"", s)
+  hs.eventtap.keyStrokes(s)
 end
 
 return utils
