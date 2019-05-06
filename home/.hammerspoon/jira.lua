@@ -22,7 +22,7 @@ function jira.getBrowseUrl(key)
   end
   log.f("getBrowseUrl: use base URL '%s'", url)
   url = string.format("%sbrowse/%s", url, key)
-  return url -- IRN-940 IS-28800
+  return url
 end
 
 -- Type JIRA issue browsing base url
