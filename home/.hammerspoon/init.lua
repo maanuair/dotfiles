@@ -26,6 +26,7 @@ hs.hotkey.bind(m1, "L", "Type my lastname", utils.typeLastName)
 hs.hotkey.bind(m1, "T", "Translate with Google the highlighted selection", utils.googleTranslateSelection)
 hs.hotkey.bind(m1, "O", "Open highlighted Jira issue (or ask)", jira.browseIssue)
 hs.hotkey.bind(m1, "P", "Type my phone number", utils.typePhoneNumber)
+hs.hotkey.bind(m1, "Q", "Qwant the highlighted selection", utils.qwantSelection)
 
 -- m2 Shortcuts
 hs.hotkey.bind(m2, "B", "Type a bug scenario template", jira.typeBugTemplate)

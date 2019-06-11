@@ -71,6 +71,15 @@ function utils.googleSelection ()
   utils.browseUrl(uri)
 end
 
+-- Qwant the highlighted selection
+function utils.qwantSelection ()
+  local text = utils.getTrimmedSelectedText()
+  log.f("Captured the text '%s'", text)
+  local uri = "https://org.qwant.com/?q=" .. text .. "&t=all"
+  log.f("Browse '%s'", uri)
+  utils.browseUrl(uri)
+end
+
 -- Google translate the highlighted selection
 function utils.googleTranslateSelection ()
   local uri = "https://translate.google.fr/#view=home&op=translate&sl=fr&tl=en&text="
