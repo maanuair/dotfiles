@@ -1,12 +1,12 @@
 -- Requirements and local vars
 local utils = require('utils')
 local jiraAccount = require ('jiraAccount')
-local log = hs.logger.new('init.lua', 'debug')
-
+local inspect = require('inspect')
+local log = hs.logger.new('jira.lua', 'debug')
 local jira = {}
 
 local function startsWith(str, start)
-   return str:sub(1, #start) == start
+  return str:sub(1, #start) == start
 end
 
 -- Returns a Jira URL to browse the given issue Key
@@ -87,15 +87,32 @@ end
 
 -- Jira viewer: (also see https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-version-2-tutorial)
 function createAuthorisationRequestBody()
-  return string.format('{ "username": "%s", "password": "%s" }', jiraAccount.getUsername(), jiraAccount.getPassword())
+  log.f("createAuthorisationRequestBody(): entering")
+  local s = '{ "username": "' .. hs.http.encodeForQuery(jiraAccount.getUsername()) .. '", "password": "' .. hs.http.encodeForQuery(jiraAccount.getPassword()) .. '" }'
+  -- log.f("createAuthorisationRequestBody(): JSON auth payload is: \n%s", s)
+  return s
 end
 
 function getSession()
   log.f("getSession(): entering")
-  data = createAuthorisationRequestBody()
-  headers = {["Content-Type"] = "application/json"}
-  status, body, returnedHeaders = hs.http.post(jiraAccount.getBaseUrl() .. 'rest/auth/latest/session', data, headers)
-  log.f("getSession(): received status %s, body '%s', headers '%s'", status, body, headers)
+
+  -- Prepare request
+  local url = jiraAccount.getBaseUrl() .. 'rest/auth/latest/session'
+  local auth = createAuthorisationRequestBody()
+  local headers = { ["Content-Type"] = "application/json" }
+  log.f("getSession(): requesting session as follows:")
+  log.f("    url:       %s", url)
+  log.f("    JSON auth: %s", auth)
+  log.f("    headers:   %s", inspect(headers))
+
+  -- Perform request
+  status, body, returnedHeaders = hs.http.post(jiraAccount.getBaseUrl() .. 'rest/auth/latest/session', auth, headers)
+  log.f("getSession(): request returned:")
+  log.f("    status:  %s", status)
+  log.f("    body:    %s", body)
+  log.f("    headers: %s", inspect(returnedHeaders))
+
+  -- Check result
   if status == 200 then
     result = hs.json.decode(body)
     session = result["session"]
