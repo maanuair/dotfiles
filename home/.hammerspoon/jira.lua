@@ -114,8 +114,11 @@ function getSession()
 
   -- Check result
   if status == 200 then
+    -- Parse result
     local json = hs.json.decode(body)
     log.f("getSession(): got result: %s", inspect(json))
+
+    -- Extract useful part
     session = json["session"]
     return session["name"], session["value"]
   else
@@ -123,15 +126,20 @@ function getSession()
   end
 end
 
+function clearTable (t)
+  while #t ~= 0 do rawset(t, #t, nil) end
+end
+
 function lookupJiraIssue()
   sessionName, sessionValue = getSession()
   if (sessionName ~= nil and sessionValue ~= nil) then
     log.f("lookupJiraIssue(): got a valid session.")
-    local cookieHeaders = {["cookie"] = sessionName .. "=" .. sessionValue, ["Content-Type"] = "application/json"}
+    local cookieHeaders = { ["cookie"] = sessionName .. "=" .. sessionValue, ["Content-Type"] = "application/json" }
 
     local picker = hs.chooser.new(function(userInput)
+        -- When user chose an item in the proposed list
         if userInput ~= nil then
-          log.f("chooser: user chose '%s'",userInput)
+          log.f("chooser: user chose '%s'", inspect(userInput))
           if userInput["key"] ~= Nil then
             local url = jira.getBrowseUrl(userInput["key"])
             log.f("chooser: user chose '%s', browsing to '%s'", userInput["key"], url)
@@ -142,30 +150,54 @@ function lookupJiraIssue()
 
     picker:query(jiraAccount.getDefaultIssueSearch())
 
+    local results = {}
+
     picker:queryChangedCallback(
-      function(query)
-        log.f("queryChangedCallback(): query is '%s'", query)
-        if string.len(query) > 3 then
-          log.f("queryChangedCallback(): query '%s' could be a valid JIRA issue key", query)
+      function(q)
+        if q == jiraAccount.getDefaultIssueSearch() then
+          -- Do nothing :-)
+          clearTable(results)
+          table.insert(results, { text = q, subText = "Please type a valid key...", key = q })
+          picker:rows(1) -- Set, but UI will not update acordingly, c.f. https://github.com/Hammerspoon/hammerspoon/issues/1725
+          picker:choices(results)
+        elseif string.len(q) > 3 and string.match(string.sub(q, 4), "[^%d]") == nil then
+          -- Search for a JIRA key
+          log.f("queryChangedCallback(): search for query '%s'", q)
           hs.http.asyncGet(
-            getJiraQueryUrl(query),
+            getJiraQueryUrl(q),
             cookieHeaders,
             function(status, body, headers)
-              log.f("queryChangedCallback(): received status %s, body '%s', headers '%s'", status, body, headers)
+              log.f("getSession(): request returned:")
+              log.f("    status:  %s", status)
+              log.f("    body:    %s", body)
+              log.f("    headers: %s", inspect(headers))
               if status == 200 then
-                searchResult = hs.json.decode(body)
-                if searchResult["fields"] ~= nil then
-                  local results = {}
-                  local key = searchResult["key"]
-                  local summary = searchResult["fields"]["summary"]
-                  table.insert(results, {text = key, subText = summary, key = key})
-                  picker:choices(results)
+                json = hs.json.decode(body)
+                if json["fields"] ~= nil then
+                  key = json["key"]
+                  summary = json["fields"]["summary"]
+                else
+                  key = "No result found (should not hapen !)"
+                  summary = "Key " .. q .. "cannot be found"
                 end
+              else
+                key = "HTTP status code " .. status
+                summary = "Unexpected HTTP status code"
               end
+              clearTable(results)
+              table.insert(results, { text = key, subText = summary, key = key })
+              picker:rows(1) -- Set, but UI will not update acordingly, c.f. https://github.com/Hammerspoon/hammerspoon/issues/1725
+              picker:choices(results)
             end
           )
         else
-          log.f("queryChangedCallback(): query '%s' cannot be a valid JIRA issue key", query)
+          -- Search for non JIRA key: for now, we jsut don't search :)
+          log.f("queryChangedCallback(): won't search for query '%s'", q)
+          local summary = q .. " is not a valid key"
+          clearTable(results)
+          table.insert(results, { text = q, subText = summary, key = q })
+          picker:rows(1) -- Set, but UI will not update acordingly, c.f. https://github.com/Hammerspoon/hammerspoon/issues/1725
+          picker:choices(results)
         end
       end
     )
@@ -180,8 +212,8 @@ function lookupJiraIssue()
   end
 end
 
-function getJiraQueryUrl(query)
-  local url = string.format("%s%s%s", jiraAccount.getBaseUrl(), "rest/api/latest/issue/", query)
+function getJiraQueryUrl(q)
+  local url = string.format("%s%s%s", jiraAccount.getBaseUrl(), "rest/api/latest/issue/", q)
   log.f("jiraQuey(): return url '%s'", url)
   return url
 end
