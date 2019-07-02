@@ -101,9 +101,9 @@ function getSession()
   local auth = createAuthorisationRequestBody()
   local headers = { ["Content-Type"] = "application/json" }
   log.f("getSession(): requesting session as follows:")
-  log.f("    url:       %s", url)
-  log.f("    JSON auth: %s", auth)
-  log.f("    headers:   %s", inspect(headers))
+  log.f("    url:     %s", url)
+  log.f("    payload: %s", auth)
+  log.f("    headers: %s", inspect(headers))
 
   -- Perform request
   status, body, returnedHeaders = hs.http.post(jiraAccount.getBaseUrl() .. 'rest/auth/latest/session', auth, headers)
@@ -114,8 +114,9 @@ function getSession()
 
   -- Check result
   if status == 200 then
-    result = hs.json.decode(body)
-    session = result["session"]
+    local json = hs.json.decode(body)
+    log.f("getSession(): got result: %s", inspect(json))
+    session = json["session"]
     return session["name"], session["value"]
   else
     return nil, nil
