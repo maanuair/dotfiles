@@ -318,6 +318,7 @@ function setupEnvVars () {
   # Loads the local custom add-on when it exists
   if [[ -f "$HOME/.profile.local" ]]
   then
+    myOut "${INDENT} Detected local config, and sourcing it..."
     source "$HOME/.profile.local"
   fi
 }
