@@ -11,6 +11,7 @@
      emmet-mode
      groovy-mode
      hackernews
+     helm
      js2-mode
      json-mode
      lua-mode
@@ -18,10 +19,12 @@
      magit
      mocha
      org-kanban
+     ox-hugo
      restclient
      slime
      solarized-theme
      web-mode
+     zenburn-theme
      )
   "The list of packages that should be installed, and verified as such at startup")
 
