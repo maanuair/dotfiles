@@ -7,9 +7,6 @@
   (invert-face 'mode-line)
   (run-with-timer 0.1 nil 'invert-face 'mode-line))
 
-;; Despite the theme, override some faces settings
-(set-face-attribute 'show-paren-match-expression nil :background "selectedContentBackgroundColor")
-
 ;; My preferred set up
 (setq
   display-time-24hr-format t            ;; Time in 24h format
@@ -36,7 +33,6 @@
 (doom-modeline-mode 1)         ;; Use doom modeline
 (global-hl-line-mode 1)        ;; Highlight current line
 (global-font-lock-mode 1)      ;; Toggle font Lock mode in all buffers
-(load-theme 'solarized-dark t) ;; Use solarized theme
 (recentf-mode 1)               ;; Use recent files
 (show-paren-mode 1)            ;; Visually match parentheses
 (size-indication-mode 0)       ;; Do not show size of buffer
@@ -44,6 +40,14 @@
 (tool-bar-mode 0)              ;; Remove toolbar
 (toggle-scroll-bar 0)          ;; Remove scrollbar
 (transient-mark-mode 1)        ;; Highlight active region
+
+
+;; My preferred theme and its tweaks
+(load-theme 'solarized-dark t)
+(set-face-attribute
+  'show-paren-match-expression nil
+  :inherit nil
+  :background (face-background 'highlight))
 
 ;; UI Behaviours
 ;;;;;;;;;;;;;;;;

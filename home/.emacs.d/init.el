@@ -30,7 +30,7 @@
 (require 'my-ui)
 
 ;; TODO:
-;; Check out ido-mode / anything (aka spotlight for emacs) / gnus / mu4E / perspective
+;; Check out ido-mode vs helm vs ivy / gnus / mu4E / perspective
 
 ;; Some emacs links to learn more:
 ;;
@@ -42,9 +42,6 @@
 ;;
 ;;    Making Emacs Work For Me
 ;;    http://zeekat.nl/articles/making-emacs-work-for-me.html
-;;
-;;    CLOJURE for the BRAVE and TRUE
-;;    http://www.braveclojure.com/basic-emacs/)
 ;;
 ;;    Mastering Emacs
 ;;    http://www.masteringemacs.org/
