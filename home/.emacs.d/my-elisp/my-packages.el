@@ -6,6 +6,7 @@
   my-packages
   '(
      all-the-icons
+     autopair
      doom-modeline
      editorconfig
      emmet-mode
