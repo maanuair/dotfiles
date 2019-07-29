@@ -1,3 +1,26 @@
+-- Oblique Stategies Copyright © 1975, 1978, 1979, 1996, 2001 Brian Eno and Peter Schmidt
+--
+-- Oblique Strategies are used here without permission from the copyright
+-- holders, with the hope that it does not hurt any interest. Will promptly
+-- remove it upon request. Copyright above to the best of my knowledge.
+--
+-- Other LUA code Copyright © 2017, 2019 Emmanuel Roubion
+--
+-- Author: Emmanuel Roubion
+-- URL: https://github.com/maanuair/dotfiles
+
+-- This file is part of Emmanuel's Roubion dot files, released under
+-- the MIT License as published by the Massachusetts Institute of Technology
+-- except where noted otherwise (see above).
+--
+-- These dotfiles are distributed in the hope they wil lbe useful, but
+-- without any warranty. See the MIT License for more details
+--
+-- You should have received a copy of the MIT License along with this file.
+-- If not, see https://opensource.org/licenses/mit-license.php
+
+-- 8<-----
+
 -- Private part
 local log = hs.logger.new('oblique-strategies.lua', 'debug')
 local imagePath = os.getenv('HOME') .. '/.hammerspoon/oblique_strategies.png'
