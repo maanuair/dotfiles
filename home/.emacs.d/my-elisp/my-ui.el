@@ -15,14 +15,14 @@
   doom-modeline-minor-modes t           ;; Whether display minor modes or not. Non-nil to display in mode-line.
   echo-keystrokes 0.5                   ;; Show keystrokes right away
   font-lock-maximum-decoration t        ;; Use maximum decoration
-  frame-title-format                    ;; Sets the frame title
-  (
-    list
-    '(buffer-file-name "%f" (dired-directory dired-directory "%b"))
-    " (" user-login-name "@" system-name  ")"
-    )
+  frame-title-format (                  ;; Sets the frame title
+                       list
+                       '(buffer-file-name "%f" (dired-directory dired-directory "%b"))
+                       " (" user-login-name "@" system-name  ")"
+                       )
   inhibit-startup-screen t                     ;; Remove start-up screen
   initial-scratch-message nil                  ;; Remove scratch message
+  mouse-buffer-menu-mode-mult 20               ;; Do not split the mouse buffer menu by major mode
   ring-bell-function 'my-terminal-visible-bell ;; Plug my customized visible bell
   sentence-end-double-space nil                ;; Sentences end with a single space
   show-paren-delay 0                           ;; Highlight parenthesis without delay
@@ -75,9 +75,10 @@
 (put 'narrow-to-page 'disabled nil)
 
 ;; Global custom keyboard shortcuts
-(global-set-key [(meta g)] 'goto-line)
-(global-set-key (quote [f5]) 'reformat)
-(global-set-key (quote [f12]) 'auto-revert-tail-mode)
+(require 'my-functions)
+(global-set-key (kbd "M-g")   'goto-line)
+(global-set-key (kbd "<f5>")  'reformat)
+(global-set-key (kbd "<f12>") 'auto-revert-tail-mode)
 (global-set-key (kbd "C-x g") 'magit-status)
 
 ;; Some modes settings

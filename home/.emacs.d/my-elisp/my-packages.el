@@ -7,6 +7,7 @@
   '(
      all-the-icons
      autopair
+     ;; bug-hunter
      doom-modeline
      editorconfig
      emmet-mode

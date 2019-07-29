@@ -17,50 +17,17 @@
 ;; Then perform some packages management
 (require 'package)
 (add-to-list 'package-archives
-	     '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+  '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives
-	     '("melpa" . "https://melpa.org/packages/") t)
+  '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 (require 'my-packages)
 
 ;; Load some common functions
 (require 'my-functions)
 
-;; Finally set up ui and some behaviors
+;; A few UI appearanes and behaviors
 (require 'my-ui)
 
-;; TODO:
-;; Check out ido-mode vs helm vs ivy / gnus / mu4E / perspective
-
-;; Some emacs links to learn more:
-;;
-;;    Emacs is sexy
-;;    http://emacs.sexy/
-;;
-;;    Emacs Redux | Return to the Essence of Text Editing
-;;    http://emacsredux.com/
-;;
-;;    Making Emacs Work For Me
-;;    http://zeekat.nl/articles/making-emacs-work-for-me.html
-;;
-;;    Mastering Emacs
-;;    http://www.masteringemacs.org/
-;;    http://www.masteringemacs.org/article/introduction-magit-emacs-mode-git
-;;
-;;    Emacs Rocks
-;;    http://emacsrocks.com
-;;
-;;    What the .emacs.d ?
-;;    http://whattheemacsd.com/
-;;
-;;    It is not hard to edit Lisp code
-;;    http://yoo2080.wordpress.com/2014/07/20/it-is-not-hard-to-edit-lisp-code/
-;;
-;;    Start using emacs:
-;;    http://www.braveclojure.com/basic-emacs/
-;;
-;;    Company-mode (Complete anything)
-;;    http://company-mode.github.io
-;;
-;;    Indium is a JavaScript development environment for Emacs.
-;;    https://indium.readthedocs.io/en/latest/
+;; Finally load a few settings abour org-mode
+(require 'my-org)
