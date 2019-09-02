@@ -46,9 +46,10 @@ hs.hotkey.bind(m1, "P", "Type my phone number", utils.typePhoneNumber)
 hs.hotkey.bind(m1, "Q", "Qwant the highlighted selection", utils.qwantSelection)
 
 -- m2 Shortcuts
-hs.hotkey.bind(m2, "B", "Type a bug scenario template", jira.typeBugTemplate)
+hs.hotkey.bind(m2, "B", "Type a Bug scenario template, in Jira mark-up style", jira.typeBugTemplate)
 hs.hotkey.bind(m2, "J", "Jira generic URL is typed (highlighted selection appended)", jira.typeBrowseUrl)
 hs.hotkey.bind(m2, "O", "Oblique Strategy pop-up!", oblique_strategies.showStrategy)
+hs.hotkey.bind(m2, "S", "Type a Story scenario template, in Jira mark-up style", jira.typeStoryTemplate)
 
 -- Timer attempts
 
