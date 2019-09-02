@@ -73,6 +73,16 @@ function jira.typeBugTemplate()
   hs.eventtap.keyStrokes(source)
 end
 
+-- Type a JIRA story template, in JIRA mark-up style
+function jira.typeStoryTemplate()
+  local source=[[
+*As a* <role> in <interface>
+*I can* <do this>
+*in order to* <get some result>
+]]
+  hs.eventtap.keyStrokes(source)
+end
+
 -- Search the highlighted selection in Request.jira.com
 function jira.search()
   local url = jiraAccount.getBaseUrl() .. "issues/?jql=project IN " .. jiraAccount.getDefaultSearchProjects() .. " AND summary ~ \"" .. utils.getTrimmedSelectedText() .. "\" ORDER BY issueKey DESC"
