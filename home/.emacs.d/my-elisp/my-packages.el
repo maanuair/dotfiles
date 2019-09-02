@@ -37,6 +37,7 @@
      mocha
      org-kanban
      ox-hugo
+     pdf-tools
      restclient
      slime
      solarized-theme
