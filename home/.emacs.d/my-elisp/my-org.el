@@ -17,23 +17,35 @@
 ;; Everything related to my Org mode usage
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; A function to open my default org file
-(defun load-my-org ()
-  "Loads my org file, stored by default in \"~/org/index.org.\""
-  (interactive)
-  (find-file "~/org/index.org" nil)
-  )
-
-;; Some global custom shortcuts
+; Some global custom shortcuts
 (global-set-key (kbd "C-c l") 'org-store-link)
 (global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "C-c o") 'load-my-org)
+
+;; Some shortcuts to load quiclky my personal PARA org files
+(setq
+  my-perso-org-dir (expand-file-name "~/Org/Perso")
+  my-work-org-dir (expand-file-name "~/Org/Work")
+  )
+(global-set-key (kbd "C-c p p") (lambda () (interactive) (find-file (expand-file-name "projects.org"  my-perso-org-dir))))
+(global-set-key (kbd "C-c p a") (lambda () (interactive) (find-file (expand-file-name "areas.org"     my-perso-org-dir))))
+(global-set-key (kbd "C-c p r") (lambda () (interactive) (find-file (expand-file-name "resources.org" my-perso-org-dir))))
+(global-set-key (kbd "C-c p z") (lambda () (interactive) (find-file (expand-file-name "archives.org"  my-perso-org-dir))))
+;; Same for work org files
+(global-set-key (kbd "C-c w p") (lambda () (interactive) (find-file (expand-file-name "projects.org"  my-work-org-dir))))
+(global-set-key (kbd "C-c w a") (lambda () (interactive) (find-file (expand-file-name "areas.org"     my-work-org-dir))))
+(global-set-key (kbd "C-c w r") (lambda () (interactive) (find-file (expand-file-name "resources.org" my-work-org-dir))))
+(global-set-key (kbd "C-c w z") (lambda () (interactive) (find-file (expand-file-name "archives.org"  my-work-org-dir))))
 
 ;; Some Org mode settings
 (setq
-  org-descriptive-links nil    ;; Show hyperlinks in plain text
-  org-log-done t               ;; Insert the timestamp when a task is marked DONE
-  org-startup-indented 'indet  ;; Prefer the alternate stars and indent. scheme
+  org-descriptive-links t                                 ;; Show hyperlinks decorated (not plain text)
+  org-log-done t                                          ;; Insert the timestamp when a task is marked DONE
+  org-startup-indented 'indet                             ;; Prefer the alternate stars and indent. scheme
+  org-agenda-files '("~/Org/Perso/" "~/Org/Work/")        ;; Make available all .org files for C-c C-w (org-refile)
+  org-refile-targets '(                                   ;; Specify targets for refile
+                        (nil :maxlevel . 4)
+                        (org-agenda-files :maxlevel . 4))
+  org-refile-use-outline-path 'file                       ;; Include the file name (without directory) into the path
   )
 
 (provide 'my-org)
