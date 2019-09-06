@@ -26,6 +26,7 @@
      doom-modeline
      editorconfig
      emmet-mode
+     free-keys
      groovy-mode
      hackernews
      helm
@@ -35,6 +36,7 @@
      markdown-mode
      magit
      mocha
+     org-cliplink
      org-kanban
      ox-hugo
      pdf-tools
