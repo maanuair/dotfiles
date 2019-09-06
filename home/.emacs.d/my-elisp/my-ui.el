@@ -58,14 +58,19 @@
 (toggle-scroll-bar 0)          ;; Remove scrollbar
 (transient-mark-mode 1)        ;; Highlight active region
 
-;; My preferred theme and its tweaks
+;; My preferred theme and its tweaks: Solarized
+(setq
+  solarized-use-variable-pitch nil   ;; No proportional font for org-mode headings
+  solarized-scale-org-headlines nil  ;; No need to change their heights too
+  )
 (load-theme 'solarized-dark t)
 (set-face-attribute
   'show-paren-match-expression nil
   :inherit nil
   :background (face-background 'highlight))
 
-;; UI Behaviours
+;; Specify missing colors for org-mode here ?
+
 ;;;;;;;;;;;;;;;;
 
 ;; Auto reformat on save
@@ -76,10 +81,12 @@
 ;; Automatically updates copyright updates on save
 (add-hook 'before-save-hook 'copyright-update)
 
+;; Make the default frame maximized at startup
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
 (setq
   apropos-do-all t             ;; More extensive search in apropos
   delete-by-moving-to-trash t  ;; Move to OS' trash when deleting stuff
-  initial-major-mode 'org-mode ;; Org-mode by default
   vc-follow-symlinks t         ;; VC follows the link and visits the real file
   )
 (delete-selection-mode 1)     ;; Delete text when typing over selection.
@@ -94,11 +101,18 @@
 (put 'narrow-to-page 'disabled nil)
 
 ;; Global custom keyboard shortcuts
-(require 'my-functions)
-(global-set-key (kbd "M-g")   'goto-line)
-(global-set-key (kbd "<f5>")  'reformat)
-(global-set-key (kbd "<f12>") 'auto-revert-tail-mode)
-(global-set-key (kbd "C-x g") 'magit-status)
+(global-set-key (kbd "M-g")    'goto-line)
+(global-set-key (kbd "<f5>")   'reformat)
+(global-set-key (kbd "<f6>")   'recompile)
+(global-set-key (kbd "S-<f6>") 'next-error)
+(global-set-key (kbd "<f12>")  'auto-revert-tail-mode)
+(global-set-key (kbd "C-x g")  'magit-status)
+(global-set-key (kbd "C-. i") (lambda () (interactive) (find-file (expand-file-name "init.el" user-emacs-directory))))
+(global-set-key (kbd "C-. d") (lambda () (interactive) (find-file (expand-file-name "my-dirs.el" my-elisp-dir))))
+(global-set-key (kbd "C-. f") (lambda () (interactive) (find-file (expand-file-name "my-functions.el" my-elisp-dir))))
+(global-set-key (kbd "C-. o") (lambda () (interactive) (find-file (expand-file-name "my-org.el" my-elisp-dir))))
+(global-set-key (kbd "C-. p") (lambda () (interactive) (find-file (expand-file-name "my-packages.el" my-elisp-dir))))
+(global-set-key (kbd "C-. u") (lambda () (interactive) (find-file (expand-file-name "my-ui.el" my-elisp-dir))))
 
 ;; Some modes settings
 (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start emmet on any markup modes
@@ -114,6 +128,7 @@
   ;; Despite the theme, stick to my preferred fonts
   (add-to-list 'default-frame-alist '(font . "Cousine for Powerline-14"))
   (set-face-attribute 'default t :font "Cousine for Powerline-14")
+
   )
 
 ;; UI tweak on Windows
