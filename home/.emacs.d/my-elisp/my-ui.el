@@ -69,7 +69,6 @@
   :inherit nil
   :background (face-background 'highlight))
 
-;; Specify missing colors for org-mode here ?
 
 ;;;;;;;;;;;;;;;;
 

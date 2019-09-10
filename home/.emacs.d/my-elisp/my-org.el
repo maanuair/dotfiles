@@ -48,4 +48,27 @@
   org-refile-use-outline-path 'file                       ;; Include the file name (without directory) into the path
   )
 
+;; We assume here the theme has already been loaded, and we specify org-mode level colors
+(defun my-org-mode-hook ()
+  ;; Don't override document title height
+  (set-face-attribute 'org-document-title nil :height 1.0)
+
+  ;; Use blueish links
+  (set-face-attribute 'org-link nil :foreground "DodgerBlue2")
+
+  ;; Use a more fainted keywords
+  ;; set-face-attribute 'org-document-info-keyword nil :foreground "grey5")
+
+  ;; Level colors
+  (set-face-attribute 'org-level-1 nil :foreground "RoyalBlue1")
+  (set-face-attribute 'org-level-2 nil :foreground "SpringGreen4")
+  (set-face-attribute 'org-level-3 nil :foreground "orange3")
+  (set-face-attribute 'org-level-4 nil :foreground "firebrick3")
+  (set-face-attribute 'org-level-5 nil :foreground "cyan3")
+  (set-face-attribute 'org-level-6 nil :foreground "dark sea green")
+  (set-face-attribute 'org-level-7 nil :foreground "turquoise4")
+  (set-face-attribute 'org-level-8 nil :foreground "DodgerBlue4"))
+(add-hook 'org-load-hook #'my-org-mode-hook)
+
+
 (provide 'my-org)
