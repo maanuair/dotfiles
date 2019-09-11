@@ -61,8 +61,8 @@
 
   ;; Level colors
   (set-face-attribute 'org-level-1 nil :foreground "RoyalBlue1")
-  (set-face-attribute 'org-level-2 nil :foreground "SpringGreen4")
-  (set-face-attribute 'org-level-3 nil :foreground "orange3")
+  (set-face-attribute 'org-level-2 nil :foreground "orange3")
+  (set-face-attribute 'org-level-3 nil :foreground "SpringGreen4")
   (set-face-attribute 'org-level-4 nil :foreground "firebrick3")
   (set-face-attribute 'org-level-5 nil :foreground "cyan3")
   (set-face-attribute 'org-level-6 nil :foreground "dark sea green")
