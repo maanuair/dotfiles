@@ -20,6 +20,7 @@
 (defvar
   my-packages
   '(
+     adaptive-wrap
      all-the-icons
      autopair
      ;; bug-hunter
@@ -36,6 +37,7 @@
      markdown-mode
      magit
      mocha
+     org-bullets
      org-cliplink
      org-kanban
      ox-hugo
