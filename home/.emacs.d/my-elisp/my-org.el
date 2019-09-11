@@ -30,11 +30,13 @@
 (global-set-key (kbd "C-c p a") (lambda () (interactive) (find-file (expand-file-name "areas.org"     my-perso-org-dir))))
 (global-set-key (kbd "C-c p r") (lambda () (interactive) (find-file (expand-file-name "resources.org" my-perso-org-dir))))
 (global-set-key (kbd "C-c p z") (lambda () (interactive) (find-file (expand-file-name "archives.org"  my-perso-org-dir))))
+(global-set-key (kbd "C-c p s") (lambda () (interactive) (find-file (expand-file-name "sample.org"    my-perso-org-dir))))
 ;; Same for work org files
 (global-set-key (kbd "C-c w p") (lambda () (interactive) (find-file (expand-file-name "projects.org"  my-work-org-dir))))
 (global-set-key (kbd "C-c w a") (lambda () (interactive) (find-file (expand-file-name "areas.org"     my-work-org-dir))))
 (global-set-key (kbd "C-c w r") (lambda () (interactive) (find-file (expand-file-name "resources.org" my-work-org-dir))))
-(global-set-key (kbd "C-c w z") (lambda () (interactive) (find-file (expand-file-name "archives.org"  my-work-org-dir))))
+(global-set-key (kbd "C-c w z") (lambda () (interactive) (find-file (expand-file-name "archives.org"  my-work-org-dir(global-set-key (kbd "C-c w s") (lambda () (interactive) (find-file (expand-file-name "sample.org"    my-work-org-dir))))
+))))
 
 ;; Some Org mode settings
 (setq
@@ -67,8 +69,15 @@
   (set-face-attribute 'org-level-5 nil :foreground "cyan3")
   (set-face-attribute 'org-level-6 nil :foreground "dark sea green")
   (set-face-attribute 'org-level-7 nil :foreground "turquoise4")
-  (set-face-attribute 'org-level-8 nil :foreground "DodgerBlue4"))
-(add-hook 'org-load-hook #'my-org-mode-hook)
+  (set-face-attribute 'org-level-8 nil :foreground "DodgerBlue4")
+  )
 
+;; We use org-bullets-mode, and we choose these bullets
+
+
+;; Automagically loads our custom settings, and org-bullets
+(add-hook 'org-load-hook #'my-org-mode-hook)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+(add-hook 'org-mode-hook (lambda () (visual-line-mode 1)))
 
 (provide 'my-org)
