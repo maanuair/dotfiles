@@ -45,7 +45,6 @@
   show-paren-style 'expression                 ;; Highlight the matched expression
   visible-bell t                               ;; Use visible bell
   )
-(autopair-global-mode)         ;; Enable autopair in all buffers
 (column-number-mode 1)         ;; Display column number
 (doom-modeline-mode 1)         ;; Use doom modeline
 (global-hl-line-mode 1)        ;; Highlight current line

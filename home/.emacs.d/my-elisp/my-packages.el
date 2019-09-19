@@ -22,7 +22,6 @@
   '(
      adaptive-wrap
      all-the-icons
-     autopair
      ;; bug-hunter
      doom-modeline
      editorconfig
