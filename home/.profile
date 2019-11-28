@@ -155,16 +155,33 @@ function setupBashCompletion() {
 function setupGit() {
   myOut "Setting up git..."
 
-  if brew ls --versions git > /dev/null
-  then
-    # Git is already installed !
-    myOut "${INDENT} Git has been already installed with Homebrew package manager."
+  # Check whether we need to... check :)
+  local file="$HOME/.lastGitCheckTimestamp"
+
+  # Already checked in last 24h or not?
+  if [[ ! -f "$file" || $(find "$file" -mtime +1 -print) ]]; then
+    if [[ `getOS` == 'osx' ]]
+    then
+      if brew ls --versions git > /dev/null
+      then
+        # Git is already installed !
+        myOut "${INDENT} Git has been already installed with Homebrew package manager."
+      else
+        # Git not installed with brew
+        local GIT_CMD="brew install git"
+        myErr "Git is not installed with brew, version is \"`git --version`\""
+        myOut "${INDENT} You may want to install git through Homebrew package manager with (otherwise, completions will not work):"
+        myOut "${INDENT} ${GIT_CMD}"
+      fi
+    else
+      myErr "Not checking Git env on non-macOS systems, sorry."
+    fi
+
+    # Put our timestamp
+    [[ ! -f "$file" ]] && myOut "${INDENT} Future \"Git check\" will be done after 24h, using file's timestamp: \"$file\"..."
+    touch "$file"
   else
-    # Git not installed with brew
-    local GIT_CMD="brew install git"
-    myErr "Git is not installed with brew, version is \"`git --version`\""
-    myOut "${INDENT} You may want to install git through Homebrew package manager with (otherwise, completions will not work):"
-    myOut "${INDENT} ${GIT_CMD}"
+    myOut "${INDENT} Git env check already done in last 24h, no need to check again..."
   fi
 }
 
@@ -172,28 +189,40 @@ function setupGit() {
 function setupNode() {
   myOut "Setting up Node env..."
 
-  # Is NodeJS installed ?
-  if [[ `getOS` == 'osx' ]]
-  then
-    export NVM_DIR="$HOME/.nvm"
-    if [[ -d "${NVM_DIR}" ]]
+  # Check whether we need to... check :)
+  local file="$HOME/.lastNodeCheckTimestamp"
+
+  # Already checked in last 24h or not?
+  if [[ ! -f "$file" || $(find "$file" -mtime +1 -print) ]]; then
+    # Is NodeJS installed ?
+    if [[ `getOS` == 'osx' ]]
     then
-      local NVM_SH="$NVM_DIR/nvm.sh"
-      local NVM_UPGRADE_CMD='( cd "$NVM_DIR"; git fetch origin; git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`; ) && . "$NVM_DIR/nvm.sh"'
-      local NVM_COMP="$NVM_DIR/bash_completion"
-      myOut "${INDENT} Sourcing $NVM_SH..."
-      . "${NVM_SH}"
-      myOut "${INDENT} Reminder: to manually upgrade, run: ${NVM_UPGRADE_CMD}"
-      myOut "${INDENT} Sourcing bash completions ${NVM_COMP}..."
-      [[ -r ${NVM_COMP} ]] && . ${NVM_COMP} || myErr "Not found: ${NVM_COMP}"
+      export NVM_DIR="$HOME/.nvm"
+      if [[ -d "${NVM_DIR}" ]]
+      then
+        local NVM_SH="$NVM_DIR/nvm.sh"
+        local NVM_UPGRADE_CMD='( cd "$NVM_DIR"; git fetch origin; git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`; ) && . "$NVM_DIR/nvm.sh"'
+        local NVM_COMP="$NVM_DIR/bash_completion"
+        myOut "${INDENT} Sourcing $NVM_SH..."
+        . "${NVM_SH}"
+        myOut "${INDENT} Reminder: to manually upgrade, run: ${NVM_UPGRADE_CMD}"
+        myOut "${INDENT} Sourcing bash completions ${NVM_COMP}..."
+        [[ -r ${NVM_COMP} ]] && . ${NVM_COMP} || myErr "Not found: ${NVM_COMP}"
+      else
+        local NVM_INSTALL_CMD='export NVM_DIR="$HOME/.nvm" && mkdir "$NVM_DIR" && ( git clone https://github.com/creationix/nvm.git "$NVM_DIR"; cd "$NVM_DIR"; git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`;) && . "$NVM_DIR/nvm.sh"'
+        myErr "Not found: ${NVM_DIR}"
+        myOut "${INDENT} You may want to install nvm first, by running: "
+        myOut "${INDENT} ${NVM_INSTALL_CMD}"
+      fi
     else
-      local NVM_INSTALL_CMD='export NVM_DIR="$HOME/.nvm" && mkdir "$NVM_DIR" && ( git clone https://github.com/creationix/nvm.git "$NVM_DIR"; cd "$NVM_DIR"; git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`;) && . "$NVM_DIR/nvm.sh"'
-      myErr "Not found: ${NVM_DIR}"
-      myOut "${INDENT} You may want to install nvm first, by running: "
-      myOut "${INDENT} ${NVM_INSTALL_CMD}"
+      myErr "Not checking Node env on non-macOS systems, sorry."
     fi
+
+    # Put our timestamp
+    [[ ! -f "$file" ]] && myOut "${INDENT} Future \"Node check\" will be done after 24h, using file's timestamp: \"$file\"..."
+    touch "$file"
   else
-    myErr "Not checking node env on non-macOS systems, sorry."
+    myOut "${INDENT} Node env check already done in last 24h, no need to check again..."
   fi
 }
 
