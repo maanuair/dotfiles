@@ -16,20 +16,26 @@
 
 ;; Hmmmmmm, use instead https://github.com/jwiegley/use-package ?
 
+;; Initialize the env vars from shell, when started un GUI mode from macOS and GNU/Linux
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+
 ;; Automatic install of packages
 (defvar
   my-packages
   '(
      adaptive-wrap
      all-the-icons
+     all-the-icons-dired
      ;; bug-hunter
+     counsel
      doom-modeline
      editorconfig
      emmet-mode
+     exec-path-from-shell
      free-keys
      groovy-mode
      hackernews
-     helm
      js2-mode
      json-mode
      lua-mode
