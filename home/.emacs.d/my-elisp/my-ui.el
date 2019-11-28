@@ -79,10 +79,10 @@
   :background (face-background 'highlight))
 
 ;; Some modes settings
-(add-hook 'before-save-hook 'copyright-update)        ;; Automatically updates copyright updates on save
-(add-hook 'css-mode-hook  'emmet-mode)                ;; And on css modes as well
-(add-hook 'dired-mode-hook 'all-the-icons-dired-mode) ;; Dired support for all-the-icons
-(add-hook 'sgml-mode-hook 'emmet-mode)                ;; Auto-start emmet on any markup modes
+(add-hook 'before-save-hook 'copyright-update)         ;; Automatically updates copyright updates on save
+(add-hook 'css-mode-hook    'emmet-mode)               ;; And on css modes as well
+(add-hook 'dired-mode-hook  'all-the-icons-dired-mode) ;; Dired support for all-the-icons
+(add-hook 'sgml-mode-hook   'emmet-mode)               ;; Auto-start emmet on any markup modes
 
 ;; Make the default frame maximized at startup
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
