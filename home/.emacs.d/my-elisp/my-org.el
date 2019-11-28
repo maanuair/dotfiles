@@ -35,8 +35,8 @@
 (global-set-key (kbd "C-c w p") (lambda () (interactive) (find-file (expand-file-name "projects.org"  my-work-org-dir))))
 (global-set-key (kbd "C-c w a") (lambda () (interactive) (find-file (expand-file-name "areas.org"     my-work-org-dir))))
 (global-set-key (kbd "C-c w r") (lambda () (interactive) (find-file (expand-file-name "resources.org" my-work-org-dir))))
-(global-set-key (kbd "C-c w z") (lambda () (interactive) (find-file (expand-file-name "archives.org"  my-work-org-dir(global-set-key (kbd "C-c w s") (lambda () (interactive) (find-file (expand-file-name "sample.org"    my-work-org-dir))))
-))))
+(global-set-key (kbd "C-c w z") (lambda () (interactive) (find-file (expand-file-name "archives.org"  my-work-org-dir))))
+(global-set-key (kbd "C-c w s") (lambda () (interactive) (find-file (expand-file-name "sample.org"    my-work-org-dir))))
 
 ;; Some Org mode settings
 (setq
