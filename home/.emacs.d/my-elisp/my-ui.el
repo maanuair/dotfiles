@@ -25,6 +25,8 @@
 
 ;; My preferred set up
 (setq
+  apropos-do-all t                      ;; More extensive search in apropos
+  delete-by-moving-to-trash t           ;; Move to OS' trash when deleting stuff
   display-time-24hr-format t            ;; Time in 24h format
   doom-modeline-enable-word-count t     ;; Add a word count selection-info modeline segment.
   doom-modeline-major-mode-color-icon t ;; Display color icons for `major-mode'. It respects `all-the-icons-color-icons'.
@@ -38,23 +40,31 @@
                        )
   inhibit-startup-screen t                     ;; Remove start-up screen
   initial-scratch-message nil                  ;; Remove scratch message
+  ivy-use-virtual-buffers t                    ;; Add recent files and bookmarks to ‘ivy-switch-buffer
+  ivy-count-format "(%d/%d) "                  ;; Display the current candidate count for `ivy-read' to display both the index and the count.
   mouse-buffer-menu-mode-mult 20               ;; Do not split the mouse buffer menu by major mode
   ring-bell-function 'my-terminal-visible-bell ;; Plug my customized visible bell
   sentence-end-double-space nil                ;; Sentences end with a single space
+  sgml-quick-keys 'close                       ;; SGML mode will auto close element when typin '</'
   show-paren-delay 0                           ;; Highlight parenthesis without delay
   show-paren-style 'expression                 ;; Highlight the matched expression
+  vc-follow-symlinks t                         ;; VC follows the link and visits the real file
   visible-bell t                               ;; Use visible bell
   )
 (column-number-mode 1)         ;; Display column number
+(delete-selection-mode 1)      ;; Delete text when typing over selection.
 (doom-modeline-mode 1)         ;; Use doom modeline
+(editorconfig-mode 1)          ;; Use editor config
 (global-hl-line-mode 1)        ;; Highlight current line
 (global-font-lock-mode 1)      ;; Toggle font Lock mode in all buffers
+(ivy-mode t)                   ;; Giving Ivy a try :)
 (recentf-mode 1)               ;; Use recent files
+(save-place-mode 1)            ;; Save point position between sessions
 (show-paren-mode 1)            ;; Visually match parentheses
 (size-indication-mode 0)       ;; Do not show size of buffer
 (toggle-indicate-empty-lines)  ;; Show empty lines
 (tool-bar-mode 0)              ;; Remove toolbar
-(toggle-scroll-bar 0)          ;; Remove scrollbar
+(toggle-scroll-bar 1)          ;; Use vertical scrollbar
 (transient-mark-mode 1)        ;; Highlight active region
 
 ;; My preferred theme and its tweaks: Solarized
@@ -68,35 +78,23 @@
   :inherit nil
   :background (face-background 'highlight))
 
-
-;;;;;;;;;;;;;;;;
-
-;; Auto reformat on save
-;; (require 'my-functions)
-;; (add-hook 'before-save-hook 'reformat)
-;; => Disabled, since cumbersome in some cases. Use [f5] shortcut instead :)
-
-;; Automatically updates copyright updates on save
-(add-hook 'before-save-hook 'copyright-update)
+;; Some modes settings
+(add-hook 'before-save-hook 'copyright-update)        ;; Automatically updates copyright updates on save
+(add-hook 'css-mode-hook  'emmet-mode)                ;; And on css modes as well
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode) ;; Dired support for all-the-icons
+(add-hook 'sgml-mode-hook 'emmet-mode)                ;; Auto-start emmet on any markup modes
 
 ;; Make the default frame maximized at startup
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
-(setq
-  apropos-do-all t             ;; More extensive search in apropos
-  delete-by-moving-to-trash t  ;; Move to OS' trash when deleting stuff
-  vc-follow-symlinks t         ;; VC follows the link and visits the real file
-  )
-(delete-selection-mode 1)     ;; Delete text when typing over selection.
-(editorconfig-mode 1)         ;; Use editor config
-(ido-mode t)                  ;; Use ido
-(save-place-mode 1)           ;; Save point position between sessions
+;; Enable web-mode for editing HTML files
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 
-;; Enable back the commands considered confusing to upper/lower case region
-(put 'upcase-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
-(put 'narrow-to-region 'disabled nil)
-(put 'narrow-to-page 'disabled nil)
+;; Make sure PDF will be opened with pdf-tools
+(pdf-loader-install)
+
+;;;;;;;;;;;;;;;;
 
 ;; Global custom keyboard shortcuts
 (global-set-key (kbd "M-g")    'goto-line)
@@ -112,9 +110,11 @@
 (global-set-key (kbd "C-. p") (lambda () (interactive) (find-file (expand-file-name "my-packages.el" my-elisp-dir))))
 (global-set-key (kbd "C-. u") (lambda () (interactive) (find-file (expand-file-name "my-ui.el" my-elisp-dir))))
 
-;; Some modes settings
-(add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start emmet on any markup modes
-(add-hook 'css-mode-hook  'emmet-mode) ;; And on css modes as well
+;; Enable back the commands considered confusing to upper/lower case region
+(put 'upcase-region    'disabled nil)
+(put 'downcase-region  'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page   'disabled nil)
 
 ;; UI tweaks on macOS
 ;;;;;;;;;;;;;;;;;;;;;
