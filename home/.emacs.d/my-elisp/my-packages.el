@@ -16,18 +16,23 @@
 
 ;; Hmmmmmm, use instead https://github.com/jwiegley/use-package ?
 
-;; Initialize the env vars from shell, when started un GUI mode from macOS and GNU/Linux
-(when (memq window-system '(mac ns x))
-  (exec-path-from-shell-initialize))
+;; We automatically install desired packages here
 
-;; Automatic install of packages
+
+;; Add the stable ELPA source
+;; (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+
+;; Use instead the non stable MELPA source, since some packages are only there
+;; (I'm looking at you, restclient, org-cliplink, allthe-icons-dired...)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+
+;; Desired lsit of packages
 (defvar
   my-packages
   '(
      adaptive-wrap
      all-the-icons
      all-the-icons-dired
-     ;; bug-hunter
      counsel
      doom-modeline
      editorconfig
@@ -83,5 +88,9 @@
     (message "Installing `%s' .." p)
     (package-install p))
   (setq my-missing-packages '()))
+
+;; Now, we can initialize the env vars from shell, when emacs started in GUI mode from macOS or GNU/Linux
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
 
 (provide 'my-packages)
