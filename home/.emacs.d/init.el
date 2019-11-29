@@ -14,6 +14,22 @@
 
 ;; This file is NOT part of GNU Emacs.
 
+;; Make startup faster by reducing the frequency of garbage
+;; collection.  The default is 800 kilobytes. Measured in bytes.
+(setq gc-cons-threshold (* 50 1000 1000))
+
+;; Portion of heap used for allocation.  Defaults to 0.1.
+(setq gc-cons-percentage 0.6)
+
+;; Use a hook so the message doesn't get clobbered by other messages.
+(add-hook 'emacs-startup-hook
+  (lambda ()
+    (message "Emacs ready in %s with %d garbage collections."
+      (format "%.2f seconds"
+        (float-time
+          (time-subtract after-init-time before-init-time)))
+      gcs-done)))
+
 ;; Define my-elisp dir, and set up load path
 (setq my-elisp-dir (expand-file-name "my-elisp" user-emacs-directory))
 (add-to-list 'load-path my-elisp-dir)
@@ -32,5 +48,8 @@
 ;; A few UI appearanes and behaviors
 (require 'my-ui)
 
-;; Finally load a few settings abour org-mode
+;; Finally load a few settings about org-mode
 (require 'my-org)
+
+;; Make gc pauses faster by decreasing the threshold.
+(setq gc-cons-threshold (* 2 1000 1000))

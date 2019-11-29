@@ -67,6 +67,22 @@
 (toggle-scroll-bar 1)          ;; Use vertical scrollbar
 (transient-mark-mode 1)        ;; Highlight active region
 
+;; Initialize the dashboard :)
+;; (require 'dashboard)
+;; (setq
+;;   dashboard-banner-logo-title "Welcome to the thermonuclear word processor."
+;;   dashboard-items '(
+;;                      (recents  . 10)
+;;                      (bookmarks . 5)
+;;                      (agenda . 20)
+;;                      (registers . 5))
+;;   dashboard-set-heading-icons t
+;;   dashboard-set-file-icons    t
+;;   dashboard-set-navigator     t
+;;   dashboard-startup-banner    'logo
+;;   )
+;; (dashboard-setup-startup-hook)
+
 ;; My preferred theme and its tweaks: Solarized
 (setq
   solarized-use-variable-pitch nil   ;; No proportional font for org-mode headings
@@ -88,8 +104,11 @@
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; Enable web-mode for editing HTML files
-(require 'web-mode)
-(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+;; (require 'web-mode)
+;; (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+(use-package web-mode
+  :mode ("\\.html?\\'" . web-mode)
+  )
 
 ;; Make sure PDF will be opened with pdf-tools
 (pdf-loader-install)
