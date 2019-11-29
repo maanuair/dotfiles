@@ -14,19 +14,13 @@
 
 ;; This file is NOT part of GNU Emacs.
 
-;; Hmmmmmm, use instead https://github.com/jwiegley/use-package ?
-
-;; We automatically install desired packages here
-
-
-;; Add the stable ELPA source
-;; (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-
-;; Use instead the non stable MELPA source, since some packages are only there
+;; We use the non stable MELPA source, since some packages are missing from MELPA Stable
 ;; (I'm looking at you, restclient, org-cliplink, allthe-icons-dired...)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;; (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 
-;; Desired lsit of packages
+;; We automatically install the missing packages  listed below.
+;; This is expensive at first run.
 (defvar
   my-packages
   '(
@@ -34,9 +28,11 @@
      all-the-icons
      all-the-icons-dired
      counsel
+     dashboard
      doom-modeline
      editorconfig
      emmet-mode
+     esup
      exec-path-from-shell
      free-keys
      groovy-mode
@@ -55,6 +51,7 @@
      restclient
      slime
      solarized-theme
+     use-package
      web-mode
      zenburn-theme
      )
