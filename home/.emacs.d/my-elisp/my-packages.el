@@ -16,8 +16,9 @@
 
 ;; We use the non stable MELPA source, since some packages are missing from MELPA Stable
 ;; (I'm looking at you, restclient, org-cliplink, allthe-icons-dired...)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-;; (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(setq my-preferred-package-host "melpa.org")
+(setq my-preferred-package-entry (cons "melpa" (concat "https://" my-preferred-package-host "/packages/")))
+(add-to-list 'package-archives my-preferred-package-entry t)
 
 ;; We automatically install the missing packages  listed below.
 ;; This is expensive at first run.
@@ -65,17 +66,19 @@
   (when (not (package-installed-p p))
     (add-to-list 'my-missing-packages p)))
 
-;; Check internet connection
+;; When there is missing package(s), check internet connection in order to see whether we update
 (setq my-onlinep nil)
-(unless
-  (condition-case nil
-    (delete-process
-      (make-network-process
-        :name "my-check-internet"
-        :host "elpa.gnu.org"
-        :service 80))
-    (error t))
-  (setq my-onlinep t))
+(when my-missing-packages
+  (unless
+    (condition-case nil
+      (delete-process
+        (make-network-process
+          :name "my-check-internet"
+          :host my-preferred-package-host
+          :service 80))
+      (error t))
+    (setq my-onlinep t))
+  )
 
 ;; Automatically install the missing packages
 (when (and my-missing-packages my-onlinep)
