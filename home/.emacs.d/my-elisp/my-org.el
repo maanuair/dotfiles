@@ -21,16 +21,13 @@
 (global-set-key (kbd "C-c l") 'org-store-link)
 (global-set-key (kbd "C-c a") 'org-agenda)
 
-;; Some shortcuts to load quiclky my personal PARA org files
+;; Some shortcuts to load quiclky my personal or work PARA org files
 (setq
   my-perso-org-dir (expand-file-name "~/Org/Perso")
   my-work-org-dir (expand-file-name "~/Org/Work")
   )
-(global-set-key (kbd "C-c p p") (lambda () (interactive) (find-file (expand-file-name "para.org"  my-perso-org-dir))))
-(global-set-key (kbd "C-c p s") (lambda () (interactive) (find-file (expand-file-name "sample.org"    my-perso-org-dir))))
-;; Same for work org files
-(global-set-key (kbd "C-c w p") (lambda () (interactive) (find-file (expand-file-name "para.org"   my-work-org-dir))))
-(global-set-key (kbd "C-c w s") (lambda () (interactive) (find-file (expand-file-name "sample.org" my-work-org-dir))))
+(global-set-key (kbd "C-c p") (lambda () (interactive) (find-file (expand-file-name "para.org"  my-perso-org-dir))))
+(global-set-key (kbd "C-c w") (lambda () (interactive) (find-file (expand-file-name "para.org"   my-work-org-dir))))
 
 ;; Some Org mode settings
 (setq
