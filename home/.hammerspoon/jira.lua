@@ -1,4 +1,4 @@
--- Copyright © 2016, 2017, 2018, 2019 Emmanuel Roubion
+-- Copyright © 2016, 2017, 2018, 2019, 2020 Emmanuel Roubion
 --
 -- Author: Emmanuel Roubion
 -- URL: https://github.com/maanuair/dotfiles
@@ -85,7 +85,7 @@ end
 
 -- Search the highlighted selection in Request.jira.com
 function jira.search()
-  local url = jiraAccount.getBaseUrl() .. "issues/?jql=project IN " .. jiraAccount.getDefaultSearchProjects() .. " AND summary ~ \"" .. utils.getTrimmedSelectedText() .. "\" ORDER BY issueKey DESC"
+  local url = jiraAccount.getBaseUrl() .. "issues/?jql=project IN " .. jiraAccount.getDefaultSearchProjects() .. " AND text ~ \"" .. utils.getTrimmedSelectedText() .. "\" AND issueType IN (Epic, Story,Bug) ORDER BY issueKey DESC"
   log.f("Searching '%s'", url)
   -- TODO: if empty, pop-up a chooser
   utils.browseUrl(url)
