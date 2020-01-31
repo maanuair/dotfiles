@@ -1,4 +1,4 @@
-;; Copyright © 2016, 2017, 2018, 2019 Emmanuel Roubion
+;; Copyright © 2016, 2017, 2018, 2019, 2020 Emmanuel Roubion
 ;;
 ;; Author: Emmanuel Roubion
 ;; URL: https://github.com/maanuair/dotfiles
@@ -30,4 +30,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(treemacs-directory-face ((t (:height 1.0))))
+ '(treemacs-file-face ((t (:height 1.0))))
+ '(treemacs-root-face ((t (:height 1.0)))))
