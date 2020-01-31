@@ -1,4 +1,4 @@
-;; Copyright © 2016, 2017, 2018, 2019 Emmanuel Roubion
+;; Copyright © 2016, 2017, 2018, 2019, 2020 Emmanuel Roubion
 ;;
 ;; Author: Emmanuel Roubion
 ;; URL: https://github.com/maanuair/dotfiles
