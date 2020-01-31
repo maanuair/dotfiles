@@ -1,4 +1,4 @@
-;; Copyright © 2016, 2017, 2018, 2019 Emmanuel Roubion
+;; Copyright © 2016, 2017, 2018, 2019, 2020 Emmanuel Roubion
 ;;
 ;; Author: Emmanuel Roubion
 ;; URL: https://github.com/maanuair/dotfiles
@@ -103,11 +103,22 @@
 ;; Make the default frame maximized at startup
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
+;; Enable js2-mode for editing JS files
+(use-package js2-mode
+  :mode ("\\.js\\'" . js2-mode)
+  )
+
 ;; Enable web-mode for editing HTML files
-;; (require 'web-mode)
-;; (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 (use-package web-mode
-  :mode ("\\.html?\\'" . web-mode)
+  :mode ("\\.html\\'" . web-mode)
+  )
+
+;; A few UI tweaks for treemacs
+(use-package treemacs
+  :custom-face
+  (treemacs-root-face ((t (:height 1.0))))
+  (treemacs-directory-face ((t (:height 1.0))))
+  (treemacs-file-face ((t (:height 1.0))))
   )
 
 ;; Make sure PDF will be opened with pdf-tools
@@ -122,6 +133,8 @@
 (global-set-key (kbd "S-<f6>") 'next-error)
 (global-set-key (kbd "<f12>")  'auto-revert-tail-mode)
 (global-set-key (kbd "C-x g")  'magit-status)
+(global-set-key (kbd "C-x t")  'treemacs)
+(global-set-key (kbd "C-x c")  'indium-connect)
 (global-set-key (kbd "C-. i") (lambda () (interactive) (find-file (expand-file-name "init.el" user-emacs-directory))))
 (global-set-key (kbd "C-. d") (lambda () (interactive) (find-file (expand-file-name "my-dirs.el" my-elisp-dir))))
 (global-set-key (kbd "C-. f") (lambda () (interactive) (find-file (expand-file-name "my-functions.el" my-elisp-dir))))
