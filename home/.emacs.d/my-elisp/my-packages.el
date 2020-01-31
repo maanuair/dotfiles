@@ -1,4 +1,4 @@
-;; Copyright © 2016, 2017, 2018, 2019 Emmanuel Roubion
+;; Copyright © 2016, 2017, 2018, 2019, 2020 Emmanuel Roubion
 ;;
 ;; Author: Emmanuel Roubion
 ;; URL: https://github.com/maanuair/dotfiles
@@ -38,8 +38,10 @@
      free-keys
      groovy-mode
      hackernews
+     indium		;; Reminder: npm install -g indium
      js2-mode
      json-mode
+     logview
      lua-mode
      markdown-mode
      magit
@@ -52,6 +54,7 @@
      restclient
      slime
      solarized-theme
+     treemacs
      use-package
      web-mode
      zenburn-theme
