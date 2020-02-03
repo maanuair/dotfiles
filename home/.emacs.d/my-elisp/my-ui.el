@@ -110,7 +110,9 @@
 
 ;; Enable web-mode for editing HTML files
 (use-package web-mode
-  :mode ("\\.html\\'" . web-mode)
+  :mode
+  ("\\.html\\'" . web-mode)
+  ("\\.ejs\\'" . web-mode)
   )
 
 ;; A few UI tweaks for treemacs
