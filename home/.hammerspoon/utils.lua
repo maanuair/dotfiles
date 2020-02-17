@@ -1,4 +1,4 @@
--- Copyright © 2016, 2018, 2019 Emmanuel Roubion
+-- Copyright © 2016, 2018, 2019, 2020 Emmanuel Roubion
 --
 -- Author: Emmanuel Roubion
 -- URL: https://github.com/maanuair/dotfiles
@@ -27,19 +27,19 @@ local log = hs.logger.new('utils.lua', 'debug')
 
 -- Reload automatically the config
 function reloadConfig(files)
-   doReload = false
-   for _,file in pairs(files) do
-      if file:sub(-4) == ".lua" then
-	 doReload = true
-	 break
-      end
-   end
-   if doReload then
-      hs.reload()
-      local s = "Hammerspoon config on disk was changed and reloaded!"
-      hs.alert.show(s)
-      log.df(s)
-   end
+  doReload = false
+  for _,file in pairs(files) do
+    if file:sub(-4) == ".lua" then
+      doReload = true
+      break
+    end
+  end
+  if doReload then
+    hs.reload()
+    local s = "Hammerspoon config on disk was changed and reloaded!"
+    hs.alert.show(s)
+    log.df(s)
+  end
 end
 hs.pathwatcher.new("~/.homesick/repos/dotfiles/home/.hammerspoon/", reloadConfig):start()
 
@@ -48,34 +48,34 @@ hs.pathwatcher.new("~/.homesick/repos/dotfiles/home/.hammerspoon/", reloadConfig
 
 -- A trim function, c.f. http://lua-users.org/wiki/StringTrim
 function utils.trim (s)
-   return (s:gsub("^%s*(.-)%s*$", "%1"))
+  return (s:gsub("^%s*(.-)%s*$", "%1"))
 end
 
 -- Capture the trimmed selected text
 function utils.getTrimmedSelectedText()
-   return utils.trim(utils.getSelectedText())
+  return utils.trim(utils.getSelectedText())
 end
 
 -- Look up current selection in dictionary
 function utils.openDict()
-   local uri = "dict://" .. utils.getTrimmedSelectedText()
-   log.f("Open '%s'", uri)
-   utils.browseUrl(uri)
+  local uri = "dict://" .. utils.getTrimmedSelectedText()
+  log.f("Open '%s'", uri)
+  utils.browseUrl(uri)
 end
 
 -- Browse the  current selection
 function utils.openBrowser()
-   local uri = utils.getTrimmedSelectedText()
-   log.f("Browse '%s'", uri)
-   utils.browseUrl(uri)
+  local uri = utils.getTrimmedSelectedText()
+  log.f("Browse '%s'", uri)
+  utils.browseUrl(uri)
 end
 
 -- Open the given URI in Safari
 function utils.browseUrl (url)
-   log.df("browseUrl(\"%s\")", url)
-   local cmd = "open \"" .. url .. "\""
-   hs.execute(cmd)
-   log.df("hs.execute(\"" .. cmd .. "\")")
+  log.df("browseUrl(\"%s\")", url)
+  local cmd = "open \"" .. url .. "\""
+  hs.execute(cmd)
+  log.df("hs.execute(\"" .. cmd .. "\")")
 end
 
 -- Google the highlighted selection
@@ -119,43 +119,43 @@ end
 
 -- Wait a few millis seconds. Yes, hack.
 function utils.wait(ms)
-   if ms == nil then ms = 250000 end
-   log.df("Now waiting %dms.", ms)
-   hs.timer.usleep(ms)
-   log.df("Wait over.")
+  if ms == nil then ms = 250000 end
+  log.df("Now waiting %dms.", ms)
+  hs.timer.usleep(ms)
+  log.df("Wait over.")
 end
 
 -- Capture the currently highlighted/selected text, or clipboard content if empty
 function utils.getSelectedText()
-   -- Save the entire clipboard, for later restore
-   local contentsBackup = hs.pasteboard.getContents()
-   log.df("Clipboard saved (actually, is \"%s\").", contensBackup)
+  -- Save the entire clipboard, for later restore
+  local contentsBackup = hs.pasteboard.getContents()
+  log.df("Clipboard saved (actually, is \"%s\").", contensBackup)
 
-   -- Clears clipboard
-   hs.pasteboard.clearContents()
-   log.df("Cleared clipboard")
-   utils.wait()
+  -- Clears clipboard
+  hs.pasteboard.clearContents()
+  log.df("Cleared clipboard")
+  utils.wait()
 
-   -- Send copy command to capture current highlighted selection
-   hs.eventtap.keyStroke({"cmd"}, "c")
-   log.df("Sent CMD + C")
-   utils.wait()
+  -- Send copy command to capture current highlighted selection
+  hs.eventtap.keyStroke({"cmd"}, "c")
+  log.df("Sent CMD + C")
+  utils.wait()
 
-   -- Copy text from clipboard
-   local selection = hs.pasteboard.readString()
-   if selection == nil then
-     log.df("Selection is nil, use empty string")
-      selection = ""
-   end
-   log.df(string.format("Got highlighted selection \"%s\".", selection))
+  -- Copy text from clipboard
+  local selection = hs.pasteboard.readString()
+  if selection == nil then
+    log.df("Selection is nil, use empty string")
+    selection = ""
+  end
+  log.df(string.format("Got highlighted selection \"%s\".", selection))
 
-   -- Restore original content
-   hs.pasteboard.setContents(contentsBackup)
-   log.df("Restored original clipboard")
+  -- Restore original content
+  hs.pasteboard.setContents(contentsBackup)
+  log.df("Restored original clipboard")
 
-   -- Returns the precious information!
-   log.df(string.format("Returning selection \"%s\"", selection))
-   return selection
+  -- Returns the precious information!
+  log.df(string.format("Returning selection \"%s\"", selection))
+  return selection
 end
 
 -- Type my address
@@ -191,6 +191,29 @@ function utils.typePhoneNumber()
   local s = utilsAccount.getPhoneNumber()
   log.df("Going to type phone number \"%s\"", s)
   hs.eventtap.keyStrokes(s)
+end
+
+-- Turn on/off Focus Mode
+function utils.toggleMenuBar()
+  local s = utilsAccount.getPhoneNumber()
+  log.df("Going to type phone number \"%s\"", s)
+  hs.eventtap.keyStrokes(s)
+
+  -- Hide/show the menu bar
+  -- Unforunately, the script is locale dependent! :-/
+  hs.osascript.applescript([[
+    tell application "System Preferences"
+      set bounds of window 1 to {0, 0, 0, 0}
+      reveal pane id "com.apple.preference.general"
+      delay 1
+      tell application "System Events"
+        click checkbox "Masquer/afficher automatiquement la barre des menus" of window "Général" of process "System Preferences"
+      end tell
+      quit
+    end tell
+]])
+
+  --
 end
 
 return utils

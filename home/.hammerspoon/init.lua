@@ -1,4 +1,4 @@
--- Copyright © 2016, 2017, 2018, 2019 Emmanuel Roubion
+-- Copyright © 2016, 2017, 2018, 2019, 2020 Emmanuel Roubion
 --
 -- Author: Emmanuel Roubion
 -- URL: https://github.com/maanuair/dotfiles
@@ -40,6 +40,7 @@ hs.hotkey.bind(m1, "F", "Type my first name", utils.typeFirstName)
 hs.hotkey.bind(m1, "G", "Google the highlighted selection", utils.googleSelection)
 hs.hotkey.bind(m1, "J", "Jira search the highlighted selection", jira.search)
 hs.hotkey.bind(m1, "L", "Type my lastname", utils.typeLastName)
+hs.hotkey.bind(m1, "M", "Toggle menu bar", utils.toggleMenuBar)
 hs.hotkey.bind(m1, "T", "Translate with Google the highlighted selection", utils.googleTranslateSelection)
 hs.hotkey.bind(m1, "O", "Open highlighted Jira issue (or ask)", jira.browseIssue)
 hs.hotkey.bind(m1, "P", "Type my phone number", utils.typePhoneNumber)
