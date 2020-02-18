@@ -179,6 +179,13 @@ function utils.typeEmail()
   hs.eventtap.keyStrokes(s)
 end
 
+-- Type my alt. email
+function utils.typeAltEmail()
+  local s = utilsAccount.getAltEmail()
+  log.df("Going to type email \"%s\"", s)
+  hs.eventtap.keyStrokes(s)
+end
+
 -- Type my last name
 function utils.typeLastName()
   local s = utilsAccount.getLastName()

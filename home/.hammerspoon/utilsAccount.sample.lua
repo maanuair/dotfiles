@@ -1,4 +1,4 @@
--- Copyright © 2019 Emmanuel Roubion
+-- Copyright © 2019, 2020 Emmanuel Roubion
 --
 -- Author: Emmanuel Roubion
 -- URL: https://github.com/maanuair/dotfiles
@@ -30,6 +30,11 @@ end
 
 -- Returns the email for this account
 function utilsAccount.getEmail()
+   return "undefined-SetMeFirst"
+end
+
+-- Returns the alt email for this account
+function utilsAccount.getAltEmail()
    return "undefined-SetMeFirst"
 end
 
