@@ -200,6 +200,13 @@ function utils.typePhoneNumber()
   hs.eventtap.keyStrokes(s)
 end
 
+-- Type crrent timestamp
+function utils.typeTimestamp()
+  local s = os.date("%Y%m%d%H%M%S")
+  log.df("Going to type current timestamp \"%s\"", s)
+  hs.eventtap.keyStrokes(s)
+end
+
 -- Turn on/off Focus Mode
 function utils.toggleMenuBar()
   local s = utilsAccount.getPhoneNumber()

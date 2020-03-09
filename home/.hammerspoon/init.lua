@@ -38,6 +38,7 @@ hs.hotkey.bind(m1, "D", "Define (in Dictionary) the highlighted selection (or as
 hs.hotkey.bind(m1, "E", "Type my email", utils.typeEmail)
 hs.hotkey.bind(m1, "F", "Type my first name", utils.typeFirstName)
 hs.hotkey.bind(m1, "G", "Google the highlighted selection", utils.googleSelection)
+hs.hotkey.bind(m1, "I", "Insert current timestamp", utils.typeTimestamp)
 hs.hotkey.bind(m1, "J", "Jira search the highlighted selection", jira.search)
 hs.hotkey.bind(m1, "L", "Type my lastname", utils.typeLastName)
 hs.hotkey.bind(m1, "M", "Toggle menu bar", utils.toggleMenuBar)
