@@ -40,8 +40,8 @@ Brew funny packages:
   lolcat           - Rainbows and unicorns in your console!
   neofetch         - A command-line system information tool written in bash 3.2+
 
-Brew intesting casks:
-====================
+Brew interesting casks:
+======================
 
   betterzip        - Most notably has a Quick Look for zip file
   coverload        - Download cover art from the iTunes store - https://coverloadapp.com
@@ -67,7 +67,7 @@ Brew audio apps:
   wavesurfer       - Sound visualization and manipulation
 
 Brew interesting commands:
-========================
+=========================
 
   brew cleanup -s [--dry-run]
     Delete the brew cache
@@ -98,3 +98,13 @@ Brew interesting commands:
 
   brew uses --installed --recursive ffmpeg
     Show the formulae that specify formula as a dependency.
+
+Breww and java8:
+===============
+
+  brew tap adoptopenjdk/openjdk
+  brew cask install adoptopenjdk8
+  (or brew cask install adoptopenjdk/openjdk/adoptopenjdk8, see below)
+    The AdoptOpenJDK project makes it possible to nstall Java 8.
+    Use the 3rd line when the error "Error: Cask adoptopenjdk8 exists in multiple taps" occurs.
+    (source: https://stackoverflow.com/questions/24342886/how-to-install-java-8-on-mac)
