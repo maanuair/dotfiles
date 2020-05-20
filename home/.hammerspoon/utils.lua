@@ -200,7 +200,14 @@ function utils.typePhoneNumber()
   hs.eventtap.keyStrokes(s)
 end
 
--- Type crrent timestamp
+-- Type current date
+function utils.typeDate()
+  local s = os.date("%Y-%m-%d")
+  log.df("Going to type current date \"%s\"", s)
+  hs.eventtap.keyStrokes(s)
+end
+
+-- Type current timestamp
 function utils.typeTimestamp()
   local s = os.date("%Y%m%d%H%M%S")
   log.df("Going to type current timestamp \"%s\"", s)
