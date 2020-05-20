@@ -57,6 +57,7 @@
      treemacs
      use-package
      web-mode
+     which-key
      zenburn-theme
      )
   "The list of packages that should be installed, and verified as such at startup")

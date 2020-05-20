@@ -123,6 +123,11 @@
   (treemacs-file-face ((t (:height 1.0))))
   )
 
+(use-package which-key
+  :init
+  (which-key-mode)
+  )
+
 ;; Make sure PDF will be opened with pdf-tools
 (pdf-loader-install)
 
