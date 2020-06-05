@@ -357,8 +357,11 @@ function setupEnvVars () {
     local CHOME="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
     [[ -d "$CHOME" ]] && export PATH="$PATH:$CHOME"
 
-    # And Pythgon 3 overrides python 2
-    PATH="/usr/local/opt/python@3.8/bin:$PATH"
+    # And Python 3 overrides python 2
+    export PATH="/usr/local/opt/python@3.8/bin:$PATH"
+
+    # For Ansible, installed by brew...
+    export PATH="/usr/local/opt/ansible@2.8/bin:$PATH"
   fi
 
   # Loads the local custom add-on when it exists
