@@ -1,4 +1,4 @@
-# Copyright © 2016, 2017, 2018, 2019 Emmanuel Roubion
+# Copyright © 2016, 2017, 2018, 2019, 2020 Emmanuel Roubion
 #
 # Author: Emmanuel Roubion
 # URL: https://github.com/maanuair/dotfiles
@@ -356,6 +356,9 @@ function setupEnvVars () {
     # This is Viual Studio Code
     local CHOME="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
     [[ -d "$CHOME" ]] && export PATH="$PATH:$CHOME"
+
+    # And Pythgon 3 overrides python 2
+    PATH="/usr/local/opt/python@3.8/bin:$PATH"
   fi
 
   # Loads the local custom add-on when it exists
