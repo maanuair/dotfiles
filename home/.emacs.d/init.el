@@ -96,15 +96,9 @@
   (setq
     use-package-verbose            nil
     use-package-expand-minimally   t))
-(setq
-  package-enable-at-startup        nil                ; Prevent initialising twice
-  package-user-dir                 (                  ; Prefered location of packages
-                                     expand-file-name
-                                     "packages/" my-no-littering-dir))
 
 ;; Initialize package.el
 (unless package--initialized (package-initialize nil))
-;;(package-initialize)
 
 ;; Install use-package if needed (e.g.: on first startup...)
 (unless (package-installed-p 'use-package)
@@ -152,8 +146,9 @@
               (find-file (expand-file-name "init.el" user-emacs-directory))))
           ("C-c l"   . my-load-theme-light)
           ("C-c d"   . my-load-theme-dark)
+          ("C-c /"   . comment-region)
+          ("C-c \\"  . uncomment-region)
           ("M-g"     . goto-line)
-          ("M-o"     . other-window)
           ("<f5>"    . my-reformat)
           ("<f6>"    . recompile)
           ("S-<f6>"  . next-error)
@@ -287,6 +282,8 @@
   (recentf-max-menu-items        50          "How many recent files to keep in menu?")
   (recentf-max-saved-items       50          "How many recent files to save in file?")
   :config
+  (add-to-list                   'recentf-exclude no-littering-var-directory)
+  (add-to-list                   'recentf-exclude no-littering-etc-directory)
   (recentf-mode                  t))         ; Enable recent files
 
 (use-package saveplace
@@ -304,8 +301,8 @@
 (use-package server
   :ensure nil
   :custom
-  (server-auth-dir                           ; Directory for server auth files
-    (expand-file-name "server-auth/" no-littering-var-directory)))
+  (server-auth-dir               (           ; Directory for server auth files
+                                   expand-file-name "server-auth/" no-littering-var-directory)))
 
 (use-package sgml-mode
   :ensure nil
@@ -323,7 +320,12 @@
   :ensure nil
   :custom
   (vc-follow-symlinks            t         "Visits symlinks, don't follow them.")
-  (vc-make-backup-files          t           "Backups version controlled files."))
+  (vc-make-backup-files          t         "Backups version controlled files."))
+
+(use-package windmove
+  :ensure nil
+  :config
+  (windmove-default-keybindings))           ; shifted arrow keys
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 3rd party Emacs packages
@@ -336,17 +338,18 @@
 ;; - Ivi ?
 ;;   ivy-use-virtual-buffers t                    ;; Add recent files and bookmarks to ‘ivy-switch-buffer
 ;;   ivy-count-format "(%d/%d) "                  ;; Display the current candidate count for `ivy-read' to display both the index and the count.
+;; - Flycheck ?
 
 (use-package all-the-icons)
 
 (use-package auto-package-update
+  :disabled                                         ; It raises seom "Warning (package): Unnecessary call to ‘package-initialize’ in init file..."
   :init
   (setq                                             ; Override "last update day" file in no-littering var dir
     apu--last-update-day-filename
     (expand-file-name
       ".auto-package-update-last-package-update-day"
       no-littering-var-directory))
-  (setq auto-package-update-prompt-before-update t) ; Manual prompt before automatic updates"
   :config
   (auto-package-update-maybe))
 
@@ -361,7 +364,6 @@
   (my-load-theme-light))        ; Load tomorrow-day theme by default
 
 (use-package dashboard
-  :disabled
   :config
   (dashboard-setup-startup-hook)
   :custom
