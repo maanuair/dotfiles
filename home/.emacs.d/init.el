@@ -144,8 +144,6 @@
             (lambda ()
               (interactive)
               (find-file (expand-file-name "init.el" user-emacs-directory))))
-          ("C-c l"   . my-load-theme-light)
-          ("C-c d"   . my-load-theme-dark)
           ("C-c /"   . comment-region)
           ("C-c \\"  . uncomment-region)
           ("M-g"     . goto-line)
@@ -354,14 +352,15 @@
   (auto-package-update-maybe))
 
 (use-package color-theme-sanityinc-tomorrow
+  :bind ( ("C-c l"   . my-load-theme-light)
+          ("C-c d"   . my-load-theme-dark))
   :config
   (defun my-load-theme-dark ()  "Load the preferred dark theme."
 	  (interactive)
 	  (load-theme 'sanityinc-tomorrow-night t))
   (defun my-load-theme-light () "Load the preferred light theme."
 	  (interactive)
-	  (load-theme 'sanityinc-tomorrow-day t))
-  (my-load-theme-light))        ; Load tomorrow-day theme by default
+	  (load-theme 'sanityinc-tomorrow-day t)))
 
 (use-package dashboard
   :config
@@ -372,7 +371,7 @@
                                   (bookmarks . 5)
                                   (agenda . 20)
                                   (registers . 5))
-		"Set the items to put at startup" )
+		                                  "Set the items to put at startup" )
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons    t)
   (dashboard-set-navigator     t)
@@ -386,7 +385,7 @@
 
 (use-package editorconfig
   :config
-  (editorconfig-mode t))               ; Enable EditorConfig
+  (editorconfig-mode t))              ; Enable EditorConfig
 
 (use-package emmet-mode
   :hook (sgml-mode css-mode web-mode))
@@ -438,13 +437,21 @@
   :disabled
   :mode ("\\.rest\\'" . restclient-mode))
 
+(use-package theme-changer
+  :config
+  (setq calendar-latitude 43.62)
+  (setq calendar-longitude 7.04)
+  (change-theme 'sanityinc-tomorrow-day 'sanityinc-tomorrow-night))
+
 (use-package treemacs
   :bind
-  ("C-x t" . treemacs)
+  ("C-C t" . treemacs)
   :custom-face
   (treemacs-file-face      ((t (:height 1.0))))
   (treemacs-directory-face ((t (:height 1.0))))
   (treemacs-root-face      ((t (:height 1.0)))))
+
+(use-package try)
 
 (use-package web-mode
   :mode
