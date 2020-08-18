@@ -351,9 +351,20 @@
   :config
   (auto-package-update-maybe))
 
+(use-package circadian
+  :ensure t
+  :custom
+  (calendar-latitude      43.55)
+  (calendar-longitude     7.02)
+  (circadian-themes       '( (:sunrise . sanityinc-tomorrow-day)
+                             (:sunset  . sanityinc-tomorrow-night)))
+  :config
+  (circadian-setup))
+
 (use-package color-theme-sanityinc-tomorrow
   :bind ( ("C-c l"   . my-load-theme-light)
           ("C-c d"   . my-load-theme-dark))
+  :defer
   :config
   (defun my-load-theme-dark ()  "Load the preferred dark theme."
 	  (interactive)
@@ -367,7 +378,7 @@
   (dashboard-setup-startup-hook)
   :custom
   (dashboard-items             '(
-                                  (recents  . 10)
+                                  (recents  . 20)
                                   (bookmarks . 5)
                                   (agenda . 20)
                                   (registers . 5))
@@ -436,12 +447,6 @@
 (use-package restclient
   :disabled
   :mode ("\\.rest\\'" . restclient-mode))
-
-(use-package theme-changer
-  :config
-  (setq calendar-latitude 43.62)
-  (setq calendar-longitude 7.04)
-  (change-theme 'sanityinc-tomorrow-day 'sanityinc-tomorrow-night))
 
 (use-package treemacs
   :bind
