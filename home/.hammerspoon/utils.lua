@@ -214,27 +214,29 @@ function utils.typeTimestamp()
   hs.eventtap.keyStrokes(s)
 end
 
+-- Type current date
+function utils.typeDate()
+  local s = os.date("%Y-%m-%d")
+  log.df("Going to type current date \"%s\"", s)
+  hs.eventtap.keyStrokes(s)
+end
+
 -- Turn on/off Focus Mode
 function utils.toggleMenuBar()
-  local s = utilsAccount.getPhoneNumber()
-  log.df("Going to type phone number \"%s\"", s)
-  hs.eventtap.keyStrokes(s)
-
   -- Hide/show the menu bar
   -- Unforunately, the script is locale dependent! :-/
   hs.osascript.applescript([[
     tell application "System Preferences"
+      activate
       set bounds of window 1 to {0, 0, 0, 0}
-      reveal pane id "com.apple.preference.general"
+      set the current pane to pane id "com.apple.preference.general"
       delay 1
-      tell application "System Events"
-        click checkbox "Masquer/afficher automatiquement la barre des menus" of window "Général" of process "System Preferences"
+      tell application "System Events" to tell process "System Preferences"
+        click checkbox "Masquer/afficher automatiquement la barre des menus" of window 1
       end tell
       quit
     end tell
-]])
-
-  --
+    ]])
 end
 
 return utils
