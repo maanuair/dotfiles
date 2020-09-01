@@ -18,13 +18,18 @@
 ;; Startup time performance
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; My default, naked, Emacs startup time is ~ 0.3 seconds in UI mode.
+;; I follwoed some advices on https://blog.d46.us/advanced-emacs-startup/
+
+;; My default, naked, Emacs startup time is ~ 0.4 seconds in UI mode.
 ;; On macOS, run the following to discover it:
 ;;   open -n /Applications/Emacs.app --args -q --eval='(message "%s" (emacs-init-time))'
 ;; On other OSes:
 ;;   emacs -q --eval='(message "%s" (emacs-init-time))'
 
-;; Currently, startup time is: 1.86 seconds, with 5 GCs
+;; Currently, startup time is:
+;;   past:         1.86 seconds, with 5 GCs
+;;   2020-09 past: 2.49 seconds, with 11 GCs
+
 
 ;; Make startup faster by reducing the frequency of GC.
 (setq
@@ -254,6 +259,7 @@
 
 (use-package paren
   :ensure nil
+  :defer 2
   :config
   (show-paren-mode               t)          ; visualization of matching parensenable paren mode
   (setq
@@ -263,7 +269,7 @@
 
 (use-package recentf
   :ensure nil
-  :defer 10
+  :defer 1
   :commands(recentf-add-file recentf-apply-filename-handlers recentf-mode )
   :preface
   (defun recentf-add-dired-directory ()
@@ -286,6 +292,7 @@
 
 (use-package saveplace
   :ensure nil
+  :defer 2
   :unless noninteractive
   :config
   (save-place-mode               t))         ; Automatically save place in each file.
@@ -298,12 +305,14 @@
 
 (use-package server
   :ensure nil
+  :defer 2
   :custom
   (server-auth-dir               (           ; Directory for server auth files
                                    expand-file-name "server-auth/" no-littering-var-directory)))
 
 (use-package sgml-mode
   :ensure nil
+  :defer 2
   :commands sgml-mode
   :custom
   (sgml-quick-keys               'close      "Auto close elements upon '</'."))
@@ -322,6 +331,7 @@
 
 (use-package windmove
   :ensure nil
+  :defer 2
   :config
   (windmove-default-keybindings))           ; shifted arrow keys
 
