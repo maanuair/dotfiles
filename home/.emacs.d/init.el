@@ -18,7 +18,7 @@
 ;; Startup time performance
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; I follwoed some advices on https://blog.d46.us/advanced-emacs-startup/
+;; I followed some advices on https://blog.d46.us/advanced-emacs-startup/
 
 ;; My default, naked, Emacs startup time is ~ 0.4 seconds in UI mode.
 ;; On macOS, run the following to discover it:
@@ -128,6 +128,11 @@
   :custom
   (apropos-do-all t "More extensive search"))
 
+(use-package conf-mode
+  :ensure nil
+  :mode ("\\.cfg\\'" . conf-javaprop-mode)
+  )
+
 (use-package copyright
   :ensure nil
   :hook (before-save . copyright-update))
@@ -170,10 +175,15 @@
 	  (interactive)
 	  (my-indent-buffer)
 	  (font-lock-fontify-buffer))
-  ;; Make sure the default frame size is maximized
-  (add-to-list
-    'default-frame-alist
-    '(fullscreen . maximized))
+  ;; Custom changes to the default frame size & font
+  (add-to-list 'default-frame-alist '(fullscreen . maximized))
+  (add-to-list 'default-frame-alist '(font . "Monaco-12"))
+  (defun my-set-face-show-paren-match-expression () "Customises how to show paren matches."
+    (interactive)
+    (set-face-attribute 'show-paren-match-expression nil
+      :inherit nil
+      :inverse-video t))
+  (my-set-face-show-paren-match-expression)
   ;; Specific settings for macOS
   (when (is-macOs)
     (setq
@@ -263,9 +273,10 @@
   :config
   (show-paren-mode               t)          ; visualization of matching parensenable paren mode
   (setq
-    show-paren-delay             nil         ; Highlights parenthesis without delay.
-    show-paren-style             'mixed      ; Shows the matching paren if visible, the  expression otherwise.
-    ))
+    show-paren-delay             nil         ; Highlights parenthesis without delay
+    show-paren-style             'expression ; Shows the matching expression
+    )
+  )
 
 (use-package recentf
   :ensure nil
@@ -366,22 +377,25 @@
   :custom
   (calendar-latitude      43.55)
   (calendar-longitude     7.02)
-  (circadian-themes       '( (:sunrise . sanityinc-tomorrow-day)
-                             (:sunset  . sanityinc-tomorrow-night)))
+  (circadian-themes       '(
+                             (:sunrise . solarized-light)
+                             (:sunset  . solarized-dark)))
   :config
   (circadian-setup))
 
-(use-package color-theme-sanityinc-tomorrow
+(use-package solarized-theme
   :bind ( ("C-c l"   . my-load-theme-light)
           ("C-c d"   . my-load-theme-dark))
   :defer
   :config
   (defun my-load-theme-dark ()  "Load the preferred dark theme."
 	  (interactive)
-	  (load-theme 'sanityinc-tomorrow-night t))
+	  (load-theme 'solarized-dark t)
+	  (my-set-face-show-paren-match-expression))
   (defun my-load-theme-light () "Load the preferred light theme."
 	  (interactive)
-	  (load-theme 'sanityinc-tomorrow-day t)))
+	  (load-theme 'solarized-light t)
+	  (my-set-face-show-paren-match-expression)))
 
 (use-package dashboard
   :config
@@ -392,7 +406,7 @@
                                   (bookmarks . 5)
                                   (agenda . 20)
                                   (registers . 5))
-		                                  "Set the items to put at startup" )
+		"Set the items to put at startup" )
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons    t)
   (dashboard-set-navigator     t)
