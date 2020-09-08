@@ -189,20 +189,18 @@
     (setq
       trash-directory             "~/.Trash/" ; Trash folder is ~/.Trash
       mac-right-option-modifier   'none       ; Make the right Alt key (option) native
-      )
-    )
+      ))
   :custom
-  (delete-by-moving-to-trash      t           "Uses system's trash when deleting stuff.")
+  (delete-by-moving-to-trash      t           "Uses OS's trash when deleting stuff.")
   (echo-keystrokes                0.5         "Shows keystrokes right away.")
   (frame-title-format
     (list
       '(buffer-file-name "%f" (dired-directory dired-directory "%b"))
       " (" user-login-name "@" system-name  ")"
-      ) "Sets the frame title."
-    )
-  (indicate-buffer-boundaries     "left"      "Show buffer boundaries in left fringe.")
-  (indicate-empty-lines           t           "Show empty lines in the left fringe.")
-  (inhibit-startup-screen         t           "Do not show splash screen.")
+      ) "Sets the frame title.")
+  (indicate-buffer-boundaries     "left"      "Buffer limits in the left fringe.")
+  (indicate-empty-lines           t           "Empty lines in the left fringe.")
+  (inhibit-startup-screen         t           "No splash screen.")
   (initial-scratch-message        nil         "No scratch message.")
   (tool-bar-mode                  nil         "Do not show toolbar.")
   (transient-mark-mode            t           "Highlight sactive region.")
@@ -216,14 +214,14 @@
     auto-save-file-name-transforms `((".*" ,my-autosaves-dir t))
     auto-save-list-file-prefix     my-autosaves-dir)
   :custom
-  (auto-save-default              t           "Auto-save of each file-visiting buffer.")
-  (auto-save-interval             200         "Number of keystrokes before auto-save.")
-  (auto-save-timeout              20          "Number of seconds idle time before auto-save.")
-  (backup-by-copying              t           "Always use copying to create backup files.")
+  (auto-save-default              t           "Auto-save each file-visiting buffer.")
+  (auto-save-interval             200         "Count of keystrokes before auto-save.")
+  (auto-save-timeout              20          "Count of idle time (s) auto-save.")
+  (backup-by-copying              t           "Use copying to create backup files.")
   (delete-old-versions            t           "Delete excess backup files silently.")
   (kept-new-versions              10          "Number of newest versions to keep when a new numbered backup is made. Includes the new backup.")
   (kept-old-versions              5           "Number of oldest versions to keep when a new numbered backup is made.")
-  (make-backup-files              t           "Make numeric backup versions unconditionally.")
+  (make-backup-files              t           "Unconditional numeric backup versions.")
   (version-control                t           "Version numbers for backup files."))
 
 (use-package font-core
@@ -248,21 +246,23 @@
 
 (use-package org-mode
   :ensure nil
-  :bind (("C-c p" .
-           (lambda ()
-             (interactive)
-             (find-file "~/Org/Perso/para.org"))))
+  :bind (
+          ("C-c p" .
+            (lambda ()
+              (interactive)
+              (find-file "~/Org/Perso/para.org"))))
   :mode ("\\.org\\'" . org-mode)
   :config
   (setq my-perso-org-dir (expand-file-name "~/Org/Perso"))
   :custom
-  (org-descriptive-links       t                 "Show hyperlinks decorated (not plain text).")
-  (org-log-done                t                 "Insert the timestamp when a task is marked DONE.")
-  (org-startup-indented        'indet            "Prefer the alternate stars and indent. scheme.")
+  (org-descriptive-links       t                 "Decorated (not plain) hyperlinks.")
+  (org-log-done                t                 "Insert the DONE's timestamp.")
+  (org-startup-indented        'indet            "Alternate stars and indent scheme.")
   (org-agenda-files            '("~/Org/Perso/") "Make available all .org files for C-c C-w (org-refile)")
-  (org-refile-targets          '(
-				                          (nil :maxlevel . 4)
-				                          (org-agenda-files :maxlevel . 4))
+  (org-refile-targets
+    '(
+			 (nil :maxlevel . 4)
+			 (org-agenda-files :maxlevel . 4))
 		"Specify targets for refile.")
   (org-refile-use-outline-path 'file             "Include the file name (without directory) into the path.")
   )
@@ -271,10 +271,10 @@
   :ensure nil
   :defer 2
   :config
-  (show-paren-mode               t)          ; visualization of matching parensenable paren mode
+  (show-paren-mode               t)              ; Visualize matching parens
   (setq
-    show-paren-delay             nil         ; Highlights parenthesis without delay
-    show-paren-style             'expression ; Shows the matching expression
+    show-paren-delay             nil             ; Highlights without delay
+    show-paren-style             'expression     ; Shows the matching expression
     )
   )
 
@@ -294,57 +294,58 @@
             dired-directory)))))
   :hook (dired-mode . recentf-add-dired-directory)
   :custom
-  (recentf-max-menu-items        50          "How many recent files to keep in menu?")
-  (recentf-max-saved-items       50          "How many recent files to save in file?")
+  (recentf-max-menu-items        50              "How many recent files in menu?")
+  (recentf-max-saved-items       50              "How many recent files to save?")
   :config
   (add-to-list                   'recentf-exclude no-littering-var-directory)
   (add-to-list                   'recentf-exclude no-littering-etc-directory)
-  (recentf-mode                  t))         ; Enable recent files
+  (recentf-mode                  t))             ; Enable recent files
 
 (use-package saveplace
   :ensure nil
   :defer 2
   :unless noninteractive
   :config
-  (save-place-mode               t))         ; Automatically save place in each file.
+  (save-place-mode               t))             ; Automatically save place.
 
 (use-package scroll-bar
   :ensure nil
   :unless noninteractive
   :custom
-  (scroll-bar-mode               "right"     "Use scroll bar on right"))
+  (scroll-bar-mode               "right"         "Use scroll bar on right"))
 
 (use-package server
   :ensure nil
   :defer 2
   :custom
-  (server-auth-dir               (           ; Directory for server auth files
-                                   expand-file-name "server-auth/" no-littering-var-directory)))
+  (server-auth-dir
+    ( ; Directory for server auth files
+      expand-file-name "server-auth/" no-littering-var-directory)))
 
 (use-package sgml-mode
   :ensure nil
   :defer 2
   :commands sgml-mode
   :custom
-  (sgml-quick-keys               'close      "Auto close elements upon '</'."))
+  (sgml-quick-keys               'close          "Auto close elements upon '</'."))
 
 (use-package simple
   :ensure nil
   :custom
-  (column-number-mode            t           "Displays column number.")
-  (size-indication-mode          t           "Show buffer size in mode line."))
+  (column-number-mode            t               "Displays column number.")
+  (size-indication-mode          t               "Show buffer size in mode line."))
 
 (use-package vc-hooks
   :ensure nil
   :custom
-  (vc-follow-symlinks            t         "Visits symlinks, don't follow them.")
-  (vc-make-backup-files          t         "Backups version controlled files."))
+  (vc-follow-symlinks            t               "Visit the real files.")
+  (vc-make-backup-files          t               "Backup version controlled files."))
 
 (use-package windmove
   :ensure nil
   :defer 2
   :config
-  (windmove-default-keybindings))           ; shifted arrow keys
+  (windmove-default-keybindings))                ; Shifted arrow keys
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 3rd party Emacs packages
@@ -401,11 +402,12 @@
   :config
   (dashboard-setup-startup-hook)
   :custom
-  (dashboard-items             '(
-                                  (recents  . 20)
-                                  (bookmarks . 5)
-                                  (agenda . 20)
-                                  (registers . 5))
+  (dashboard-items
+    '(
+       (recents  . 20)
+       (bookmarks . 5)
+       (agenda . 20)
+       (registers . 5))
 		"Set the items to put at startup" )
   (dashboard-set-heading-icons t)
   (dashboard-set-file-icons    t)
@@ -414,13 +416,13 @@
 
 (use-package doom-modeline
   :init
-  (doom-modeline-mode        t)       ; Enable Doom mode line
+  (doom-modeline-mode          t)               ; Enable Doom mode line
   :custom
-  (doom-modeline-minor-modes t        "Display the minor modes in the mode-line."))
+  (doom-modeline-minor-modes   t                "Display the minor modes."))
 
 (use-package editorconfig
   :config
-  (editorconfig-mode t))              ; Enable EditorConfig
+  (editorconfig-mode           t))              ; Enable EditorConfig
 
 (use-package emmet-mode
   :hook (sgml-mode css-mode web-mode))
