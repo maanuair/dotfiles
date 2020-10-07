@@ -1,21 +1,27 @@
+;;; init.el --- Emmanuel Roubion's personal init file -*- lexical-binding: t; -*-
+
 ;; Copyright © 2016, 2017, 2018, 2019, 2020 Emmanuel Roubion
-;;
+
 ;; Author: Emmanuel Roubion
 ;; URL: https://github.com/maanuair/dotfiles
 
 ;; This file is part of Emmanuel's Roubion dot files, released under
 ;; the MIT License as published by the Massachusetts Institute of Technology
-;;
-;; These dotfiles are distributed in the hope they wil lbe useful, but
-;; without any warranty. See the MIT License for more details
+
+;;; Commentary:
+
+;; These dotfiles are distributed in the hope they will be useful, but
+;; without any warranty.  See the MIT License for more details.
 ;;
 ;; You should have received a copy of the MIT License along with this file.
 ;; If not, see https://opensource.org/licenses/mit-license.php
 
 ;; This file is NOT part of GNU Emacs.
 
+;;; Code:
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Startup time performance
+;; Prologue — Startup time performance
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; I followed some advices on https://blog.d46.us/advanced-emacs-startup/
@@ -30,14 +36,13 @@
 ;;   past:         1.86 seconds, with 5 GCs
 ;;   2020-09 past: 2.49 seconds, with 11 GCs
 
-
 ;; Make startup faster by reducing the frequency of GC.
 (setq
   ;; The default is 800 kilobytes. Measured in bytes.
-  gc-cons-threshold (* 50 1000 1000)
+  gc-cons-threshold (* 50 1000 1024)
 
   ;; Portion of heap used for allocation. Defaults to 0.1.
-  gc-cons-percentage 0.6)
+  gc-cons-percentage 0.4)
 
 ;; Use a hook so the message doesn't get clobbered by other messages.
 (add-hook 'emacs-startup-hook
@@ -52,19 +57,23 @@
 (add-hook 'after-init-hook
   `(lambda ()
      (setq
-       gc-cons-threshold 800000
+       gc-cons-threshold  (* 800 1024)
        gc-cons-percentage 0.1)
      (garbage-collect)) t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Set up the load path
+;;; Act I — Set up the load path
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Define my-elisp-dir local folder, and add it in load path
-(setq my-elisp-dir (expand-file-name "my-elisp/" user-emacs-directory))
-(add-to-list 'load-path my-elisp-dir)
+(defconst my/elisp-dir
+  (setq my/elisp-dir (expand-file-name "my-elisp/" user-emacs-directory))
+  "Where lies my local elisp dir.")
+(add-to-list 'load-path my/elisp-dir)
 
 ;; Add no-littering Git sub-module in load-path
-(add-to-list 'load-path (expand-file-name "no-littering/" my-elisp-dir))
+(add-to-list 'load-path (expand-file-name "no-littering/" my/elisp-dir))
+
+;; Add oblique strategies Git sub-module in load-path
+(add-to-list 'load-path (expand-file-name "oblique-strategies" my/elisp-dir))
 
 ;; Reminder about Git submodules option, when cloning this project
 ;;   git clone --recurse-submodules git@github.com:maanuair/dotfiles.git
@@ -76,14 +85,13 @@
 ;;   git submodule update --init
 
 ;; Bootstrap no-littering.el
-(setq
-  my-no-littering-dir         (expand-file-name "../.emacs.runtime-dirs/" user-emacs-directory)
-  no-littering-etc-directory  (expand-file-name "etc/" my-no-littering-dir)
-  no-littering-var-directory  (expand-file-name "var/" my-no-littering-dir))
+(defconst my/no-littering-dir        (expand-file-name "../.emacs.runtime-dirs/" user-emacs-directory) "Location of the no-littering-dir package.")
+(defconst no-littering-etc-directory (expand-file-name "etc/" my/no-littering-dir) "Where no-literring stores the configuration files.")
+(defconst no-littering-var-directory (expand-file-name "var/" my/no-littering-dir) "Where no-literring stores the variable data.")
 (require 'no-littering)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Bootstrap package management
+;;; Act II — Bootstrap package management
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'package)
 
@@ -120,7 +128,7 @@
   use-package-always-pin    "melpa-stable") ; Prefer stable packages
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 1st party Emacs packages
+;;; Act III — 1st party Emacs packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package apropos
@@ -156,8 +164,9 @@
               (find-file (expand-file-name "init.el" user-emacs-directory))))
           ("C-c /"   . comment-region)
           ("C-c \\"  . uncomment-region)
+          ("C-c s"   . my/new-scratch-buffer)
           ("M-g"     . goto-line)
-          ("<f5>"    . my-reformat)
+          ("<f5>"    . my/reformat)
           ("<f6>"    . recompile)
           ("S-<f6>"  . next-error)
           ("S-<f12>" . auto-revert-tail-mode))
@@ -168,22 +177,32 @@
   (defun is-win32 () "Return t when the system is a Windows"
 	  (interactive)
 	  (equal system-type 'windows-nt))
-  (defun my-indent-buffer () "Indent the whole currently visited buffer."
+  (defun my/new-scratch-buffer ()
+    "Create a new frame with a new empty buffer."
+    (interactive)
+    (let ((buffer (generate-new-buffer "*scratch*")))
+      (set-buffer-major-mode buffer)
+      (switch-to-buffer buffer)))
+  (defun my/indent-buffer () "Indent the whole currently visited buffer."
 	  (interactive)
 	  (indent-region (point-min) (point-max)))
-  (defun my-reformat () "Re-indent and refontify whole buffer."
+  (defun my/reformat () "Re-indent and refontify whole buffer."
 	  (interactive)
-	  (my-indent-buffer)
-	  (font-lock-fontify-buffer))
-  ;; Custom changes to the default frame size & font
-  (add-to-list 'default-frame-alist '(fullscreen . maximized))
-  (add-to-list 'default-frame-alist '(font . "Monaco-12"))
-  (defun my-set-face-show-paren-match-expression () "Customises how to show paren matches."
+	  (my/indent-buffer)
+	  (font-lock-ensure))
+  (defun my/set-face-show-paren-match-expression (&optional inverse-video) "Customises how to show paren matches."
     (interactive)
     (set-face-attribute 'show-paren-match-expression nil
       :inherit nil
-      :inverse-video t))
-  (my-set-face-show-paren-match-expression)
+      :inverse-video inverse-video))
+  (my/set-face-show-paren-match-expression t)
+
+  ;; Custom changes to the default font & frame
+  (set-fontset-font t nil "Monaco 13")
+  (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji"))
+  (add-to-list 'default-frame-alist '(font . "Monaco 13"))
+  (add-to-list 'default-frame-alist '(fullscreen . maximized))
+
   ;; Specific settings for macOS
   (when (is-macOs)
     (setq
@@ -191,12 +210,13 @@
       mac-right-option-modifier   'none       ; Make the right Alt key (option) native
       ))
   :custom
+  (cursor-type                   'hbar        "Uses the horizontal bar cursor." )
   (delete-by-moving-to-trash      t           "Uses OS's trash when deleting stuff.")
   (echo-keystrokes                0.5         "Shows keystrokes right away.")
   (frame-title-format
     (list
       '(buffer-file-name "%f" (dired-directory dired-directory "%b"))
-      " (" user-login-name "@" system-name  ")"
+      " (" user-login-name "@" (system-name)  ")"
       ) "Sets the frame title.")
   (indicate-buffer-boundaries     "left"      "Buffer limits in the left fringe.")
   (indicate-empty-lines           t           "Empty lines in the left fringe.")
@@ -209,10 +229,10 @@
 (use-package files
   :ensure nil
   :config
+  (defvar my/autosaves-dir        (no-littering-expand-var-file-name "auto-save/") "My preferred auto-saves location.")
   (setq
-    my-autosaves-dir               (no-littering-expand-var-file-name "auto-save/")
-    auto-save-file-name-transforms `((".*" ,my-autosaves-dir t))
-    auto-save-list-file-prefix     my-autosaves-dir)
+    auto-save-file-name-transforms `((".*" ,my/autosaves-dir t))
+    auto-save-list-file-prefix     my/autosaves-dir)
   :custom
   (auto-save-default              t           "Auto-save each file-visiting buffer.")
   (auto-save-interval             200         "Count of keystrokes before auto-save.")
@@ -234,6 +254,13 @@
   :custom
   (font-lock-maximum-decoration  t            "Uses maximum decoration."))
 
+(use-package frame
+  :ensure nil
+  :custom
+  (blink-cursor-blinks           0            "Cursor blnks for ever.")
+  (blink-cursor-delay            0.2          "Minimal idle time before first blink.")
+  (blink-cursor-interval         0.3          "Slightly quicker blink."))
+
 (use-package hl-line
   :ensure nil
   :config
@@ -246,14 +273,12 @@
 
 (use-package org-mode
   :ensure nil
-  :bind (
-          ("C-c p" .
-            (lambda ()
-              (interactive)
-              (find-file "~/Org/Perso/para.org"))))
+  :bind("C-c p" . (lambda ()
+                    (interactive)
+                    (find-file "~/Org/Perso/para.org")))
   :mode ("\\.org\\'" . org-mode)
   :config
-  (setq my-perso-org-dir (expand-file-name "~/Org/Perso"))
+  (defvar my/perso-org-dir (expand-file-name "~/Org/Perso") "My preferred location for org files.")
   :custom
   (org-descriptive-links       t                 "Decorated (not plain) hyperlinks.")
   (org-log-done                t                 "Insert the DONE's timestamp.")
@@ -264,8 +289,7 @@
 			 (nil :maxlevel . 4)
 			 (org-agenda-files :maxlevel . 4))
 		"Specify targets for refile.")
-  (org-refile-use-outline-path 'file             "Include the file name (without directory) into the path.")
-  )
+  (org-refile-use-outline-path 'file             "Include the file name (without directory) into the path."))
 
 (use-package paren
   :ensure nil
@@ -280,8 +304,9 @@
 
 (use-package recentf
   :ensure nil
-  :defer 1
-  :commands(recentf-add-file recentf-apply-filename-handlers recentf-mode )
+  :bind ("C-c r" . recentf-open-files)
+  :defer 2
+  :commands (recentf-add-file recentf-apply-filename-handlers recentf-mode )
   :preface
   (defun recentf-add-dired-directory ()
     (if (and dired-directory
@@ -333,7 +358,11 @@
   :ensure nil
   :custom
   (column-number-mode            t               "Displays column number.")
-  (size-indication-mode          t               "Show buffer size in mode line."))
+  (size-indication-mode          nil             "Show buffer size in mode line."))
+
+(use-package tab-line
+  :ensure nil
+  :init)
 
 (use-package vc-hooks
   :ensure nil
@@ -348,22 +377,21 @@
   (windmove-default-keybindings))                ; Shifted arrow keys
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 3rd party Emacs packages
+;;; Act IV — 3rd party Emacs packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; TODO Check whether desirable to use again these packages:
 ;; - counsel
-;; - json-mode (Does emacs 27 include it now?)
 ;; - restclient (packageinstall error so far...)
 ;; - Ivi ?
 ;;   ivy-use-virtual-buffers t                    ;; Add recent files and bookmarks to ‘ivy-switch-buffer
 ;;   ivy-count-format "(%d/%d) "                  ;; Display the current candidate count for `ivy-read' to display both the index and the count.
-;; - Flycheck ?
+;; - Flyspell
 
 (use-package all-the-icons)
 
 (use-package auto-package-update
-  :disabled                                         ; It raises seom "Warning (package): Unnecessary call to ‘package-initialize’ in init file..."
+  :disabled                                         ; It raises some "Warning (package): Unnecessary call to ‘package-initialize’ in init file..."
   :init
   (setq                                             ; Override "last update day" file in no-littering var dir
     apu--last-update-day-filename
@@ -373,40 +401,15 @@
   :config
   (auto-package-update-maybe))
 
-(use-package circadian
-  :ensure t
-  :custom
-  (calendar-latitude      43.55)
-  (calendar-longitude     7.02)
-  (circadian-themes       '(
-                             (:sunrise . solarized-light)
-                             (:sunset  . solarized-dark)))
-  :config
-  (circadian-setup))
-
-(use-package solarized-theme
-  :bind ( ("C-c l"   . my-load-theme-light)
-          ("C-c d"   . my-load-theme-dark))
-  :defer
-  :config
-  (defun my-load-theme-dark ()  "Load the preferred dark theme."
-	  (interactive)
-	  (load-theme 'solarized-dark t)
-	  (my-set-face-show-paren-match-expression))
-  (defun my-load-theme-light () "Load the preferred light theme."
-	  (interactive)
-	  (load-theme 'solarized-light t)
-	  (my-set-face-show-paren-match-expression)))
-
 (use-package dashboard
+  :disabled
   :config
   (dashboard-setup-startup-hook)
   :custom
   (dashboard-items
     '(
-       (recents  . 20)
+       (recents   . 15)
        (bookmarks . 5)
-       (agenda . 20)
        (registers . 5))
 		"Set the items to put at startup" )
   (dashboard-set-heading-icons t)
@@ -415,8 +418,9 @@
   (dashboard-startup-banner    'logo))
 
 (use-package doom-modeline
+  :disabled
   :init
-  (doom-modeline-mode          t)               ; Enable Doom mode line
+ (doom-modeline-mode          t)               ; Enable Doom mode line
   :custom
   (doom-modeline-minor-modes   t                "Display the minor modes."))
 
@@ -437,12 +441,22 @@
   :config
   (exec-path-from-shell-initialize))
 
+(use-package flycheck
+  :pin melpa-unstable
+  :init (global-flycheck-mode)
+  ;; Reminders, for Bash adn HTML files syntax checker:
+  ;; `brew install shellcheck tidy-html5`
+  :custom
+  (flycheck-emacs-lisp-load-path 'inherit))
+
+(use-package flycheck-status-emoji
+  :init (flycheck-status-emoji-mode)) ;; Warning, on macOS, requires `(set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji"))`
+
 (use-package groovy-mode
   :mode ("\\.groovy\\'" . groovy-mode))
 
 (use-package indium
-  :bind
-  ("C-x c" . indium-connect)
+  :bind ("C-x c" . indium-connect)
   :init
   (setq
     indium-chrome-data-dir
@@ -452,16 +466,35 @@
 (use-package js2-mode
   :mode ("\\.js\\'" . js2-mode))
 
+(use-package json-mode
+  :mode ("\\.json\\'" . json-mode))
+
 (use-package lua-mode
   :mode ("\\.lua\\'" . lua-mode))
 
 (use-package magit
-  :bind
-  ("C-x g" . magit-status))
+  :bind ("C-x g" . magit-status))
 
 (use-package markdown-mode
   :mode ( ("\\.md\\'"          . markdown-mode)
           ("\\.markdown\\'"    . markdown-mode)))
+
+(use-package oblique
+  ;; :defer 5
+  :ensure nil ;; Loaded locally
+  :config
+  (defun my/oblique-strategy ()  "Draw and message an oblique strategy."
+	  (interactive)
+	  (message (oblique-strategy)))
+  (add-hook 'after-init-hook
+    (lambda ()
+      (setq initial-scratch-message (oblique-strategy))))
+  ;; Does not seem to work. Use instead:
+  ;; https://github.com/tecosaur/emacs-config/blob/master/config.org#splash-screen
+  :bind ( ("C-c o"  . my/oblique-strategy)
+          ("C-c O" . insert-oblique-strategy))
+  :custom
+  (oblique-edition "strategies/oblique-strategies-condensed.txt" "Version to draw a strategy from."))
 
 (use-package org-bullets
   :commands (org-bullets-mode)
@@ -470,24 +503,64 @@
 	  (lambda ()
 	    (org-bullets-mode t))))
 
+(use-package powerline
+  :config
+  ;; Use Powerline to make tabs nicer
+  (defvar my/tab-height 22 "Height of my custom tabs.")
+  (defvar my/tab-left   (powerline-wave-right 'tab-line nil my/tab-height) "Left character to use in displayed tab name.")
+  (defvar my/tab-right  (powerline-wave-left nil 'tab-line my/tab-height) "Right character to use in displayed tab name.")
+  (defun my/tab-line-tab-name-buffer (buffer &optional _buffers)
+    (powerline-render (list my/tab-left
+                        (format " %s  " (buffer-name buffer))
+                        my/tab-right)))
+  (setq tab-line-tab-name-function #'my/tab-line-tab-name-buffer)
+  (setq tab-line-new-button-show nil)
+  (setq tab-line-close-button-show nil)
+)
+
 (use-package restclient
   :disabled
   :mode ("\\.rest\\'" . restclient-mode))
 
+(use-package solarized-theme
+  :bind ( ("C-c l d"  . (lambda () (interactive) (my/load-theme 'solarized-dark t)))
+          ("C-c l l"  . (lambda () (interactive) (my/load-theme 'solarized-light t)))
+          ("C-c l n"  . (lambda () (interactive) (my/load-theme nil)))
+          ("C-c l w"  . (lambda () (interactive) (my/load-theme 'whiteboard t))))
+  :config
+  (defun my/load-theme-notheme () "Disable loaded theme(s)."
+    (interactive)
+    (dolist (theme custom-enabled-themes) (disable-theme theme)))
+  (defun my/load-theme (theme &optional inverse-paren-expr)
+    "Load the given theme in parameter. Optionally set our custom show-paren-match expression to use inverse video (when t)."
+    (interactive)
+    (my/load-theme-notheme)
+    (if theme
+      (load-theme theme t))
+    (my/set-face-show-paren-match-expression inverse-paren-expr)))
+
 (use-package treemacs
-  :bind
-  ("C-C t" . treemacs)
+  :defer 2
+  :bind ("C-C t" . treemacs)
+  :custom
+  (treemacs-space-between-root-nodes nil "No space between root nodes.")
   :custom-face
   (treemacs-file-face      ((t (:height 1.0))))
   (treemacs-directory-face ((t (:height 1.0))))
   (treemacs-root-face      ((t (:height 1.0)))))
 
+(use-package treemacs-icons-dired
+  :after treemacs dired
+  :ensure t
+  :config (treemacs-icons-dired-mode))
+
 (use-package try)
 
 (use-package web-mode
   :mode
+  ("\\.ejs\\'" . web-mode)
   ("\\.html\\'" . web-mode)
-  ("\\.ejs\\'" . web-mode))
+  ("\\.svelte\\'" . web-mode))
 
 (use-package which-key
   :defer 5

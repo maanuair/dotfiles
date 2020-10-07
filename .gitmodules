@@ -1,3 +1,6 @@
 [submodule "home/.emacs.d/my-elisp/no-littering"]
 	path = home/.emacs.d/my-elisp/no-littering
 	url = git@github.com:emacscollective/no-littering.git
+[submodule "home/.emacs.d/my-elisp/oblique-strategies"]
+	path = home/.emacs.d/my-elisp/oblique-strategies
+	url = https://github.com/zzkt/oblique-strategies.git
