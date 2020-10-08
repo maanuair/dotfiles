@@ -192,9 +192,10 @@
 	  (font-lock-ensure))
   (defun my/set-face-show-paren-match-expression (&optional inverse-video) "Customises how to show paren matches."
     (interactive)
-    (set-face-attribute 'show-paren-match-expression nil
-      :inherit nil
-      :inverse-video inverse-video))
+    (if inverse-video
+      (set-face-attribute 'show-paren-match-expression nil
+          ;; :inherit nil
+        :inverse-video inverse-video)))
   (my/set-face-show-paren-match-expression t)
 
   ;; Custom changes to the default font & frame
@@ -523,10 +524,11 @@
   :mode ("\\.rest\\'" . restclient-mode))
 
 (use-package solarized-theme
-  :bind ( ("C-c l d"  . (lambda () (interactive) (my/load-theme 'solarized-dark t)))
-          ("C-c l l"  . (lambda () (interactive) (my/load-theme 'solarized-light t)))
-          ("C-c l n"  . (lambda () (interactive) (my/load-theme nil)))
-          ("C-c l w"  . (lambda () (interactive) (my/load-theme 'whiteboard t))))
+  :bind ( ("C-c C-l c"  . (lambda () (interactive) (my/load-theme 'dichromacy t)))
+          ("C-c C-l d"  . (lambda () (interactive) (my/load-theme 'solarized-dark t)))
+          ("C-c C-l l"  . (lambda () (interactive) (my/load-theme 'solarized-light t)))
+          ("C-c C-l n"  . (lambda () (interactive) (my/load-theme nil)))
+          ("C-c C-l w"  . (lambda () (interactive) (my/load-theme 'whiteboard t))))
   :config
   (defun my/load-theme-notheme () "Disable loaded theme(s)."
     (interactive)
@@ -536,8 +538,14 @@
     (interactive)
     (my/load-theme-notheme)
     (if theme
-      (load-theme theme t))
-    (my/set-face-show-paren-match-expression inverse-paren-expr)))
+      (progn
+        (load-theme theme t)
+        (my/set-face-show-paren-match-expression inverse-paren-expr)))
+    (my/load-theme 'dichromacy t)))
+
+(use-package svelte-mode
+  :pin melpa-unstable)
+;;  :mode ("\\.svelte\\" . svelte-mode))
 
 (use-package treemacs
   :defer 2
@@ -559,8 +567,7 @@
 (use-package web-mode
   :mode
   ("\\.ejs\\'" . web-mode)
-  ("\\.html\\'" . web-mode)
-  ("\\.svelte\\'" . web-mode))
+  ("\\.html\\'" . web-mode))
 
 (use-package which-key
   :defer 5
