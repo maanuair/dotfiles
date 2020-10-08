@@ -545,7 +545,6 @@
 
 (use-package svelte-mode
   :pin melpa-unstable)
-;;  :mode ("\\.svelte\\" . svelte-mode))
 
 (use-package treemacs
   :defer 2
