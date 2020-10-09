@@ -157,19 +157,23 @@
   (delete-selection-mode t))           ; Delete text when typing over selection
 
 (use-package emacs
-  :bind ( ("C-z"     . nil)
-          ("C-c i"   .                 ; Visit init file
+  :bind ( ("C-z"     . nil)            ; Disable C-z
+          ("C-c i" .                 ; Visit init file
             (lambda ()
               (interactive)
               (find-file (expand-file-name "init.el" user-emacs-directory))))
           ("C-c /"   . comment-region)
           ("C-c \\"  . uncomment-region)
+          ("C-c k"   . my/kill-all-buffers)
+          ("C-c l l"  . (lambda () (interactive) (my/load-theme 'dichromacy t)))
+          ("C-c l d"  . (lambda () (interactive) (my/load-theme 'solarized-dark t)))
+          ("C-c l n"  . (lambda () (interactive) (my/load-theme nil)))
           ("C-c s"   . my/new-scratch-buffer)
           ("M-g"     . goto-line)
           ("<f5>"    . my/reformat)
           ("<f6>"    . recompile)
-          ("S-<f6>"  . next-error)
-          ("S-<f12>" . auto-revert-tail-mode))
+          ("<f6>"  . next-error)
+          ("<f12>" . auto-revert-tail-mode))
   :config
   (defun is-macOs () "Return t when the system is a macOS"
 	  (interactive)
@@ -196,13 +200,31 @@
       (set-face-attribute 'show-paren-match-expression nil
           ;; :inherit nil
         :inverse-video inverse-video)))
-  (my/set-face-show-paren-match-expression t)
+  (defun my/load-theme-reset () "Disable loaded theme(s)."
+    (interactive)
+    (dolist (theme custom-enabled-themes) (disable-theme theme)))
+  (defun my/load-theme (theme &optional inverse-paren-expr)
+    "Load the given theme in parameter. Optionally set our custom show-paren-match expression to use inverse video (when t)."
+    (interactive)
+    (my/load-theme-reset)
+    (if theme
+      (load-theme theme t)
+      (my/set-face-show-paren-match-expression inverse-paren-expr)))
+  (defun my/kill-all-buffers ()
+    (interactive)
+    (dolist (buffer-name (buffer-list))
+      (kill-buffer buffer-name))
+    (delete-other-windows))
 
   ;; Custom changes to the default font & frame
   (set-fontset-font t nil "Monaco 13")
   (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji"))
   (add-to-list 'default-frame-alist '(font . "Monaco 13"))
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+  ;; Custom theme to use
+  (my/load-theme 'dichromacy t)
+  (my/set-face-show-paren-match-expression t)
 
   ;; Specific settings for macOS
   (when (is-macOs)
@@ -527,25 +549,7 @@
   :disabled
   :mode ("\\.rest\\'" . restclient-mode))
 
-(use-package solarized-theme
-  :bind ( ("C-c C-l c"  . (lambda () (interactive) (my/load-theme 'dichromacy t)))
-          ("C-c C-l d"  . (lambda () (interactive) (my/load-theme 'solarized-dark t)))
-          ("C-c C-l l"  . (lambda () (interactive) (my/load-theme 'solarized-light t)))
-          ("C-c C-l n"  . (lambda () (interactive) (my/load-theme nil)))
-          ("C-c C-l w"  . (lambda () (interactive) (my/load-theme 'whiteboard t))))
-  :config
-  (defun my/load-theme-notheme () "Disable loaded theme(s)."
-    (interactive)
-    (dolist (theme custom-enabled-themes) (disable-theme theme)))
-  (defun my/load-theme (theme &optional inverse-paren-expr)
-    "Load the given theme in parameter. Optionally set our custom show-paren-match expression to use inverse video (when t)."
-    (interactive)
-    (my/load-theme-notheme)
-    (if theme
-      (progn
-        (load-theme theme t)
-        (my/set-face-show-paren-match-expression inverse-paren-expr)))
-    (my/load-theme 'dichromacy t)))
+(use-package solarized-theme)
 
 (use-package svelte-mode
   :pin melpa-unstable)
