@@ -30,7 +30,8 @@ end
 function jira.getBrowseUrl(key)
   log.f("getBrowseUrl: Build url for issue key '%s'", key)
   local url = "";
-  -- Accordig to the issue key, we use either the base or alt URL
+  -- According to the issue key, we use either the base or alt URL
+  key = string.upper(key)
   if string.len(key) == 0 or startsWith(key, jiraAccount.getDefaultProjectPrefix()) then
     -- It uses the ! above, so that when the key is empty, the test fails into the else :-)
     url = jiraAccount.getBaseUrl()
