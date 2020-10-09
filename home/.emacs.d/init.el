@@ -281,6 +281,9 @@
   :config
   (defvar my/perso-org-dir (expand-file-name "~/Org/Perso") "My preferred location for org files.")
   :custom
+  (org-babel-load-languages    '((emacs-lisp . t)
+                                (sh t)))
+  (org-confirm-babel-evaluate   nil)
   (org-descriptive-links       t                 "Decorated (not plain) hyperlinks.")
   (org-log-done                t                 "Insert the DONE's timestamp.")
   (org-startup-indented        'indet            "Alternate stars and indent scheme.")
@@ -471,7 +474,8 @@
   :mode ("\\.json\\'" . json-mode))
 
 (use-package lua-mode
-  :mode ("\\.lua\\'" . lua-mode))
+  :pin melpa-unstable
+  :defer 1)
 
 (use-package magit
   :bind ("C-x g" . magit-status))
