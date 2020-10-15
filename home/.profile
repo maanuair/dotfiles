@@ -285,6 +285,12 @@ function setupAliases () {
 function setupEnvVars () {
   myOut "Setting up environment variables..."
 
+  # Set up the dictionaries path
+  export DICPATH="~/Library/Spelling"
+
+  # Also set up the DICTIONARY environment variable used by Hunspell (required only on macOS, apparently ?)
+  export DICTIONARY=en_GB
+
   # Set up the PAGER
   export PAGER=/usr/bin/less
 

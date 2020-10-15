@@ -198,7 +198,7 @@
     (interactive)
     (if inverse-video
       (set-face-attribute 'show-paren-match-expression nil
-          ;; :inherit nil
+        ;; :inherit nil
         :inverse-video inverse-video)))
   (defun my/load-theme-reset () "Disable loaded theme(s)."
     (interactive)
@@ -304,7 +304,7 @@
   (defvar my/perso-org-dir (expand-file-name "~/Org/Perso") "My preferred location for org files.")
   :custom
   (org-babel-load-languages    '((emacs-lisp . t)
-                                (sh t)))
+                                  (sh t)))
   (org-confirm-babel-evaluate   nil)
   (org-descriptive-links       t                 "Decorated (not plain) hyperlinks.")
   (org-log-done                t                 "Insert the DONE's timestamp.")
@@ -412,7 +412,6 @@
 ;; - Ivi ?
 ;;   ivy-use-virtual-buffers t                    ;; Add recent files and bookmarks to ‘ivy-switch-buffer
 ;;   ivy-count-format "(%d/%d) "                  ;; Display the current candidate count for `ivy-read' to display both the index and the count.
-;; - Flyspell
 
 (use-package all-the-icons)
 
@@ -446,7 +445,7 @@
 (use-package doom-modeline
   :disabled
   :init
- (doom-modeline-mode          t)               ; Enable Doom mode line
+  (doom-modeline-mode          t)               ; Enable Doom mode line
   :custom
   (doom-modeline-minor-modes   t                "Display the minor modes."))
 
@@ -477,6 +476,35 @@
 
 (use-package flycheck-status-emoji
   :init (flycheck-status-emoji-mode)) ;; Warning, on macOS, requires `(set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji"))`
+
+(use-package flyspell
+  :hook ((text-mode . flyspell-mode)
+          (prog-mode . flyspell-prog-mode))
+  :config
+
+  ;; Make sure DICPATH environment variables is there
+  (setenv "DICPATH"
+    (concat (getenv "HOME") "/Library/Spelling"))
+
+  ;; On macOS, make sure DICPATH var env is set as well
+  (when (is-macOs)
+    (setenv "DICTIONARY" "en_GB"))
+
+  ;; Find aspell and hunspell automatically
+  (cond
+    ;; Try Hunspell at first; if hunspell does NOT exist, use aspell
+    ((executable-find "hunspell")
+      (setq ispell-program-name "/usr/local/bin/hunspell")
+      (setq ispell-local-dictionary "british")
+      (setq ispell-local-dictionary-alist
+        ;; Please note the list `("-d" "en_GB")` contains ACTUAL parameters passed to hunspell
+        ;; You could use `("-d" "en_GB,en_GB-med")` to check with multiple dictionaries
+        '(("en_GB" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_GB") nil utf-8))))
+
+    ((executable-find "aspell")
+      (setq ispell-program-name "aspell")
+      ;; Please note ispell-extra-args contains ACTUAL parameters passed to aspell
+      (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_GB")))))
 
 (use-package groovy-mode
   :mode ("\\.groovy\\'" . groovy-mode))
@@ -543,7 +571,7 @@
   (setq tab-line-tab-name-function #'my/tab-line-tab-name-buffer)
   (setq tab-line-new-button-show nil)
   (setq tab-line-close-button-show nil)
-)
+  )
 
 (use-package restclient
   :disabled
