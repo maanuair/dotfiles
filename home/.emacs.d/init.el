@@ -221,9 +221,9 @@
     (delete-other-windows))
 
   ;; Custom changes to the default font & frame
-  (set-fontset-font t nil "Monaco 13")
+  (set-fontset-font t nil "Roboto Mono Light 13")
   (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji"))
-  (add-to-list 'default-frame-alist '(font . "Monaco 13"))
+  (add-to-list 'default-frame-alist '(font . "Roboto Mono Light 13"))
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
   ;; Custom theme to use
