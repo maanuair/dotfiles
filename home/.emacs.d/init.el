@@ -162,18 +162,22 @@
             (lambda ()
               (interactive)
               (find-file (expand-file-name "init.el" user-emacs-directory))))
-          ("C-c /"   . comment-region)
-          ("C-c \\"  . uncomment-region)
-          ("C-c k"   . my/kill-all-buffers)
-          ("C-c l l"  . (lambda () (interactive) (my/load-theme 'dichromacy t)))
-          ("C-c l d"  . (lambda () (interactive) (my/load-theme 'solarized-dark t)))
-          ("C-c l n"  . (lambda () (interactive) (my/load-theme nil)))
-          ("C-c s"   . my/new-scratch-buffer)
-          ("M-g"     . goto-line)
-          ("<f5>"    . my/reformat)
-          ("<f6>"    . recompile)
-          ("<f6>"  . next-error)
-          ("<f12>" . auto-revert-tail-mode))
+          ("C-c /"     . comment-region)
+          ("C-c \\"    . uncomment-region)
+          ("C-c k"     . my/kill-all-buffers)
+          ("C-c l l"   . (lambda () (interactive) (my/load-theme 'dichromacy t)))
+          ("C-c l d"   . (lambda () (interactive) (my/load-theme 'solarized-dark t)))
+          ("C-c l n"   . (lambda () (interactive) (my/load-theme nil)))
+          ("C-c s"     . my/new-scratch-buffer)
+          ("C-c C-e f" . find-function)
+          ("C-c C-e k" . find-function-on-key)
+          ("C-c C-e l" . find-library)
+          ("C-c C-e v" . find-variable)
+          ("M-g"       . goto-line)
+          ("<f5>"      . my/reformat)
+          ("<f6>"      . recompile)
+          ("<f6>"      . next-error)
+          ("<f12>"     . auto-revert-tail-mode))
   :config
   (defun is-macOs () "Return t when the system is a macOS"
 	  (interactive)
@@ -481,15 +485,12 @@
   :hook ((text-mode . flyspell-mode)
           (prog-mode . flyspell-prog-mode))
   :config
-
   ;; Make sure DICPATH environment variables is there
   (setenv "DICPATH"
     (concat (getenv "HOME") "/Library/Spelling"))
-
   ;; On macOS, make sure DICPATH var env is set as well
   (when (is-macOs)
     (setenv "DICTIONARY" "en_GB"))
-
   ;; Find aspell and hunspell automatically
   (cond
     ;; Try Hunspell at first; if hunspell does NOT exist, use aspell
@@ -500,7 +501,6 @@
         ;; Please note the list `("-d" "en_GB")` contains ACTUAL parameters passed to hunspell
         ;; You could use `("-d" "en_GB,en_GB-med")` to check with multiple dictionaries
         '(("en_GB" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_GB") nil utf-8))))
-
     ((executable-find "aspell")
       (setq ispell-program-name "aspell")
       ;; Please note ispell-extra-args contains ACTUAL parameters passed to aspell
@@ -508,6 +508,11 @@
 
 (use-package groovy-mode
   :mode ("\\.groovy\\'" . groovy-mode))
+
+(use-package iedit
+  :custom
+  (iedit-toggle-key-default (kbd "C-S-s"))
+  )
 
 (use-package indium
   :bind ("C-x c" . indium-connect)
