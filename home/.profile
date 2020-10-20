@@ -386,7 +386,7 @@ function main () {
   [[ "$(uname -s)" == "CYGWIN*" ]] && setupCygwin
 
   # Now set all up!
-  local INDENT="  \033[2m==>"
+  export INDENT="  \033[2m==>"
   setupAliases
   setupEnvVars
   setupHomeshick
