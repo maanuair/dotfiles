@@ -165,8 +165,10 @@
           ("C-c /"     . comment-region)
           ("C-c \\"    . uncomment-region)
           ("C-c k"     . my/kill-all-buffers)
-          ("C-c l l"   . (lambda () (interactive) (my/load-theme 'dichromacy t)))
-          ("C-c l d"   . (lambda () (interactive) (my/load-theme 'solarized-dark t)))
+          ("C-c l d"   . (lambda () (interactive) (my/load-theme 'dichromacy t)))
+          ("C-c l e"   . (lambda () (interactive) (my/load-theme 'seoul256 t)))
+          ("C-c l s d" . (lambda () (interactive) (my/load-theme 'solarized-dark t)))
+          ("C-c l s l" . (lambda () (interactive) (my/load-theme 'solarized-light t)))
           ("C-c l n"   . (lambda () (interactive) (my/load-theme nil)))
           ("C-c s"     . my/new-scratch-buffer)
           ("C-c C-e f" . find-function)
@@ -212,7 +214,8 @@
     (interactive)
     (my/load-theme-reset)
     (if theme
-      (load-theme theme t)
+      (load-theme theme t))
+    (if inverse-paren-expr
       (my/set-face-show-paren-match-expression inverse-paren-expr)))
   (defun my/kill-all-buffers ()
     (interactive)
@@ -221,14 +224,10 @@
     (delete-other-windows))
 
   ;; Custom changes to the default font & frame
-  (set-fontset-font t nil "Roboto Mono Light 13")
+  (set-fontset-font t nil "Roboto Mono 13")
   (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji"))
-  (add-to-list 'default-frame-alist '(font . "Roboto Mono Light 13"))
+  (add-to-list 'default-frame-alist '(font . "Roboto Mono 13"))
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
-
-  ;; Custom theme to use
-  (my/load-theme 'dichromacy t)
-  (my/set-face-show-paren-match-expression t)
 
   ;; Specific settings for macOS
   (when (is-macOs)
@@ -581,6 +580,12 @@
 (use-package restclient
   :disabled
   :mode ("\\.rest\\'" . restclient-mode))
+
+(use-package seoul256-theme
+  :pin melpa-unstable
+  :config
+  (setq seoul256-background 253)
+  (my/load-theme 'seoul256 t))
 
 (use-package solarized-theme)
 
