@@ -128,7 +128,77 @@
   use-package-always-pin    "melpa-stable") ; Prefer stable packages
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Act III — 1st party Emacs packages
+;;; Act III — Declaring my functions here
+;;; (flycheck will emi warnings when defined in use-package statements)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun my/buffer-kill-all-but-scratches ()
+  "Kill all buffers, but the scratch ones."
+  (interactive)
+  (dolist (buffer-name (buffer-list))
+    (if (not (string-prefix-p "*scratch" buffer-name))
+	    (kill-buffer buffer-name)))
+  (delete-other-windows))
+
+(defun my/buffer-new-scratch ()
+  "Create a new frame with a new empty buffer."
+  (interactive)
+  (let ((buffer (generate-new-buffer "*scratch*")))
+    (set-buffer-major-mode buffer)
+    (switch-to-buffer buffer)))
+
+(defun my/buffer-reformat ()
+  "Re-indent and refontify whole buffer."
+	(interactive)
+	(my/buffer-reindent)
+	(font-lock-ensure))
+
+(defun my/buffer-reindent ()
+  "Indent the whole currently visited buffer."
+	(interactive)
+	(indent-region (point-min) (point-max)))
+
+(defun my/find-init-file () "Visit my Emacs initialization file."
+  (interactive)
+  (find-file (expand-file-name "init.el" user-emacs-directory)))
+
+(defun my/is-macos ()
+  "Return t when the system is a macOS."
+	(interactive)
+	(equal system-type 'darwin))
+
+(defun my/is-win32 ()
+  "Return t when the system is a Windows."
+	(interactive)
+	(equal system-type 'windows-nt))
+
+(defun my/oblique-strategy ()  "Draw and message an oblique strategy."
+	(interactive)
+	(message (oblique-strategy)))
+
+(defun my/theme-reset () "Disable loaded theme(s)."
+  (interactive)
+  (dolist (theme custom-enabled-themes) (disable-theme theme)))
+
+(defun my/theme-load (theme &optional inverse-paren-expr)
+  "Load the given THEME in parameter.  Optionally set our custom show-paren-match expression to use INVERSE-PAREN-EXPR."
+  (interactive)
+  (my/theme-reset)
+  (if theme
+    (load-theme theme t))
+  (if inverse-paren-expr
+    (my/set-face-show-paren-match-expression inverse-paren-expr)))
+
+(defun my/set-face-show-paren-match-expression (&optional inverse-video)
+  "Customises how to show paren matching, according to INVERSE-VIDEO."
+  (interactive)
+  (if inverse-video
+    (set-face-attribute 'show-paren-match-expression nil
+      ;; :inherit nil
+      :inverse-video inverse-video)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Act IV — 1st party Emacs packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package apropos
@@ -157,80 +227,35 @@
   (delete-selection-mode t))           ; Delete text when typing over selection
 
 (use-package emacs
-  :bind ( ("C-z"     . nil)            ; Disable C-z
-          ("C-c i" .                 ; Visit init file
-            (lambda ()
-              (interactive)
-              (find-file (expand-file-name "init.el" user-emacs-directory))))
+  :bind ( ("C-z"       . nil)               ; Disable C-z
+          ("C-c i"     . my/find-init-file)
           ("C-c /"     . comment-region)
           ("C-c \\"    . uncomment-region)
-          ("C-c k"     . my/kill-all-buffers)
-          ("C-c l d"   . (lambda () (interactive) (my/load-theme 'dichromacy t)))
-          ("C-c l e"   . (lambda () (interactive) (my/load-theme 'seoul256 t)))
-          ("C-c l s d" . (lambda () (interactive) (my/load-theme 'solarized-dark t)))
-          ("C-c l s l" . (lambda () (interactive) (my/load-theme 'solarized-light t)))
-          ("C-c l n"   . (lambda () (interactive) (my/load-theme nil)))
-          ("C-c s"     . my/new-scratch-buffer)
+          ("C-c b i"   . my/buffer-reindent)
+          ("C-c b f"   . my/buffer-reformat)
+          ("C-c b s"   . my/buffer-new-scratch)
+          ("C-c b k"   . my/buffer-kill-all-but-scratches)
+          ("C-c l d"   . (lambda () (interactive) (my/theme-load 'dichromacy t)))
+          ("C-c l e"   . (lambda () (interactive) (my/theme-load 'seoul256 t)))
+          ("C-c l s d" . (lambda () (interactive) (my/theme-load 'solarized-dark t)))
+          ("C-c l s l" . (lambda () (interactive) (my/theme-load 'solarized-light t)))
+          ("C-c l n"   . (lambda () (interactive) (my/theme-load nil)))
           ("C-c C-e f" . find-function)
           ("C-c C-e k" . find-function-on-key)
           ("C-c C-e l" . find-library)
           ("C-c C-e v" . find-variable)
           ("M-g"       . goto-line)
-          ("<f5>"      . my/reformat)
           ("<f6>"      . recompile)
           ("<f6>"      . next-error)
           ("<f12>"     . auto-revert-tail-mode))
   :config
-  (defun is-macOs () "Return t when the system is a macOS"
-	  (interactive)
-	  (equal system-type 'darwin))
-  (defun is-win32 () "Return t when the system is a Windows"
-	  (interactive)
-	  (equal system-type 'windows-nt))
-  (defun my/new-scratch-buffer ()
-    "Create a new frame with a new empty buffer."
-    (interactive)
-    (let ((buffer (generate-new-buffer "*scratch*")))
-      (set-buffer-major-mode buffer)
-      (switch-to-buffer buffer)))
-  (defun my/indent-buffer () "Indent the whole currently visited buffer."
-	  (interactive)
-	  (indent-region (point-min) (point-max)))
-  (defun my/reformat () "Re-indent and refontify whole buffer."
-	  (interactive)
-	  (my/indent-buffer)
-	  (font-lock-ensure))
-  (defun my/set-face-show-paren-match-expression (&optional inverse-video) "Customises how to show paren matches."
-    (interactive)
-    (if inverse-video
-      (set-face-attribute 'show-paren-match-expression nil
-        ;; :inherit nil
-        :inverse-video inverse-video)))
-  (defun my/load-theme-reset () "Disable loaded theme(s)."
-    (interactive)
-    (dolist (theme custom-enabled-themes) (disable-theme theme)))
-  (defun my/load-theme (theme &optional inverse-paren-expr)
-    "Load the given theme in parameter. Optionally set our custom show-paren-match expression to use inverse video (when t)."
-    (interactive)
-    (my/load-theme-reset)
-    (if theme
-      (load-theme theme t))
-    (if inverse-paren-expr
-      (my/set-face-show-paren-match-expression inverse-paren-expr)))
-  (defun my/kill-all-buffers ()
-    (interactive)
-    (dolist (buffer-name (buffer-list))
-      (kill-buffer buffer-name))
-    (delete-other-windows))
-
-  ;; Custom changes to the default font & frame
   (set-fontset-font t nil "Roboto Mono 13")
   (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji"))
   (add-to-list 'default-frame-alist '(font . "Roboto Mono 13"))
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
   ;; Specific settings for macOS
-  (when (is-macOs)
+  (when (my/is-macos)
     (setq
       trash-directory             "~/.Trash/" ; Trash folder is ~/.Trash
       mac-right-option-modifier   'none       ; Make the right Alt key (option) native
@@ -406,7 +431,7 @@
   (windmove-default-keybindings))                ; Shifted arrow keys
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Act IV — 3rd party Emacs packages
+;;; Act V — 3rd party Emacs packages
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; TODO Check whether desirable to use again these packages:
@@ -488,7 +513,7 @@
   (setenv "DICPATH"
     (concat (getenv "HOME") "/Library/Spelling"))
   ;; On macOS, make sure DICPATH var env is set as well
-  (when (is-macOs)
+  (when (my/is-macos)
     (setenv "DICTIONARY" "en_GB"))
   ;; Find aspell and hunspell automatically
   (cond
@@ -542,9 +567,6 @@
   ;; :defer 5
   :ensure nil ;; Loaded locally
   :config
-  (defun my/oblique-strategy ()  "Draw and message an oblique strategy."
-	  (interactive)
-	  (message (oblique-strategy)))
   (add-hook 'after-init-hook
     (lambda ()
       (setq initial-scratch-message (oblique-strategy))))
@@ -585,7 +607,7 @@
   :pin melpa-unstable
   :config
   (setq seoul256-background 253)
-  (my/load-theme 'seoul256 t))
+  (my/theme-load 'seoul256 t))
 
 (use-package solarized-theme)
 
