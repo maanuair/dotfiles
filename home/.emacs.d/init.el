@@ -332,8 +332,8 @@
   (defvar my/perso-org-dir (expand-file-name "~/Org/Perso") "My preferred location for org files.")
   :custom
   (org-babel-load-languages    '((emacs-lisp . t)
-                                  (sh t)))
-  (org-confirm-babel-evaluate   nil)
+                                  (shell . t)))
+  (org-confirm-babel-evaluate  nil)
   (org-descriptive-links       t                 "Decorated (not plain) hyperlinks.")
   (org-log-done                t                 "Insert the DONE's timestamp.")
   (org-startup-indented        'indet            "Alternate stars and indent scheme.")
@@ -524,7 +524,8 @@
       (setq ispell-local-dictionary-alist
         ;; Please note the list `("-d" "en_GB")` contains ACTUAL parameters passed to hunspell
         ;; You could use `("-d" "en_GB,en_GB-med")` to check with multiple dictionaries
-        '(("en_GB" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_GB") nil utf-8))))
+        '(("en_GB"  "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_GB") nil utf-8)
+        ("fr-moderne" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "fr-moderne") nil utf-8))))
     ((executable-find "aspell")
       (setq ispell-program-name "aspell")
       ;; Please note ispell-extra-args contains ACTUAL parameters passed to aspell
