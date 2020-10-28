@@ -227,7 +227,7 @@
   (delete-selection-mode t))           ; Delete text when typing over selection
 
 (use-package emacs
-  :bind ( ("C-z"       . nil)               ; Disable C-z
+  :bind ( ("C-z"       . nil)          ; Disable C-z
           ("C-c i"     . my/find-init-file)
           ("C-c /"     . comment-region)
           ("C-c \\"    . uncomment-region)
@@ -240,6 +240,8 @@
           ("C-c l s d" . (lambda () (interactive) (my/theme-load 'solarized-dark t)))
           ("C-c l s l" . (lambda () (interactive) (my/theme-load 'solarized-light t)))
           ("C-c l n"   . (lambda () (interactive) (my/theme-load nil)))
+          ("C-c l o"   . (lambda () (interactive) (my/theme-load 'modus-operandi)))
+          ("C-c l v"   . (lambda () (interactive) (my/theme-load 'modus-vivendi)))
           ("C-c C-e f" . find-function)
           ("C-c C-e k" . find-function-on-key)
           ("C-c C-e l" . find-library)
@@ -317,6 +319,12 @@
   :config
   (global-hl-line-mode           t))          ; Enable global hl-line mode
 
+(use-package modus-operandi-theme
+  :config
+  (my/theme-load 'modus-operandi))
+
+(use-package modus-vivendi-theme)
+
 (use-package mouse
   :ensure nil
   :custom
@@ -324,7 +332,7 @@
 
 (use-package org-mode
   :ensure nil
-  :bind("C-c p" . (lambda ()
+  :bind ("C-c p" . (lambda ()
                     (interactive)
                     (find-file "~/Org/Perso/para.org")))
   :mode ("\\.org\\'" . org-mode)
@@ -608,7 +616,8 @@
   :pin melpa-unstable
   :config
   (setq seoul256-background 253)
-  (my/theme-load 'seoul256 t))
+  ;; (my/theme-load 'seoul256 t)
+  )
 
 (use-package solarized-theme)
 
