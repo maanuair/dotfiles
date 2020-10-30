@@ -39,6 +39,7 @@ Brew funny packages:
   figlet           - Banner-like program prints strings as ASCII art(c.f. http://www.figlet.org/examples.html)
   lolcat           - Rainbows and unicorns in your console!
   neofetch         - A command-line system information tool written in bash 3.2+
+  toilet           - The Other Implementation’s letters
 
 Brew interesting casks:
 ======================
