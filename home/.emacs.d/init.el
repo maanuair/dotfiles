@@ -20,9 +20,11 @@
 
 ;;; Code:
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Prologue — Startup time performance
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ======================================================================
+;; Prologue
+;; Startup time performance
+;; ======================================================================
+
 
 ;; I followed some advices on https://blog.d46.us/advanced-emacs-startup/
 
@@ -61,9 +63,11 @@
        gc-cons-percentage 0.1)
      (garbage-collect)) t)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Act I — Set up the load path
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ======================================================================
+;; Act I
+;; Set up the load path
+;; ======================================================================
+
 (defconst my/elisp-dir
   (setq my/elisp-dir (expand-file-name "my-elisp/" user-emacs-directory))
   "Where lies my local elisp dir.")
@@ -90,9 +94,11 @@
 (defconst no-littering-var-directory (expand-file-name "var/" my/no-littering-dir) "Where no-literring stores the variable data.")
 (require 'no-littering)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Act II — Bootstrap package management
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ======================================================================
+;; Act II
+;; Bootstrap package management
+;; ======================================================================
+
 (require 'package)
 
 ;; Add the stable & non-stable MELPA packages source
@@ -127,10 +133,11 @@
   use-package-always-ensure t               ; Always install packages automatically
   use-package-always-pin    "melpa-stable") ; Prefer stable packages
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Act III — Declaring my functions here
-;;; (flycheck will emi warnings when defined in use-package statements)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ======================================================================
+;; Act III
+;; Declaring my functions here
+;; (flycheck will warn when defined in use-package clauses)
+;; ======================================================================
 
 (defun my/buffer-kill-all-but-scratches ()
   "Kill all buffers, but the scratch ones."
@@ -197,9 +204,10 @@
       ;; :inherit nil
       :inverse-video inverse-video)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Act IV — 1st party Emacs packages
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ======================================================================
+;; Act IV
+;; 1st party Emacs packages
+;; ======================================================================
 
 (use-package apropos
   :ensure nil
@@ -310,7 +318,7 @@
 (use-package frame
   :ensure nil
   :custom
-  (blink-cursor-blinks           0            "Cursor blnks for ever.")
+  (blink-cursor-blinks           0            "Cursor blinks for ever.")
   (blink-cursor-delay            0.2          "Minimal idle time before first blink.")
   (blink-cursor-interval         0.3          "Slightly quicker blink."))
 
@@ -438,9 +446,10 @@
   :config
   (windmove-default-keybindings))                ; Shifted arrow keys
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Act V — 3rd party Emacs packages
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ======================================================================
+;; Act V
+;; 3rd party Emacs packages
+;; ======================================================================
 
 ;; TODO Check whether desirable to use again these packages:
 ;; - counsel
@@ -461,6 +470,12 @@
       no-littering-var-directory))
   :config
   (auto-package-update-maybe))
+
+(use-package csound-mode
+  :mode ( ("\\.csd\\'" . csound-mode)
+  	      ("\\.orc\\'" . csound-mode)
+  	      ("\\.sco\\'" . csound-mode)
+  	      ("\\.udo\\'" . csound-mode)))
 
 (use-package dashboard
   :disabled
