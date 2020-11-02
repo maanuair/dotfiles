@@ -329,7 +329,15 @@
 
 (use-package modus-operandi-theme
   :config
-  (my/theme-load 'modus-operandi))
+  (my/theme-load 'modus-operandi)
+  (let
+    ((line (face-attribute 'mode-line :underline)))
+    (set-face-attribute 'mode-line          nil :overline   line)
+    (set-face-attribute 'mode-line-inactive nil :overline   line)
+    (set-face-attribute 'mode-line-inactive nil :underline  line)
+    (set-face-attribute 'mode-line          nil :box        nil)
+    (set-face-attribute 'mode-line-inactive nil :box        nil)
+    (set-face-attribute 'mode-line-inactive nil :background "#d33682")))
 
 (use-package modus-vivendi-theme)
 
@@ -489,13 +497,6 @@
   (dashboard-set-navigator     t)
   (dashboard-startup-banner    'logo))
 
-(use-package doom-modeline
-  :disabled
-  :init
-  (doom-modeline-mode          t)               ; Enable Doom mode line
-  :custom
-  (doom-modeline-minor-modes   t                "Display the minor modes."))
-
 (use-package editorconfig
   :config
   (editorconfig-mode           t))              ; Enable EditorConfig
@@ -525,22 +526,25 @@
   :init (flycheck-status-emoji-mode)) ;; Warning, on macOS, requires `(set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji"))`
 
 (use-package flyspell
-  :hook ((text-mode . flyspell-mode)
+  :bind ("C-c d" . my/cycle-ispell-languages)
+  :hook ( (text-mode . flyspell-mode)
           (prog-mode . flyspell-prog-mode))
   :config
   ;; Make sure DICPATH environment variables is there
-  (setenv "DICPATH"
-    (concat (getenv "HOME") "/Library/Spelling"))
+  (setenv "DICPATH" (concat (getenv "HOME") "/Library/Spelling"))
+
   ;; On macOS, make sure DICPATH var env is set as well
   (when (my/is-macos)
     (setenv "DICTIONARY" "en_GB"))
+
   ;; Find aspell and hunspell automatically
   (cond
     ;; Try Hunspell at first; if hunspell does NOT exist, use aspell
     ((executable-find "hunspell")
-      (setq ispell-program-name "/usr/local/bin/hunspell")
-      (setq ispell-local-dictionary "british")
-      (setq ispell-local-dictionary-alist
+      (setq
+        ispell-program-name "/usr/local/bin/hunspell"
+        ispell-local-dictionary "british"
+        ispell-local-dictionary-alist
         ;; Please note the list `("-d" "en_GB")` contains ACTUAL parameters passed to hunspell
         ;; You could use `("-d" "en_GB,en_GB-med")` to check with multiple dictionaries
         '(("en_GB"  "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_GB") nil utf-8)
@@ -548,7 +552,24 @@
     ((executable-find "aspell")
       (setq ispell-program-name "aspell")
       ;; Please note ispell-extra-args contains ACTUAL parameters passed to aspell
-      (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_GB")))))
+      (setq ispell-extra-args '("--sug-mode=ultra" "--lang=en_GB"))))
+
+  ;; Make appear the language in modeline, and change spelling language dynamically
+  ;; Source: Manuel Uberti at https://emacs.stackexchange.com/a/48978
+  (setq ispell-dictionary "en_GB")
+  (defvar my/languages-ring nil "Languages ring for Ispell")
+  (let ((languages '("fr-moderne" "en_GB")))
+    (setq my/languages-ring (make-ring (length languages)))
+    (dolist (elem languages) (ring-insert my/languages-ring elem)))
+  (defun my/cycle-ispell-languages ()
+    "Cycle ispell languages in `my/languages-ring'. Change dictionary and mode-line lighter accordingly."
+    (interactive)
+    (let ((language (ring-ref my/languages-ring -1)))
+      (ring-insert my/languages-ring language)
+      (ispell-change-dictionary language)
+      (setq flyspell-mode-line-string language)
+      (force-mode-line-update)))
+  (setq flyspell-mode-line-string (my/current-dictionary-mode-line ispell-dictionary)))
 
 (use-package groovy-mode
   :mode ("\\.groovy\\'" . groovy-mode))
@@ -582,6 +603,12 @@
 (use-package markdown-mode
   :mode ( ("\\.md\\'"          . markdown-mode)
           ("\\.markdown\\'"    . markdown-mode)))
+
+(use-package moody
+  :config
+  (setq x-underline-at-descent-line t)
+  (moody-replace-mode-line-buffer-identification)
+  (moody-replace-vc-mode))
 
 (use-package oblique
   ;; :defer 5
