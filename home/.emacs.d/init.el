@@ -340,12 +340,9 @@
 
 (use-package org-mode
   :ensure nil
-  :bind ("C-c p" . (lambda ()
-                    (interactive)
-                    (find-file "~/Org/Perso/para.org")))
   :mode ("\\.org\\'" . org-mode)
   :config
-  (defvar my/perso-org-dir (expand-file-name "~/Org/Perso") "My preferred location for org files.")
+  (defvar my/perso-org-dir (expand-file-name "~/Org/") "My preferred location for org files.")
   :custom
   (org-babel-load-languages    '((emacs-lisp . t)
                                   (shell . t)))
@@ -353,7 +350,6 @@
   (org-descriptive-links       t                 "Decorated (not plain) hyperlinks.")
   (org-log-done                t                 "Insert the DONE's timestamp.")
   (org-startup-indented        'indet            "Alternate stars and indent scheme.")
-  (org-agenda-files            '("~/Org/Perso/") "Make available all .org files for C-c C-w (org-refile)")
   (org-refile-targets
     '(
 			 (nil :maxlevel . 4)
