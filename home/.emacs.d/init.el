@@ -139,13 +139,29 @@
 ;; (flycheck will warn when defined in use-package clauses)
 ;; ======================================================================
 
-(defun my/buffer-kill-all-but-scratches ()
-  "Kill all buffers, but the scratch ones."
+;; Adapted from source: https://stackoverflow.com/a/11916238/3899249
+(defvar my/buffer-kill-all-except
+  '( "\\`\\*scratch\\*.*\\'"
+     "\\`\\*Messages\\*\\'"
+     "\\` \\*Minibuf-[[:digit:]]+\\*\\'"
+     "\\` \\*Echo Area [[:digit:]]+\\*\\'")
+  "Exception list for `my/buffer-kill-all-but-except'.")
+
+(defun my/buffer-kill-all-but-except ()
+  "Kill all buffers except those in `my/buffer-kill-all-except'."
   (interactive)
-  (dolist (buffer-name (buffer-list))
-    (if (not (string-prefix-p "*scratch" buffer-name))
-	    (kill-buffer buffer-name)))
-  (delete-other-windows))
+  (mapc (lambda (buf)
+          (let ((buf-name (buffer-name buf)))
+            (when (and
+                    ;; if a buffer's name is enclosed by * with optional leading space characters
+                    ;; (string-match-p "\\` *\\*.*\\*\\'" buf-name)
+                    ;; and the buffer is not associated with a process
+                    (null (get-buffer-process buf))
+                    ;; and the buffer's name is not in `my/buffer-kill-all-except'
+                    (notany (lambda (except) (string-match-p except buf-name))
+                      my/buffer-kill-all-except))
+              (kill-buffer buf))))
+    (buffer-list)))
 
 (defun my/buffer-new-scratch ()
   "Create a new frame with a new empty buffer."
@@ -242,7 +258,7 @@
           ("C-c b i"   . my/buffer-reindent)
           ("C-c b f"   . my/buffer-reformat)
           ("C-c b s"   . my/buffer-new-scratch)
-          ("C-c b k"   . my/buffer-kill-all-but-scratches)
+          ("C-c b k"   . my/buffer-kill-all-but-except)
           ("C-c l d"   . (lambda () (interactive) (my/theme-load 'dichromacy t)))
           ("C-c l e"   . (lambda () (interactive) (my/theme-load 'seoul256 t)))
           ("C-c l s d" . (lambda () (interactive) (my/theme-load 'solarized-dark t)))
