@@ -542,10 +542,18 @@
   :init (flycheck-status-emoji-mode)) ;; Warning, on macOS, requires `(set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji"))`
 
 (use-package flyspell
-  :bind ("C-c d" . my/cycle-ispell-languages)
-  :hook ( (text-mode . flyspell-mode)
-          (prog-mode . flyspell-prog-mode))
+  :bind ( ("C-c s s" . flyspell-mode)
+          ("C-c s S" . flyspell-prog-mode)
+          ("C-c s d" . my/cycle-ispell-languages))
+  :hook ( (text-mode . flyspell-mode))
+          ;; (prog-mode . flyspell-prog-mode)
   :config
+  ;; Remap flyspell mouse buttons
+  (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
+  (define-key flyspell-mouse-map [mouse-3] #'undefined)
+  (define-key flyspell-mouse-map [down-mouse-2] nil)
+  (define-key flyspell-mouse-map [mouse-2] nil)
+
   ;; Make sure DICPATH environment variables is there
   (setenv "DICPATH" (concat (getenv "HOME") "/Library/Spelling"))
 
@@ -559,7 +567,7 @@
     ((executable-find "hunspell")
       (setq
         ispell-program-name "/usr/local/bin/hunspell"
-        ispell-local-dictionary "british"
+        ispell-local-dictionary "en_GB"
         ispell-local-dictionary-alist
         ;; Please note the list `("-d" "en_GB")` contains ACTUAL parameters passed to hunspell
         ;; You could use `("-d" "en_GB,en_GB-med")` to check with multiple dictionaries
@@ -573,6 +581,12 @@
   ;; Make appear the language in modeline, and change spelling language dynamically
   ;; Source: Manuel Uberti at https://emacs.stackexchange.com/a/48978
   (setq ispell-dictionary "en_GB")
+  (defun my/current-dictionary-mode-line (language)
+    "Return the current dictionary from LANGUAGE for the mode line."
+    (interactive)
+    ;; (let ((dict (substring language 0 2)))
+    ;; (concat " " dict)))
+    (concat " " language))
   (defvar my/languages-ring nil "Languages ring for Ispell")
   (let ((languages '("fr-moderne" "en_GB")))
     (setq my/languages-ring (make-ring (length languages)))
@@ -583,7 +597,7 @@
     (let ((language (ring-ref my/languages-ring -1)))
       (ring-insert my/languages-ring language)
       (ispell-change-dictionary language)
-      (setq flyspell-mode-line-string language)
+      (setq flyspell-mode-line-string (my/current-dictionary-mode-line language))
       (force-mode-line-update)))
   (setq flyspell-mode-line-string (my/current-dictionary-mode-line ispell-dictionary)))
 
@@ -646,6 +660,12 @@
   (add-hook 'org-mode-hook
 	  (lambda ()
 	    (org-bullets-mode t))))
+
+(use-package pandoc-mode
+  :config
+  (add-hook 'markdown-mode-hook 'pandoc-mode)
+  (add-hook 'org-mode-hook 'pandoc-mode)
+  )
 
 (use-package powerline
   :config
