@@ -45,6 +45,9 @@
   rebase = true
 [push]
   default = simple
-[user]
-  name = Emmanuel Roubion
-  email =
+[includeIf "gitdir:~/GitC*/"]
+  path = ~/.gitconfig-c
+[includeIf "gitdir:~/GitH*/"]
+  path = ~/.gitconfig-h
+[includeIf "gitdir:~/GitL*/"]
+  path = ~/.gitconfig-l
