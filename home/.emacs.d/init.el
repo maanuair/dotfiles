@@ -353,7 +353,7 @@
     (set-face-attribute 'mode-line-inactive nil :underline  line)
     (set-face-attribute 'mode-line          nil :box        nil)
     (set-face-attribute 'mode-line-inactive nil :box        nil)
-    (set-face-attribute 'mode-line-inactive nil :background "#d33682")))
+    (set-face-attribute 'mode-line-inactive nil :background "#f6f6f6"))) ;; "#d33682")))
 
 (use-package modus-vivendi-theme)
 
@@ -470,13 +470,6 @@
 ;; Act V
 ;; 3rd party Emacs packages
 ;; ======================================================================
-
-;; TODO Check whether desirable to use again these packages:
-;; - counsel
-;; - restclient (packageinstall error so far...)
-;; - Ivi ?
-;;   ivy-use-virtual-buffers t                    ;; Add recent files and bookmarks to ‘ivy-switch-buffer
-;;   ivy-count-format "(%d/%d) "                  ;; Display the current candidate count for `ivy-read' to display both the index and the count.
 
 (use-package all-the-icons)
 
