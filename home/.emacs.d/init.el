@@ -185,6 +185,14 @@
   (interactive)
   (find-file (expand-file-name "init.el" user-emacs-directory)))
 
+(defun my/find-profile-file () "Visit my Bash profile file."
+  (interactive)
+  (find-file "~/.profile"))
+
+(defun my/find-profile-local-file () "Visit my Bash local profile."
+  (interactive)
+  (find-file "~/.profile.local"))
+
 (defun my/is-macos ()
   "Return t when the system is a macOS."
 	(interactive)
@@ -252,7 +260,9 @@
 
 (use-package emacs
   :bind ( ("C-z"       . nil)          ; Disable C-z
-          ("C-c i"     . my/find-init-file)
+          ("C-c . i"   . my/find-init-file)
+          ("C-c . p"   . my/find-profile-file)
+          ("C-c . l"   . my/find-profile-local-file)
           ("C-c /"     . comment-region)
           ("C-c \\"    . uncomment-region)
           ("C-c b i"   . my/buffer-reindent)
