@@ -364,22 +364,30 @@
 
 (use-package org-mode
   :ensure nil
+  :bind ("C-c p" . ( lambda ()
+                     (interactive)
+                     (find-file (getenv "ORGFILE"))))
   :mode ("\\.org\\'" . org-mode)
-  :config
-  (defvar my/perso-org-dir (expand-file-name "~/Org/") "My preferred location for org files.")
+  :hook
+  ((org-mode . turn-on-auto-fill))
   :custom
-  (org-babel-load-languages    '((emacs-lisp . t)
+  ;; Org-mode related
+  (org-directory               (concat (getenv "ORGDIR")))
+  (org-agenda-files            (directory-files-recursively
+                                 (getenv "ORGDIR") "org$"))
+  (org-descriptive-links       nil                "Do not decorate hyperlinks.")
+  (org-log-done                t                  "Insert the DONE's timestamp.")
+  (org-refile-targets
+    '( ; (nil :maxlevel . 2)
+       (org-agenda-files :maxlevel . 2))         "Specify targets for refile.")
+  (org-refile-use-outline-path 'file             "Include the file name (without directory) into the path.")
+  (org-startup-indented        'indet            "Alternate stars and indent scheme.")
+
+  ;; Org-babel related
+  (org-babel-load-languages    '( (emacs-lisp . t)
                                   (shell . t)))
   (org-confirm-babel-evaluate  nil)
-  (org-descriptive-links       t                 "Decorated (not plain) hyperlinks.")
-  (org-log-done                t                 "Insert the DONE's timestamp.")
-  (org-startup-indented        'indet            "Alternate stars and indent scheme.")
-  (org-refile-targets
-    '(
-			 (nil :maxlevel . 4)
-			 (org-agenda-files :maxlevel . 4))
-		"Specify targets for refile.")
-  (org-refile-use-outline-path 'file             "Include the file name (without directory) into the path."))
+  (org-src-tab-acts-natively   t                  "Apply the indentation in source blocks"))
 
 (use-package paren
   :ensure nil
@@ -448,7 +456,9 @@
   :ensure nil
   :custom
   (column-number-mode            t               "Displays column number.")
-  (size-indication-mode          nil             "Show buffer size in mode line."))
+  (size-indication-mode          nil             "Show buffer size in mode line.")
+  :hook
+  ((text-mode . turn-on-auto-fill)))
 
 (use-package tab-line
   :ensure nil
@@ -527,7 +537,7 @@
   :pin melpa-unstable
   :init (global-flycheck-mode)
   ;; Reminders, for Bash adn HTML files syntax checker:
-  ;; `brew install shellcheck tidy-html5`
+  ;; `brew install shellcheck tidy-html5 markdownlint-cli`
   :custom
   (flycheck-emacs-lisp-load-path 'inherit))
 
@@ -630,6 +640,7 @@
 (use-package moody
   :config
   (setq x-underline-at-descent-line t)
+  (setq moody-slant-function #'moody-slant-apple-rgb)
   (moody-replace-mode-line-buffer-identification)
   (moody-replace-vc-mode))
 
@@ -654,10 +665,14 @@
 	  (lambda ()
 	    (org-bullets-mode t))))
 
+(use-package ox-hugo
+  :after ox
+  )
+
 (use-package pandoc-mode
   :config
   (add-hook 'markdown-mode-hook 'pandoc-mode)
-  (add-hook 'org-mode-hook 'pandoc-mode)
+  ;; (add-hook 'org-mode-hook 'pandoc-mode)
   )
 
 (use-package powerline
