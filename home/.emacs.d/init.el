@@ -296,6 +296,7 @@
       trash-directory             "~/.Trash/" ; Trash folder is ~/.Trash
       mac-right-option-modifier   'none       ; Make the right Alt key (option) native
       ))
+
   :custom
   (cursor-type                   'hbar        "Uses the horizontal bar cursor." )
   (delete-by-moving-to-trash      t           "Uses OS's trash when deleting stuff.")
@@ -374,28 +375,30 @@
 
 (use-package org-mode
   :ensure nil
+  :init
+  (setq my/todos-file "~/Org/MyTodos.org")
   :bind ("C-c p" . ( lambda ()
                      (interactive)
-                     (find-file (getenv "ORGFILE"))))
+                     (find-file my/todos-file)))
   :mode ("\\.org\\'" . org-mode)
   :hook
   ((org-mode . turn-on-auto-fill))
   :custom
   ;; Org-mode related
-  (org-directory               (concat (getenv "ORGDIR")))
-  (org-agenda-files            (directory-files-recursively
-                                 (getenv "ORGDIR") "org$"))
-  (org-descriptive-links       nil                "Do not decorate hyperlinks.")
-  (org-log-done                t                  "Insert the DONE's timestamp.")
-  (org-refile-targets
-    '( ; (nil :maxlevel . 2)
-       (org-agenda-files :maxlevel . 2))         "Specify targets for refile.")
-  (org-refile-use-outline-path 'file             "Include the file name (without directory) into the path.")
-  (org-startup-indented        'indet            "Alternate stars and indent scheme.")
+  (org-agenda-files            (directory-files-recursively (file-name-directory "~/Org/MyTodos.org") "org$"))
+  (org-descriptive-links       nil                 "Do not decorate hyperlinks.")
+  (org-log-done                t                   "Insert the DONE's timestamp.")
+  (org-refile-targets          '(
+				 ;; (nil :maxlevel . 2)
+				 (org-agenda-files
+				  :maxlevel . 2)) "Specify targets for refile.")
+  (org-refile-use-outline-path 'file              "Include the file name (without directory) into the path.")
+  (org-startup-indented        'indet             "Alternate stars and indent scheme.")
 
   ;; Org-babel related
-  (org-babel-load-languages    '( (emacs-lisp . t)
-                                  (shell . t)))
+  (org-babel-load-languages    '(
+				 (emacs-lisp . t)
+                                 (shell . t)))
   (org-confirm-babel-evaluate  nil)
   (org-src-tab-acts-natively   t                  "Apply the indentation in source blocks"))
 
@@ -558,8 +561,8 @@
   :bind ( ("C-c s s" . flyspell-mode)
           ("C-c s S" . flyspell-prog-mode)
           ("C-c s d" . my/cycle-ispell-languages))
-  :hook ( (text-mode . flyspell-mode))
-          ;; (prog-mode . flyspell-prog-mode)
+  :hook ( (text-mode . flyspell-mode)
+          (prog-mode . flyspell-prog-mode))
   :config
   ;; Remap flyspell mouse buttons
   (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
@@ -585,7 +588,7 @@
         ;; Please note the list `("-d" "en_GB")` contains ACTUAL parameters passed to hunspell
         ;; You could use `("-d" "en_GB,en_GB-med")` to check with multiple dictionaries
         '(("en_GB"  "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_GB") nil utf-8)
-        ("fr-moderne" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "fr-moderne") nil utf-8))))
+           ("fr-moderne" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "fr-moderne") nil utf-8))))
     ((executable-find "aspell")
       (setq ispell-program-name "aspell")
       ;; Please note ispell-extra-args contains ACTUAL parameters passed to aspell
