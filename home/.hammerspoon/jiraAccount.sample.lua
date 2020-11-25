@@ -1,4 +1,4 @@
--- Copyright © 2016, 2019 Emmanuel Roubion
+-- Copyright © 2016, 2019, 2020 Emmanuel Roubion
 --
 -- Author: Emmanuel Roubion
 -- URL: https://github.com/maanuair/dotfiles
@@ -62,4 +62,32 @@ function jiraAccount.getDefaultProjectPrefix()
    return "defaultProjectPrefix"
 end
 
-return jiraAccount
+-- Returns the array of JIRA servers and projects we want in scope It
+-- could be only one JIRA server, or several of them.
+--
+-- Note one project key (and only one) can be "*": it denotes the fall
+-- back JIRA server to use when no keys match
+--
+-- The array has the following structure:
+-- {
+--   -- First server
+--   {
+--     keys={ "PRJ1", "PRJ2" } -- List of project prefixes living on this server
+--     url="https://jira.domain.com" -- The URL for this JIRA server
+--   },
+--   -- Second server
+--   {
+--     keys={ "ABC", "*" } -- List of project prefixes living on this server
+--     url="https://jira.another-domain.com" -- The URL for this JIRA server
+--   }
+-- }
+function jiraAccount.getJiraProjects()
+  return {
+    {
+      keys = { "*" },
+      url = "https://jira.default-domain.com"
+    }
+  }
+end
+
+ return jiraAccount

@@ -92,22 +92,82 @@ function jira.search()
   utils.browseUrl(url)
 end
 
+-- Return the JIRA project  matching the given issueKey
+local function getProjectFromIssueKey(issueKey)
+  result = nil
+  defaultProject = nil
+  projectFound = false
+  -- Iterate over each JIRA server
+  for p,project in ipairs(jiraAccount.getJiraProjects()) do
+    log.f("getProjectFromIssueKey: iterating over JIRA server '%s'...", project["url"])
+    for k,key in ipairs(project["keys"]) do
+      log.f("getProjectFromIssueKey:     > iterating over project key '%s'...", key)
+      if string.find(issueKey, key.."%-") ~= nil then
+        log.f("getProjectFromIssueKey: issueKey '%s' matches key '%s' of server '%s'.", issueKey, key, project["url"])
+        result = project
+        projectFound = true
+        break
+      end
+    end -- key
+    if projectFound then
+      break
+    end
+  end -- project
+
+  -- Project not found ?
+  if not projectFound then
+    -- No project matched, so use the fall back if it exists
+    log.f("getProjectFromIssueKey: could not find a matching project for issueKey '%s', check fall back project", issueKey)
+    project = getProjectFromIssueKey("*-123")
+    if project ~= nil then
+      projectFound = true
+    end
+  end
+  if not projectFound then
+    log.f("getProjectFromIssueKey: could not match issue key '%s'.", issueKey)
+  end
+  return result
+end
+
+local function notifyJiraProjectNotFound(infoText)
+  hs.notify.new({
+      title = "JIRA project not found",
+      informativeText = infoText
+  }):send()
+end
+
+-- Return the URL to browse for the given project and issueKey, or nil when not found.
+local function getUrlForProjectAndIssueKey(project, issueKey)
+  result = nil
+  -- Any project ?
+  if project == nil
+  then
+    log.f("getUrlFromIssueKey: no project given with issueKey '%s'. Abort.", issueKey)
+    notifyJiraProjectNotFound("No URL found for issueKey '".. issueKey .. "'. \nAborted. ")
+  else
+    result = project["url"] .. "/browse/" .. issueKey
+  end
+  return result
+end
+
 -- Browse the issue key currently highlighted selection, or pop up a chooser
 function jira.browseIssue()
-  local key = utils.getTrimmedSelectedText()
-  if string.len(key) == 0 then
+  local issueKey = utils.getTrimmedSelectedText()
+  if string.len(issueKey) == 0 then
     log.f("browseIssue: no selection: invoking graphical chooser")
     lookupJiraIssue()
   else
-    -- Does the key starts with only a digit ?
-    local c1 = string.sub(key, 1, 1)
-    if string.match(c1, "^%d") ~= nil then
-      -- Yes: add the default project prefix !
-      log.f("browseIssue: first char '%s' is a digit, adding prefix '%s'", c1, jiraAccount.getDefaultProjectPrefix())
-      key = jiraAccount.getDefaultProjectPrefix() .. key
+    log.f("browseIssue: got selection '%s'", issueKey)
+    -- Find the corresponding project
+    project = getProjectFromIssueKey(issueKey)
+    if project ~= nil then
+      url = getUrlForProjectAndIssueKey(project, issueKey)
+      log.f("browseIssue: browse issue '%s' at url '%s'.", issueKey, url)
+      utils.browseUrl(url)
+    else
+      log.f("browseIssue: no matching project for issueKey '%s'", issueKey)
+      notifyJiraProjectNotFound("No project for issue key '".. issueKey .. "'.")
     end
-    log.f("browseIssue: browse issue '%s'", key)
-    utils.browseUrl(jira.getBrowseUrl(key))
   end
 end
 
