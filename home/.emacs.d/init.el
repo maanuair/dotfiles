@@ -158,7 +158,7 @@
                     ;; and the buffer is not associated with a process
                     (null (get-buffer-process buf))
                     ;; and the buffer's name is not in `my/buffer-kill-all-except'
-                    (notany (lambda (except) (string-match-p except buf-name))
+                    (not (lambda (except) (string-match-p except buf-name))
                       my/buffer-kill-all-except))
               (kill-buffer buf))))
     (buffer-list)))
@@ -259,23 +259,23 @@
   (delete-selection-mode t))           ; Delete text when typing over selection
 
 (use-package emacs
-  :bind ( ("C-z"       . nil)          ; Disable C-z
-          ("C-c . i"   . my/find-init-file)
-          ("C-c . p"   . my/find-profile-file)
-          ("C-c . l"   . my/find-profile-local-file)
-          ("C-c /"     . comment-region)
-          ("C-c \\"    . uncomment-region)
-          ("C-c b i"   . my/buffer-reindent)
-          ("C-c b f"   . my/buffer-reformat)
-          ("C-c b s"   . my/buffer-new-scratch)
-          ("C-c b k"   . my/buffer-kill-all-but-except)
-          ("C-c l d"   . (lambda () (interactive) (my/theme-load 'dichromacy t)))
-          ("C-c l e"   . (lambda () (interactive) (my/theme-load 'seoul256 t)))
-          ("C-c l s d" . (lambda () (interactive) (my/theme-load 'solarized-dark t)))
-          ("C-c l s l" . (lambda () (interactive) (my/theme-load 'solarized-light t)))
-          ("C-c l n"   . (lambda () (interactive) (my/theme-load nil)))
-          ("C-c l o"   . (lambda () (interactive) (my/theme-load 'modus-operandi)))
-          ("C-c l v"   . (lambda () (interactive) (my/theme-load 'modus-vivendi)))
+  :bind ( ("C-z"         . nil)          ; Disable C-z
+          ("C-c C-. i"   . my/find-init-file)
+          ("C-c C-. p"   . my/find-profile-file)
+          ("C-c C-. l"   . my/find-profile-local-file)
+          ("C-c C-/"     . comment-region)
+          ("C-c C-\\"    . uncomment-region)
+          ("C-c C-b i"   . my/buffer-reindent)
+          ("C-c C-b f"   . my/buffer-reformat)
+          ("C-c C-b s"   . my/buffer-new-scratch)
+          ("C-c C-b k"   . my/buffer-kill-all-but-except)
+          ("C-c C-l d"   . (lambda () (interactive) (my/theme-load 'dichromacy t)))
+          ("C-c C-l e"   . (lambda () (interactive) (my/theme-load 'seoul256 t)))
+          ("C-c C-l s d" . (lambda () (interactive) (my/theme-load 'solarized-dark t)))
+          ("C-c C-l s l" . (lambda () (interactive) (my/theme-load 'solarized-light t)))
+          ("C-c C-l n"   . (lambda () (interactive) (my/theme-load nil)))
+          ("C-c C-l o"   . (lambda () (interactive) (my/theme-load 'modus-operandi)))
+          ("C-c C-l v"   . (lambda () (interactive) (my/theme-load 'modus-vivendi)))
           ("C-c C-e f" . find-function)
           ("C-c C-e k" . find-function-on-key)
           ("C-c C-e l" . find-library)
@@ -376,10 +376,14 @@
 (use-package org-mode
   :ensure nil
   :init
-  (setq my/todos-file "~/Org/MyTodos.org")
-  :bind ("C-c p" . ( lambda ()
-                     (interactive)
-                     (find-file my/todos-file)))
+  (setq
+    my/agendas-file "~/Org/Agenda.org"
+    my/meta-file    "~/Org/Meta.org"
+    my/todos-file   "~/Org/Todos.org")
+  :bind (
+          ("C-c C-m a" . ( lambda () (interactive) (find-file my/agendas-file)))
+          ("C-c C-m m" . ( lambda () (interactive) (find-file my/meta-file)))
+          ("C-c C-m t" . ( lambda () (interactive) (find-file my/todos-file))))
   :mode ("\\.org\\'" . org-mode)
   :hook
   ((org-mode . turn-on-auto-fill))
@@ -415,7 +419,7 @@
 
 (use-package recentf
   :ensure nil
-  :bind ("C-c r" . recentf-open-files)
+  :bind ("C-c C-r" . recentf-open-files)
   :defer 2
   :commands (recentf-add-file recentf-apply-filename-handlers recentf-mode )
   :preface
@@ -558,9 +562,9 @@
   :init (flycheck-status-emoji-mode)) ;; Warning, on macOS, requires `(set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji"))`
 
 (use-package flyspell
-  :bind ( ("C-c s s" . flyspell-mode)
-          ("C-c s S" . flyspell-prog-mode)
-          ("C-c s d" . my/cycle-ispell-languages))
+  :bind ( ("C-c C-s s" . flyspell-mode)
+          ("C-c C-s S" . flyspell-prog-mode)
+          ("C-c C-s d" . my/cycle-ispell-languages))
   :hook ( (text-mode . flyspell-mode)
           (prog-mode . flyspell-prog-mode))
   :config
@@ -666,8 +670,8 @@
       (setq initial-scratch-message (oblique-strategy))))
   ;; Does not seem to work. Use instead:
   ;; https://github.com/tecosaur/emacs-config/blob/master/config.org#splash-screen
-  :bind ( ("C-c o"  . my/oblique-strategy)
-          ("C-c O" . insert-oblique-strategy))
+  :bind ( ("C-c C-o"  . my/oblique-strategy)
+          ("C-c C-O" . insert-oblique-strategy))
   :custom
   (oblique-edition "strategies/oblique-strategies-condensed.txt" "Version to draw a strategy from."))
 
@@ -678,9 +682,13 @@
 	  (lambda ()
 	    (org-bullets-mode t))))
 
+(use-package org-roam
+  :pin melpa-unstable
+  :custom
+  (org-roam-directory "~/Org-Roam"))
+
 (use-package ox-hugo
-  :after ox
-  )
+  :after ox)
 
 (use-package pandoc-mode
   :config
