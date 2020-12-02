@@ -157,6 +157,8 @@ function jira.browseIssue()
     log.f("browseIssue: no selection: invoking graphical chooser")
     lookupJiraIssue()
   else
+    -- Transform to upper case, in case it is needed...
+    issueKey = string.upper(issueKey)
     log.f("browseIssue: got selection '%s'", issueKey)
     -- Find the corresponding project
     project = getProjectFromIssueKey(issueKey)
