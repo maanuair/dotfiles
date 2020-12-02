@@ -140,27 +140,33 @@
 ;; ======================================================================
 
 ;; Adapted from source: https://stackoverflow.com/a/11916238/3899249
-(defvar my/buffer-kill-all-except
+(defvar my/buffer-kill-all-exceptions
   '( "\\`\\*scratch\\*.*\\'"
      "\\`\\*Messages\\*\\'"
      "\\` \\*Minibuf-[[:digit:]]+\\*\\'"
      "\\` \\*Echo Area [[:digit:]]+\\*\\'")
-  "Exception list for `my/buffer-kill-all-but-except'.")
+  "Exception list for `my/buffer-kill-all-but-exceptions'.")
 
-(defun my/buffer-kill-all-but-except ()
-  "Kill all buffers except those in `my/buffer-kill-all-except'."
+(defun my/buffer-kill-all-but-exceptions ()
+  "Kill all buffers except those in `my/buffer-kill-all-exceptions'."
   (interactive)
   (mapc (lambda (buf)
-          (let ((buf-name (buffer-name buf)))
-            (when (and
-                    ;; if a buffer's name is enclosed by * with optional leading space characters
-                    ;; (string-match-p "\\` *\\*.*\\*\\'" buf-name)
-                    ;; and the buffer is not associated with a process
-                    (null (get-buffer-process buf))
-                    ;; and the buffer's name is not in `my/buffer-kill-all-except'
-                    (not (lambda (except) (string-match-p except buf-name))
-                      my/buffer-kill-all-except))
-              (kill-buffer buf))))
+          (let
+            ((buf-name (buffer-name buf)))
+            (when
+              (and
+                ;; if a buffer's name is enclosed by * with optional leading space characters
+                ;; (string-match-p "\\` *\\*.*\\*\\'" buf-name)
+                ;; The buffer must not be associated with a process
+                (null
+                  (get-buffer-process buf))
+                ;; The buffer's name must not be in `my/buffer-kill-all-exceptions' var
+                (null
+                  (lambda
+                    (exception)
+                    (string-match-p exception buf-name)
+                    (my/buffer-kill-all-exceptions)))
+                (kill-buffer buf)))))
     (buffer-list)))
 
 (defun my/buffer-new-scratch ()
@@ -259,7 +265,7 @@
   (delete-selection-mode t))           ; Delete text when typing over selection
 
 (use-package emacs
-  :bind ( ("C-z"         . nil)          ; Disable C-z
+  :bind ( ("C-z"         . nil)        ; Disable C-z
           ("C-c C-. i"   . my/find-init-file)
           ("C-c C-. p"   . my/find-profile-file)
           ("C-c C-. l"   . my/find-profile-local-file)
@@ -268,7 +274,7 @@
           ("C-c C-b i"   . my/buffer-reindent)
           ("C-c C-b f"   . my/buffer-reformat)
           ("C-c C-b s"   . my/buffer-new-scratch)
-          ("C-c C-b k"   . my/buffer-kill-all-but-except)
+          ("C-c C-b k"   . my/buffer-kill-all-but-exceptions)
           ("C-c C-l d"   . (lambda () (interactive) (my/theme-load 'dichromacy t)))
           ("C-c C-l e"   . (lambda () (interactive) (my/theme-load 'seoul256 t)))
           ("C-c C-l s d" . (lambda () (interactive) (my/theme-load 'solarized-dark t)))
@@ -276,14 +282,14 @@
           ("C-c C-l n"   . (lambda () (interactive) (my/theme-load nil)))
           ("C-c C-l o"   . (lambda () (interactive) (my/theme-load 'modus-operandi)))
           ("C-c C-l v"   . (lambda () (interactive) (my/theme-load 'modus-vivendi)))
-          ("C-c C-e f" . find-function)
-          ("C-c C-e k" . find-function-on-key)
-          ("C-c C-e l" . find-library)
-          ("C-c C-e v" . find-variable)
-          ("M-g"       . goto-line)
-          ("<f6>"      . recompile)
-          ("<f6>"      . next-error)
-          ("<f12>"     . auto-revert-tail-mode))
+          ("C-c C-e f"   . find-function)
+          ("C-c C-e k"   . find-function-on-key)
+          ("C-c C-e l"   . find-library)
+          ("C-c C-e v"   . find-variable)
+          ("M-g"         . goto-line)
+          ("<f6>"        . recompile)
+          ("<f6>"        . next-error)
+          ("<f12>"       . auto-revert-tail-mode))
   :config
   (set-fontset-font t nil "Roboto Mono 13")
   (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji"))
@@ -381,9 +387,13 @@
     my/meta-file    "~/Org/Meta.org"
     my/todos-file   "~/Org/Todos.org")
   :bind (
-          ("C-c C-m a" . ( lambda () (interactive) (find-file my/agendas-file)))
-          ("C-c C-m m" . ( lambda () (interactive) (find-file my/meta-file)))
-          ("C-c C-m t" . ( lambda () (interactive) (find-file my/todos-file))))
+	        ("C-c C-o a" . (lambda () (interactive) (find-file my/agendas-file)))
+          ("C-c C-o m" . (lambda () (interactive) (find-file my/meta-file)))
+          ("C-c C-o t" . (lambda () (interactive) (find-file my/todos-file)))
+	        ("C-c C-o *" . (lambda () (interactive) (progn
+	                                                  (find-file my/agendas-file)
+	                                                  (find-file my/meta-file)
+	                                                  (find-file my/todos-file)))))
   :mode ("\\.org\\'" . org-mode)
   :hook
   ((org-mode . turn-on-auto-fill))
@@ -419,7 +429,8 @@
 
 (use-package recentf
   :ensure nil
-  :bind ("C-c C-r" . recentf-open-files)
+  :bind (
+          ("C-c C-r" . recentf-open-files))
   :defer 2
   :commands (recentf-add-file recentf-apply-filename-handlers recentf-mode )
   :preface
@@ -562,10 +573,12 @@
   :init (flycheck-status-emoji-mode)) ;; Warning, on macOS, requires `(set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji"))`
 
 (use-package flyspell
-  :bind ( ("C-c C-s s" . flyspell-mode)
+  :bind (
+          ("C-c C-s s" . flyspell-mode)
           ("C-c C-s S" . flyspell-prog-mode)
           ("C-c C-s d" . my/cycle-ispell-languages))
-  :hook ( (text-mode . flyspell-mode)
+  :hook (
+          (text-mode . flyspell-mode)
           (prog-mode . flyspell-prog-mode))
   :config
   ;; Remap flyspell mouse buttons
@@ -670,8 +683,9 @@
       (setq initial-scratch-message (oblique-strategy))))
   ;; Does not seem to work. Use instead:
   ;; https://github.com/tecosaur/emacs-config/blob/master/config.org#splash-screen
-  :bind ( ("C-c C-o"  . my/oblique-strategy)
-          ("C-c C-O" . insert-oblique-strategy))
+  :bind (
+          ("C-c M-o"  . my/oblique-strategy)
+          ("C-c M-O" . insert-oblique-strategy))
   :custom
   (oblique-edition "strategies/oblique-strategies-condensed.txt" "Version to draw a strategy from."))
 
