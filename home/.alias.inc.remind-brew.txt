@@ -74,30 +74,48 @@ Brew interesting commands:
     Delete the brew cache
 
   brew update && brew upgrade && brew cleanup -s
+
     Update the brew packages, and remove their cache
 
   brew leaves
-    Show installed formulae that are not dependencies of another installed formula.
-    UNFORTUNATELY, while it does look for formulas' "dependencies", it ignores their "requirements" (a dependency is a specific formula, a requirement is "one of" formula when multiple exist)
 
-  brew list -1 | while read cask; do echo -ne "\x1B[1;34m $cask \x1B[0m"; brew uses $cask --installed | awk '{printf(" %s ", $0)}'; echo ""; done
-    List all formulas, along with which other fomula use it.
-    Any formula not used is either an orphaned formula (can be deleted), or has been installed on purpose (keep it).
-    It will hep to sort by number of usage:
-      awk '{print NF,$0}' "$file" | sort -nr | cut -d' ' -f 2-
+    Show installed formulae that are not dependencies of another
+    installed formula.
+
+    UNFORTUNATELY, while it does look for formulas' "dependencies", it
+    ignores their "requirements" (a dependency is a specific formula,
+    a requirement is "one of" formula when multiple exist)
+
+  brew list --formula -1 | while read cask
+  do
+    echo -ne "\x1B[1;34m $cask \x1B[0m"; brew uses $cask --installed | awk '{printf(" %s ", $0)}'
+    echo ""
+  done
+
+    List all formulas, along with which other formula use it.  Any
+    formula not used is either an orphaned formula (can be deleted),
+    or has been installed on purpose (keep it).
+
+    It will hep to sort by number of usage (the following is TO FIX):
+
+    awk '{print NF,$0}' "$file" | sort -nr | cut -d' ' -f 2-
 
   brew rmtree formula
-    Remove a formula and its unused dependencies.
-    Installation is "brew tap beeftornado/rmtree"
+
+    Remove a formula and its unused dependencies.  Installation is
+    "brew tap beeftornado/rmtree"
     C.f. https://github.com/beeftornado/homebrew-rmtree for warning.
 
   brew deps --installed
+
     Show dependencies of each formula that have some
 
   brew deps --installed --tree --verbose ffmpeg
+
     Show dependencies for the given formula
 
   brew uses --installed --recursive ffmpeg
+
     Show the formulae that specify formula as a dependency.
 
 Breww and java8:
@@ -106,6 +124,9 @@ Breww and java8:
   brew tap adoptopenjdk/openjdk
   brew cask install adoptopenjdk8
   (or brew cask install adoptopenjdk/openjdk/adoptopenjdk8, see below)
+
     The AdoptOpenJDK project makes it possible to nstall Java 8.
-    Use the 3rd line when the error "Error: Cask adoptopenjdk8 exists in multiple taps" occurs.
-    (source: https://stackoverflow.com/questions/24342886/how-to-install-java-8-on-mac)
+
+    Use the 3rd line when the error "Error: Cask adoptopenjdk8 exists
+    in multiple taps" occurs. (source:
+    https://stackoverflow.com/questions/24342886/how-to-install-java-8-on-mac)
