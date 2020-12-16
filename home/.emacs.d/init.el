@@ -383,7 +383,7 @@
   :ensure nil
   :init
   (setq
-    my/agendas-file "~/Org/Agenda.org"
+    my/agendas-file "~/Org/Agendas.org"
     my/meta-file    "~/Org/Meta.org"
     my/todos-file   "~/Org/Todos.org")
   :bind (
@@ -698,6 +698,8 @@
 
 (use-package org-roam
   :pin melpa-unstable
+  :init
+  (add-hook 'after-init-hook 'org-roam-mode)
   :custom
   (org-roam-directory "~/Org-Roam"))
 
