@@ -1,6 +1,6 @@
 ;;; init.el --- Emmanuel Roubion's personal init file -*- lexical-binding: t; -*-
 
-;; Copyright © 2016, 2017, 2018, 2019, 2020 Emmanuel Roubion
+;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Emmanuel Roubion
 
 ;; Author: Emmanuel Roubion
 ;; URL: https://github.com/maanuair/dotfiles
@@ -28,15 +28,16 @@
 
 ;; I followed some advices on https://blog.d46.us/advanced-emacs-startup/
 
-;; My default, naked, Emacs startup time is ~ 0.4 seconds in UI mode.
+;; My default, naked, Emacs startup time is ~ 0.4 seconds in GUI mode.
 ;; On macOS, run the following to discover it:
 ;;   open -n /Applications/Emacs.app --args -q --eval='(message "%s" (emacs-init-time))'
 ;; On other OSes:
 ;;   emacs -q --eval='(message "%s" (emacs-init-time))'
 
 ;; Currently, startup time is:
-;;   past:         1.86 seconds, with 5 GCs
-;;   2020-09 past: 2.49 seconds, with 11 GCs
+;;   <even before>: 1.86 seconds, with 5 Cs
+;;   2020-09:       2.49 seconds, with 11 GCs
+;;   2021-01:       5.26 seconds, with 11 GCs
 
 ;; Make startup faster by reducing the frequency of GC.
 (setq
@@ -73,10 +74,8 @@
   "Where lies my local elisp dir.")
 (add-to-list 'load-path my/elisp-dir)
 
-;; Add no-littering Git sub-module in load-path
-(add-to-list 'load-path (expand-file-name "no-littering/" my/elisp-dir))
-
-;; Add oblique strategies Git sub-module in load-path
+;; Add our git sub modules in load-path
+(add-to-list 'load-path (expand-file-name "no-littering" my/elisp-dir))
 (add-to-list 'load-path (expand-file-name "oblique-strategies" my/elisp-dir))
 
 ;; Reminder about Git submodules option, when cloning this project
@@ -126,7 +125,8 @@
 
 ;; Now we can manage packages with use-package.el
 (eval-when-compile
-  (require 'use-package))
+  (require 'use-package)
+  (require 'bind-key))
 
 (require 'use-package-ensure)
 (setq
@@ -176,13 +176,13 @@
     (set-buffer-major-mode buffer)
     (switch-to-buffer buffer)))
 
-(defun my/buffer-reformat ()
+(defun my/reformat ()
   "Re-indent and refontify whole buffer."
 	(interactive)
-	(my/buffer-reindent)
+	(my/reindent)
 	(font-lock-ensure))
 
-(defun my/buffer-reindent ()
+(defun my/reindent ()
   "Indent the whole currently visited buffer."
 	(interactive)
 	(indent-region (point-min) (point-max)))
@@ -266,30 +266,36 @@
 
 (use-package emacs
   :bind ( ("C-z"         . nil)        ; Disable C-z
-          ("C-c C-. i"   . my/find-init-file)
-          ("C-c C-. p"   . my/find-profile-file)
-          ("C-c C-. l"   . my/find-profile-local-file)
-          ("C-c C-/"     . comment-region)
-          ("C-c C-\\"    . uncomment-region)
-          ("C-c C-b i"   . my/buffer-reindent)
-          ("C-c C-b f"   . my/buffer-reformat)
-          ("C-c C-b s"   . my/buffer-new-scratch)
-          ("C-c C-b k"   . my/buffer-kill-all-but-exceptions)
-          ("C-c C-l d"   . (lambda () (interactive) (my/theme-load 'dichromacy t)))
-          ("C-c C-l e"   . (lambda () (interactive) (my/theme-load 'seoul256 t)))
-          ("C-c C-l s d" . (lambda () (interactive) (my/theme-load 'solarized-dark t)))
-          ("C-c C-l s l" . (lambda () (interactive) (my/theme-load 'solarized-light t)))
-          ("C-c C-l n"   . (lambda () (interactive) (my/theme-load nil)))
-          ("C-c C-l o"   . (lambda () (interactive) (my/theme-load 'modus-operandi)))
-          ("C-c C-l v"   . (lambda () (interactive) (my/theme-load 'modus-vivendi)))
-          ("C-c C-e f"   . find-function)
-          ("C-c C-e k"   . find-function-on-key)
-          ("C-c C-e l"   . find-library)
-          ("C-c C-e v"   . find-variable)
-          ("M-g"         . goto-line)
-          ("<f6>"        . recompile)
-          ("<f6>"        . next-error)
-          ("<f12>"       . auto-revert-tail-mode))
+          ;; Edition related
+          ("C-= /"     . comment-region)
+          ("C-= \\"    . uncomment-region)
+          ("C-= r i"     . my/reindent)
+          ("C-= r f"     . my/reformat)
+
+          ;; Dot files
+          ("C-= . i"   . my/find-init-file)
+          ("C-= . p"   . my/find-profile-file)
+          ("C-= . l"   . my/find-profile-local-file)
+
+          ;; Buffers
+          ("C-= b s"     . my/buffer-new-scratch)
+          ("C-= b k"     . my/buffer-kill-all-but-exceptions)
+          ("C-= b r"     . recentf-open-files)
+
+          ;; Themes
+          ("C-= t d"   . (lambda () (interactive) (my/theme-load 'dichromacy t)))
+          ("C-= t e"   . (lambda () (interactive) (my/theme-load 'seoul256 t)))
+          ("C-= t s d" . (lambda () (interactive) (my/theme-load 'solarized-dark t)))
+          ("C-= t s l" . (lambda () (interactive) (my/theme-load 'solarized-light t)))
+          ("C-= t n"   . (lambda () (interactive) (my/theme-load nil)))
+          ("C-= t m o" . (lambda () (interactive) (my/theme-load 'modus-operandi)))
+          ("C-= t m v" . (lambda () (interactive) (my/theme-load 'modus-vivendi)))
+
+          ;; Elisp Navigation
+          ("C-= e f"   . find-function)
+          ("C-= e k"   . find-function-on-key)
+          ("C-= e l"   . find-library)
+          ("C-= e v"   . find-variable))
   :config
   (set-fontset-font t nil "Roboto Mono 13")
   (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji"))
@@ -362,7 +368,7 @@
 
 (use-package modus-operandi-theme
   :config
-  (my/theme-load 'modus-operandi)
+  ;; (my/theme-load 'modus-operandi)
   (let
     ((line (face-attribute 'mode-line :underline)))
     (set-face-attribute 'mode-line          nil :overline   line)
@@ -387,13 +393,13 @@
     my/meta-file    "~/Org/Meta.org"
     my/todos-file   "~/Org/Todos.org")
   :bind (
-	        ("C-c C-o a" . (lambda () (interactive) (find-file my/agendas-file)))
-          ("C-c C-o m" . (lambda () (interactive) (find-file my/meta-file)))
-          ("C-c C-o t" . (lambda () (interactive) (find-file my/todos-file)))
-	        ("C-c C-o *" . (lambda () (interactive) (progn
-	                                                  (find-file my/agendas-file)
-	                                                  (find-file my/meta-file)
-	                                                  (find-file my/todos-file)))))
+	        ("C-= o a" . (lambda () (interactive) (find-file my/agendas-file)))
+          ("C-= o m" . (lambda () (interactive) (find-file my/meta-file)))
+          ("C-= o t" . (lambda () (interactive) (find-file my/todos-file)))
+	        ("C-= o *" . (lambda () (interactive) (progn
+	                                                (find-file my/agendas-file)
+	                                                (find-file my/meta-file)
+	                                                (find-file my/todos-file)))))
   :mode ("\\.org\\'" . org-mode)
   :hook
   ((org-mode . turn-on-auto-fill))
@@ -403,16 +409,16 @@
   (org-descriptive-links       nil                 "Do not decorate hyperlinks.")
   (org-log-done                t                   "Insert the DONE's timestamp.")
   (org-refile-targets          '(
-				 ;; (nil :maxlevel . 2)
-				 (org-agenda-files
-				  :maxlevel . 2)) "Specify targets for refile.")
+				                          ;; (nil :maxlevel . 2)
+				                          (org-agenda-files
+				                            :maxlevel . 2)) "Specify targets for refile.")
   (org-refile-use-outline-path 'file              "Include the file name (without directory) into the path.")
   (org-startup-indented        'indet             "Alternate stars and indent scheme.")
 
   ;; Org-babel related
   (org-babel-load-languages    '(
-				 (emacs-lisp . t)
-                                 (shell . t)))
+				                          (emacs-lisp . t)
+                                  (shell . t)))
   (org-confirm-babel-evaluate  nil)
   (org-src-tab-acts-natively   t                  "Apply the indentation in source blocks"))
 
@@ -429,8 +435,6 @@
 
 (use-package recentf
   :ensure nil
-  :bind (
-          ("C-c C-r" . recentf-open-files))
   :defer 2
   :commands (recentf-add-file recentf-apply-filename-handlers recentf-mode )
   :preface
@@ -522,12 +526,6 @@
   :config
   (auto-package-update-maybe))
 
-(use-package csound-mode
-  :mode ( ("\\.csd\\'" . csound-mode)
-  	      ("\\.orc\\'" . csound-mode)
-  	      ("\\.sco\\'" . csound-mode)
-  	      ("\\.udo\\'" . csound-mode)))
-
 (use-package dashboard
   :disabled
   :config
@@ -574,9 +572,9 @@
 
 (use-package flyspell
   :bind (
-          ("C-c C-s s" . flyspell-mode)
-          ("C-c C-s S" . flyspell-prog-mode)
-          ("C-c C-s d" . my/cycle-ispell-languages))
+          ("C-= f m" . flyspell-mode)
+          ("C-= f p" . flyspell-prog-mode)
+          ("C-= f l" . my/cycle-ispell-languages))
   :hook (
           (text-mode . flyspell-mode)
           (prog-mode . flyspell-prog-mode))
@@ -637,18 +635,14 @@
 (use-package groovy-mode
   :mode ("\\.groovy\\'" . groovy-mode))
 
+(use-package free-keys
+  :custom
+  (free-keys-modifiers  '("" "C" "M" "s" "C-M" "C-s" "M-s")))
+
 (use-package iedit
   :custom
   (iedit-toggle-key-default (kbd "C-S-s"))
   )
-
-(use-package indium
-  :bind ("C-x c" . indium-connect)
-  :init
-  (setq
-    indium-chrome-data-dir
-    (expand-file-name "indium-chrome-profile" no-littering-var-directory))
-  (make-directory indium-chrome-data-dir t))
 
 (use-package js2-mode
   :mode ("\\.js\\'" . js2-mode))
@@ -684,8 +678,8 @@
   ;; Does not seem to work. Use instead:
   ;; https://github.com/tecosaur/emacs-config/blob/master/config.org#splash-screen
   :bind (
-          ("C-c M-o"  . my/oblique-strategy)
-          ("C-c M-O" . insert-oblique-strategy))
+          ("C-= x o" . oblique-strategy)
+          ("C-= x O" . insert-oblique-strategy))
   :custom
   (oblique-edition "strategies/oblique-strategies-condensed.txt" "Version to draw a strategy from."))
 
@@ -702,9 +696,6 @@
   (add-hook 'after-init-hook 'org-roam-mode)
   :custom
   (org-roam-directory "~/Org-Roam"))
-
-(use-package ox-hugo
-  :after ox)
 
 (use-package pandoc-mode
   :config
@@ -727,10 +718,6 @@
   (setq tab-line-close-button-show nil)
   )
 
-(use-package restclient
-  :disabled
-  :mode ("\\.rest\\'" . restclient-mode))
-
 (use-package seoul256-theme
   :pin melpa-unstable
   :config
@@ -738,14 +725,17 @@
   ;; (my/theme-load 'seoul256 t)
   )
 
-(use-package solarized-theme)
+(use-package solarized-theme
+  :config
+  ;; (my/theme-load 'solarized-light)
+  )
 
 (use-package svelte-mode
   :pin melpa-unstable)
 
 (use-package treemacs
   :defer 2
-  :bind ("C-C t" . treemacs)
+  :bind ("C-= b t" . treemacs)
   :custom
   (treemacs-space-between-root-nodes nil "No space between root nodes.")
   :custom-face
