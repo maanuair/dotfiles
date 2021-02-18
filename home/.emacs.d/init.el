@@ -265,12 +265,17 @@
   (delete-selection-mode t))           ; Delete text when typing over selection
 
 (use-package emacs
-  :bind ( ("C-z"         . nil)        ; Disable C-z
+  :bind (
+          ;; Disable C-z
+          ("C-z"         . nil)
+
+          ;; All my custom bindings starts with C-=, avalable in all encoutnered modes so far.
+
           ;; Edition related
           ("C-= /"     . comment-region)
           ("C-= \\"    . uncomment-region)
-          ("C-= r i"     . my/reindent)
-          ("C-= r f"     . my/reformat)
+          ("C-= r i"   . my/reindent)
+          ("C-= r f"   . my/reformat)
 
           ;; Dot files
           ("C-= . i"   . my/find-init-file)
@@ -278,36 +283,53 @@
           ("C-= . l"   . my/find-profile-local-file)
 
           ;; Buffers
-          ("C-= b s"     . my/buffer-new-scratch)
-          ("C-= b k"     . my/buffer-kill-all-but-exceptions)
-          ("C-= b r"     . recentf-open-files)
+          ("C-= b s"   . my/buffer-new-scratch)
+          ("C-= b k"   . my/buffer-kill-all-but-exceptions)
+          ("C-= b r"   . recentf-open-files)
 
           ;; Themes
           ("C-= t d"   . (lambda () (interactive) (my/theme-load 'dichromacy t)))
           ("C-= t e"   . (lambda () (interactive) (my/theme-load 'seoul256 t)))
-          ("C-= t s d" . (lambda () (interactive) (my/theme-load 'solarized-dark t)))
-          ("C-= t s l" . (lambda () (interactive) (my/theme-load 'solarized-light t)))
-          ("C-= t n"   . (lambda () (interactive) (my/theme-load nil)))
           ("C-= t m o" . (lambda () (interactive) (my/theme-load 'modus-operandi)))
           ("C-= t m v" . (lambda () (interactive) (my/theme-load 'modus-vivendi)))
+          ("C-= t n"   . (lambda () (interactive) (my/theme-load nil)))
+          ("C-= t s d" . (lambda () (interactive) (my/theme-load 'solarized-dark t)))
+          ("C-= t s l" . (lambda () (interactive) (my/theme-load 'solarized-light t)))
 
           ;; Elisp Navigation
           ("C-= e f"   . find-function)
           ("C-= e k"   . find-function-on-key)
           ("C-= e l"   . find-library)
-          ("C-= e v"   . find-variable))
+          ("C-= e v"   . find-variable)
+
+          ;; Meta-shortcut to show all custom shortcuts
+          ;; Note: it's the only one with a "C-= C" prefix, which is precisely unmatched
+          ("C-= C-="   . (lambda () (interactive) (progn
+                                                    (if (get-buffer "*Occur*")
+                                                      (kill-buffer "*Occur*"))
+                                                    (delete-other-windows)
+                                                    (my/find-init-file)
+                                                    (occur  "C-= [^C[]")))))
   :config
-  (set-fontset-font t nil "Roboto Mono 13")
-  (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji"))
-  (add-to-list 'default-frame-alist '(font . "Roboto Mono 13"))
-  (add-to-list 'default-frame-alist '(fullscreen . maximized))
+  (set-fontset-font                   t nil "Roboto Mono 13")
+  (set-fontset-font                   t 'symbol (font-spec :family "Apple Color Emoji"))
+  (add-to-list                        'default-frame-alist '(fullscreen . maximized))
+  (add-to-list                        'default-frame-alist '(font . "Roboto Mono 13"))
+  (set-face-attribute 'default        nil :family "Roboto Mono"    :height 130)
+  (set-face-attribute 'fixed-pitch    nil :family "Roboto Mono"    :height 130)
+  (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 130)
+  ;; (add-hook 'text-mode-hook (lambda () (variable-pitch-mode 1)))
 
   ;; Specific settings for macOS
   (when (my/is-macos)
     (setq
-      trash-directory             "~/.Trash/" ; Trash folder is ~/.Trash
-      mac-right-option-modifier   'none       ; Make the right Alt key (option) native
-      ))
+      trash-directory            "~/.Trash/" ; Trash folder is ~/.Trash
+      mac-right-option-modifier  'none       ; Make the right Alt key (option) native
+      )
+    ;; Make title bar transparent
+    (add-to-list 'default-frame-alist'(ns-transparent-titlebar . t))
+    (add-to-list 'default-frame-alist'(ns-appearance . light))
+    )
 
   :custom
   (cursor-type                   'hbar        "Uses the horizontal bar cursor." )
@@ -329,7 +351,10 @@
 (use-package files
   :ensure nil
   :config
-  (defvar my/autosaves-dir        (no-littering-expand-var-file-name "auto-save/") "My preferred auto-saves location.")
+  (defvar
+    my/autosaves-dir
+    (no-littering-expand-var-file-name "auto-save/")
+    "My preferred auto-saves location.")
   (setq
     auto-save-file-name-transforms `((".*" ,my/autosaves-dir t))
     auto-save-list-file-prefix     my/autosaves-dir)
@@ -366,9 +391,17 @@
   :config
   (global-hl-line-mode           t))          ; Enable global hl-line mode
 
-(use-package modus-operandi-theme
+(use-package modus-themes
+  :init
+  ;; Add all your customizations prior to loading the themes
+
+  ;; Make headings larger in height relative to the main text.
+  (setq modus-themes-scale-headings t)
+
+  ;; Use a more prominent background color hl-line-mode
+  (setq modus-themes-intense-hl-line t)
+
   :config
-  ;; (my/theme-load 'modus-operandi)
   (let
     ((line (face-attribute 'mode-line :underline)))
     (set-face-attribute 'mode-line          nil :overline   line)
@@ -378,8 +411,6 @@
     (set-face-attribute 'mode-line-inactive nil :box        nil)
     (set-face-attribute 'mode-line-inactive nil :background "#f6f6f6"))) ;; "#d33682")))
 
-(use-package modus-vivendi-theme)
-
 (use-package mouse
   :ensure nil
   :custom
@@ -388,36 +419,46 @@
 (use-package org-mode
   :ensure nil
   :init
+  ;; My org files
   (setq
     my/agendas-file "~/Org/Agendas.org"
     my/meta-file    "~/Org/Meta.org"
     my/todos-file   "~/Org/Todos.org")
+  (defun my/show-org ()
+    "Loads my org files, and set-up window accordingly"
+    (interactive)
+    (delete-other-windows)
+    (find-file my/meta-file)
+    (find-file my/todos-file)
+    (split-window-right)
+    (find-file-other-window my/agendas-file))
   :bind (
-	        ("C-= o a" . (lambda () (interactive) (find-file my/agendas-file)))
-          ("C-= o m" . (lambda () (interactive) (find-file my/meta-file)))
-          ("C-= o t" . (lambda () (interactive) (find-file my/todos-file)))
-	        ("C-= o *" . (lambda () (interactive) (progn
-	                                                (find-file my/agendas-file)
-	                                                (find-file my/meta-file)
-	                                                (find-file my/todos-file)))))
+          ("C-= o a"   . (lambda () (interactive) (find-file my/agendas-file)))
+          ("C-= o m"   . (lambda () (interactive) (find-file my/meta-file)))
+          ("C-= o t"   . (lambda () (interactive) (find-file my/todos-file)))
+          ("C-= o o"   . (lambda () (interactive) (my/show-org))))
   :mode ("\\.org\\'" . org-mode)
-  :hook
-  ((org-mode . turn-on-auto-fill))
+  :hook (
+          ;; (org-mode . turn-on-auto-fill)
+          ;; (org-mode    . org-num-mode)
+          (org-mode    . visual-line-mode))
   :custom
   ;; Org-mode related
-  (org-agenda-files            (directory-files-recursively (file-name-directory "~/Org/MyTodos.org") "org$"))
-  (org-descriptive-links       nil                 "Do not decorate hyperlinks.")
-  (org-log-done                t                   "Insert the DONE's timestamp.")
-  (org-refile-targets          '(
-				                          ;; (nil :maxlevel . 2)
-				                          (org-agenda-files
-				                            :maxlevel . 2)) "Specify targets for refile.")
-  (org-refile-use-outline-path 'file              "Include the file name (without directory) into the path.")
-  (org-startup-indented        'indet             "Alternate stars and indent scheme.")
+  (org-agenda-files                       (directory-files-recursively
+                                            (file-name-directory "~/Org/MyTodos.org") "org$"))
+  (org-descriptive-links                  nil                    "Do not decorate hyperlinks.")
+  (org-link-frame-setup                   '((file . find-file)))
+  (org-log-done                           t                      "Insert the DONE's timestamp.")
+  (org-refile-targets                     '(
+				                                     ;; (nil :maxlevel . 2)
+				                                     (org-agenda-files
+				                                       :maxlevel . 2))   "Specify targets for refile.")
+  (org-refile-use-outline-path            'file                  "Include the file name (w/o directory) into path.")
+  (org-refile-allow-creating-parent-nodes 'confirm               "Allow node creation upon refile.")
+  (org-startup-indented                   'indet                 "Alternate stars and indent scheme.")
 
   ;; Org-babel related
-  (org-babel-load-languages    '(
-				                          (emacs-lisp . t)
+  (org-babel-load-languages    '( (emacs-lisp . t)
                                   (shell . t)))
   (org-confirm-babel-evaluate  nil)
   (org-src-tab-acts-natively   t                  "Apply the indentation in source blocks"))
@@ -430,8 +471,7 @@
   (setq
     show-paren-delay             nil             ; Highlights without delay
     show-paren-style             'expression     ; Shows the matching expression
-    )
-  )
+    ))
 
 (use-package recentf
   :ensure nil
@@ -568,13 +608,15 @@
   (flycheck-emacs-lisp-load-path 'inherit))
 
 (use-package flycheck-status-emoji
-  :init (flycheck-status-emoji-mode)) ;; Warning, on macOS, requires `(set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji"))`
+  :init
+  ;; Warning, on macOS, requires `(set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji"))`
+  (flycheck-status-emoji-mode))
 
 (use-package flyspell
   :bind (
-          ("C-= f m" . flyspell-mode)
-          ("C-= f p" . flyspell-prog-mode)
-          ("C-= f l" . my/cycle-ispell-languages))
+          ("C-= f m"   . flyspell-mode)
+          ("C-= f p"   . flyspell-prog-mode)
+          ("C-= f l"   . my/cycle-ispell-languages))
   :hook (
           (text-mode . flyspell-mode)
           (prog-mode . flyspell-prog-mode))
@@ -678,8 +720,8 @@
   ;; Does not seem to work. Use instead:
   ;; https://github.com/tecosaur/emacs-config/blob/master/config.org#splash-screen
   :bind (
-          ("C-= x o" . oblique-strategy)
-          ("C-= x O" . insert-oblique-strategy))
+          ("C-= x o"   . oblique-strategy)
+          ("C-= x O"   . insert-oblique-strategy))
   :custom
   (oblique-edition "strategies/oblique-strategies-condensed.txt" "Version to draw a strategy from."))
 
@@ -722,20 +764,17 @@
   :pin melpa-unstable
   :config
   (setq seoul256-background 253)
-  ;; (my/theme-load 'seoul256 t)
   )
 
-(use-package solarized-theme
-  :config
-  ;; (my/theme-load 'solarized-light)
-  )
+(use-package solarized-theme)
 
 (use-package svelte-mode
   :pin melpa-unstable)
 
 (use-package treemacs
   :defer 2
-  :bind ("C-= b t" . treemacs)
+  :bind (
+          ("C-= b t"   . treemacs))
   :custom
   (treemacs-space-between-root-nodes nil "No space between root nodes.")
   :custom-face
