@@ -674,12 +674,12 @@
       (force-mode-line-update)))
   (setq flyspell-mode-line-string (my/current-dictionary-mode-line ispell-dictionary)))
 
-(use-package groovy-mode
-  :mode ("\\.groovy\\'" . groovy-mode))
-
 (use-package free-keys
   :custom
   (free-keys-modifiers  '("" "C" "M" "s" "C-M" "C-s" "M-s")))
+
+(use-package groovy-mode
+  :mode ("\\.groovy\\'" . groovy-mode))
 
 (use-package iedit
   :custom
@@ -738,6 +738,9 @@
   (add-hook 'after-init-hook 'org-roam-mode)
   :custom
   (org-roam-directory "~/Org-Roam"))
+
+(use-package ox-hugo
+  :after ox)
 
 (use-package pandoc-mode
   :config
