@@ -639,7 +639,7 @@
     ;; Try Hunspell at first; if hunspell does NOT exist, use aspell
     ((executable-find "hunspell")
       (setq
-        ispell-program-name "/usr/local/bin/hunspell"
+        ispell-program-name "hunspell"
         ispell-local-dictionary "en_GB"
         ispell-local-dictionary-alist
         ;; Please note the list `("-d" "en_GB")` contains ACTUAL parameters passed to hunspell
