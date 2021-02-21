@@ -1,0 +1,61 @@
+# Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Emmanuel Roubion -*- mode: shell-script ;-*-
+#
+# Author: Emmanuel Roubion
+# URL: https://github.com/maanuair/dotfiles
+
+# This file is part of Emmanuel's Roubion dot files, released under
+# the MIT License as published by the Massachusetts Institute of Technology
+#
+# These dotfiles are distributed in the hope they wil lbe useful, but
+# without any warranty. See the MIT License for more details
+#
+# You should have received a copy of the MIT License along with this file.
+# If not, see https://opensource.org/licenses/mit-license.php
+
+# A few alias of my own
+
+alias c="clear"
+alias cp="cp -i"
+
+alias df="df -h"
+alias du="du -h"
+
+alias egrep="egrep --color=auto"
+
+alias fgrep="fgrep --color=auto"
+
+alias grep="grep --color=auto"
+
+alias j=jobs
+
+# Only run for bash, not zsh
+if [[ "$(getShell)" == "bash" ]]; then
+  myOutTab "Bash detected: 'ls' aliases setting up now."
+  # OS dependent aliases for colourised 'ls'.
+  # Test the *BSD + Darwin "ls -G" color option vs GNU's one "ls --color=auto"
+  if [[ "$(uname -s)" == "Darwin" ]]; then
+    alias ls="ls -FG"
+    alias l="ls -aFG"
+    alias ll="ls -alhFG"
+  else
+    alias ls="ls -F --color=auto"
+    alias l="ls -aF --color=auto"
+    alias ll="-alhF --color=auto"
+  fi
+else
+    myOutTab "Zsh detected: 'ls' aliases will be set up by Oh My Zsh."
+fi
+
+alias mv="mv -i"
+
+alias ncdu="ncdu --color dark"  # -rr to prevent deletion and spawning shell
+
+# alias ppath="echo \"${PATH//:/$'\n'}\" | sort"
+
+alias remind-bash="less ~/.shell_alias_inc_remind-bash.txt"
+alias remind-brew="less ~/.shell_alias_inc_remind-brew.txt"
+alias rm="rm -iv"
+
+alias t="todo.sh"
+
+alias wthr="curl wttr.in"

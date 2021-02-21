@@ -1,0 +1,320 @@
+# Copyright © 2021 Emmanuel Roubion -*- mode: shell-script ;-*-
+#
+# Author: Emmanuel Roubion
+# URL: https://github.com/maanuair/dotfiles
+
+# This file is part of Emmanuel's Roubion dot files, released under
+# the MIT License as published by the Massachusetts Institute of Technology
+#
+# These dotfiles are distributed in the hope they wil lbe useful, but
+# without any warranty. See the MIT License for more details
+#
+# You should have received a copy of the MIT License along with this file.
+# If not, see https://opensource.org/licenses/mit-license.php
+
+# A few shell helper functions, bash and zsh compatible.
+
+# Ask the given $1 question, read answer until it matches a choice in given $2 array.
+# Empty answer (Enter) will match $3 choice when sepcified, otherwise it asks again.
+function ask () {
+  # Inputs check
+  if [[ $# != 2 && $# != 3 ]]; then
+    myErr "Function $FUNCNAME(): bad arguments count, ignored."
+    myErr "Synopsis: $FUNCNAME \"So we quit?\" \"[y|yes|Y|n|no|N]\" [\"N\"]"
+    return;
+  else
+    # Ask!
+    local REGEXP="^"`echo $2 | tr '[]' '()'`"$"
+    local response
+    while true; do
+      if [[ "$(getShell)" == "zsh" ]]; then
+        read "response?$1 $2 "
+      else
+        read -r -p "$1 $2 " response
+      fi
+      if [[ "$response" == '' ]]; then
+        echo $3
+        break
+      elif [[ "$response" =~ $REGEXP ]]; then
+        echo $response
+        break
+      else
+        # We loop until an expected response is given
+        :
+      fi
+    done
+    # if [[ "$(getShell)" == "zsh" ]]; then
+    #   echo
+    # fi
+  fi
+}
+
+# Echo the detected OS: osx, linux or windows (cygwin, MinGW...)
+function getOS () {
+  case "$(uname -s)" in
+    Darwin)
+      echo 'osx';;
+    Linux)
+      echo 'linux';;
+    CYGWIN*)
+      echo 'cygwin';;
+    *) # Including MINGW32*|MSYS*...
+      echo "$(uname -s) Unsupported !" 1>&2 ;;
+  esac
+}
+
+# Echo the current shell used (bash, or zsh)
+function getShell () {
+  local shell
+  if [[ "$BASH_VERSION" != '' ]]; then
+    shell=bash
+  fi
+  if [[ "$ZSH_VERSION" != '' ]]; then
+    shell=zsh
+  fi
+  if [[ "$BASH_VERSION" != '' && "$ZSH_VERSION" != '' ]]; then
+    myErr "Cannot figure out the current shell."
+    exit -1a
+  fi
+  echo "$shell"
+}
+
+# Some log helpers
+function myOut () {
+  # A litle bit of blue
+  printf "%s [\033[34mDOT-INFOR\033[0m] ${@}\033[0m\n" `date "+%H:%M:%S"`
+}
+
+function myOutTab () {
+  myOut "  \033[2m==> ${@}"
+}
+
+function myErr () {
+  # A little bit of red, redirected to stderr
+  printf "%s [\033[31mDOT-ERROR\033[0m] ${@}\033[0m\n" `date "+%H:%M:%S"` 1>&2
+}
+
+function myErrTab () {
+  myErr "  \033[2m==> ${@}"
+}
+
+function myDebug () {
+  # And a little bit of highlighted green
+  printf "%s [\033[30m\033[42mDOT-DEBUG\033[0m] ${@}\033[0m\n" `date "+%H:%M:%S"`
+}
+
+# Set up aliases
+function setupAliases () {
+  myOut "Setting up aliases..."
+  sourceOrWarn "${HOME}/.shell_aliases"
+}
+
+# Set some env vars
+function setupEnvVars () {
+  myOut "Setting up environment variables..."
+
+  # Set up the dictionaries path
+  export DICPATH="~/Library/Spelling"
+
+  # Set up the PAGER
+  export PAGER=/usr/bin/less
+
+  # Set up common PATHs
+  for dir in "$HOME/bin" "$HOME/.npm_packages/bin" "$HOME/go/bin"; do
+    if [[ -d "$dir" ]]; then
+      export PATH="$PATH:$dir"
+    else
+      myErrTab "Directory $dir does not exist, cannot be added to PATH"
+    fi
+  done
+
+  # OSX specific env vars
+  if [[ `getOS` == 'osx' ]]; then
+    # DICTIONARY: used by Hunspell, required on osx only apparently
+    export DICTIONARY=en_GB
+
+    # EDITOR: which emacs to use?
+    myOutTab "Choosing emacs to use..."
+
+    # Prefer emacs in $HOME/bin, if there...
+    local EMACS="$HOME/bin/emacs"
+    if [[ ! -x "$EMACS" ]]; then
+      # Otherwise, take the one in /Applications
+      EMACS="/Applications/Emacs.app/Contents/MacOS/Emacs"
+    fi
+
+    # Set EDITOR
+    export EDITOR="${EMACS}"
+    myOutTab "Using EDITOR=${EMACS}"
+
+    # Now, emacsclient
+    local EMACSCLIENT="$HOME/bin/ec"
+    if [[ ! -x "$EMACSCLIENT" ]]; then
+      EMACSCLIENT="/Applications/Emacs.app/Contents/MacOS/Emacs"
+    fi
+
+    # GROOVY_HOME: I had to use Groovy sometimes...
+    local GHOME="$(brew --prefix)/opt/groovy/libexec"
+    if [[ -d "$GHOME" ]]; then
+      export GROOVY_HOME="$GHOME"
+    fi
+
+    # GEM_HOME: setup the RubyGems env, for sudo-less cocoapods
+    local GEM_HOME="${HOME}/.gem"
+    if [[ -d "${GEM_HOME}" ]]; then
+      export GEM_HOME
+      export PATH="${PATH}:${GEM_HOME}/ruby/2.0.0/bin"
+    fi
+
+    # ANDROID_HOME: I even used Android Studio at some point :)
+    local AHOME="${HOME}/Library/Android/sdk"
+    if [[ -d "$AHOME" ]]; then
+      export ANDROID_HOME="$AHOME"
+      export ANDROID_SDK_ROOT="$AHOME"
+      export PATH="${PATH}:${AHOME}/tools:${AHOME}/tools/bin:${AHOME}/platform-tools:${AHOME}/emulator"
+    fi
+
+    # Visual Studio Code
+    local CHOME="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+    if [[ -d "$CHOME" ]]; then
+      export PATH="${PATH}:${CHOME}"
+    fi
+  fi
+}
+
+# Set up git
+function setupGit() {
+  myOut "Setting up git..."
+
+  # Check whether we need to... check :)
+  local file="$HOME/.lastGitCheckTimestamp"
+
+  # Already checked in last 24h or not?
+  if [[ ! -f "$file" || $(find "$file" -mtime +1 -print) ]]; then
+    if [[ `getOS` == 'osx' ]]; then
+      if brew ls --versions git > /dev/null; then
+        # Git is already installed !
+        myOutTab "Git has been already installed with Homebrew package manager."
+      else
+        # Git not installed with brew
+        local GIT_CMD="brew install git"
+        myErr "Git is not installed with brew, version is \"`git --version`\""
+        myOutTab "You may want to install git through Homebrew package manager with (otherwise, completions will not work):"
+        myOutTab "${GIT_CMD}"
+      fi
+    else
+      myErr "Not checking Git env on non-macOS systems, sorry."
+    fi
+
+    # Put our timestamp
+    [[ ! -f "$file" ]] && myOutTab "Future \"Git check\" will be done after 24h, using file's timestamp: \"$file\"..."
+    touch "$file"
+  else
+    myOutTab "Git env check already done in last 24h, no need to check again..."
+  fi
+}
+
+# Set up homeshick
+function setupHomeshick () {
+  myOut "Setting up homeshick..."
+
+  # Some constants
+  local HOMESHICK="${HOME}/.homesick/repos/homeshick/homeshick.sh"
+
+  # Go through setup...
+  if [[ -f "${HOMESHICK}" ]]; then
+    # Loads homeshick
+    source "${HOMESHICK}"
+
+    # With bash, we source the completions
+    # (zsh has its own completion code)
+    if [[ "$(getShell)" == "bash" ]]; then
+      local HOMESHICK_COMPL="${HOME}/.homesick/repos/homeshick/completions/homeshick-completion.bash"
+      source "${HOMESHICK_COMPL}"
+    fi
+
+    # Now, we refresh repos
+    myOutTab "homeshick --quiet refresh..."
+    homeshick --quiet refresh
+
+    # Check whether we need to... "homeshick check"
+    local file="$HOME/.lastHomeshickCheckTimestamp"
+
+    # Already checked in last 24h or not?
+    if [[ ! -f "$file" || $(find "$file" -mtime +1 -print) ]]; then
+      myOutTab "homeshick check..."
+      homeshick check
+      if [[ ! -f "$file" ]]; then
+        myOutTab "Future \"homeshich check\" will be done after 24h, using file's timestamp: \"$file\"..."
+        touch "$file"
+      fi
+    else
+      myOutTab "homeshick check already done in last 24h, no need to check again..."
+    fi
+  else
+    myErrTab "Not found: ${HOMESHICK}"
+    # Clone it now ?
+    local GITCMD="git clone git://github.com/andsens/homeshick.git \"${HOME}/.homesick/repos/homeshick\""
+    if [[ $(ask "Clone it from github now?" "[Y|n]" Y) == Y ]]; then
+      eval "${GITCMD}" && echo && myOutTab "You will have to source \"${HOMESHICK}\" and \"${HOMESHICK_COMPL}\" manually" && echo
+    else
+      myOutTab "You may want to clone it later with following command:"
+      myOutTab "${GITCMD}"
+    fi
+  fi
+}
+
+# Set up NodeJS
+function setupNode() {
+  myOut "Setting up Node env..."
+
+  # Check whether we need to... check :)
+  local file="$HOME/.lastNodeCheckTimestamp"
+
+  # Already checked in last 24h or not?
+  if [[ ! -f "$file" || $(find "$file" -mtime +1 -print) ]]; then
+    # Is NodeJS installed ?
+    if [[ `getOS` == 'osx' ]]; then
+      export NVM_DIR="$HOME/.nvm"
+      if [[ -d "${NVM_DIR}" ]]; then
+        local NVM_SH="$NVM_DIR/nvm.sh"
+        local NVM_UPGRADE_CMD='( cd "$NVM_DIR"; git fetch origin; git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`; ) && . "$NVM_DIR/nvm.sh"'
+        local NVM_COMP="$NVM_DIR/bash_completion"
+        myOutTab "Sourcing $NVM_SH..."
+        . "${NVM_SH}"
+        myOutTab "Reminder: to manually upgrade, run: ${NVM_UPGRADE_CMD}"
+        myOutTab "Sourcing bash completions ${NVM_COMP}..."
+        [[ -r ${NVM_COMP} ]] && . ${NVM_COMP} || myErr "Not found: ${NVM_COMP}"
+      else
+        local NVM_INSTALL_CMD='export NVM_DIR="$HOME/.nvm" && mkdir "$NVM_DIR" && ( git clone https://github.com/creationix/nvm.git "$NVM_DIR"; cd "$NVM_DIR"; git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`;) && . "$NVM_DIR/nvm.sh"'
+        myErr "Not found: ${NVM_DIR}"
+        myOutTab "You may want to install nvm first, by running: "
+        myOutTab "${NVM_INSTALL_CMD}"
+      fi
+    else
+      myErr "Not checking Node env on non-macOS systems, sorry."
+    fi
+
+    # Put our timestamp
+    [[ ! -f "$file" ]] && myOutTab "Future \"Node check\" will be done after 24h, using file's timestamp: \"$file\"..."
+    touch "$file"
+  else
+    myOutTab "Node env check already done in last 24h, no need to check again..."
+  fi
+}
+
+# Source the given $1 file if it exists and is readable.
+# Otherwise output an error with an appropriate message
+function sourceOrWarn () {
+  # Loading $1 if it exists...
+  if [[ -f "${1}" ]]; then
+    if [[ -r "${1}" ]]; then
+      myOutTab "Sourcing ${1}..."
+      source "${1}"
+    else
+      myErrTab "Not readable: ${1}. Consider fixing permissions."
+    fi
+  else
+    myErrTab "Not found: ${1}. Consider restoring it."
+  fi
+}
