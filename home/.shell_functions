@@ -122,7 +122,7 @@ function setupEnvVars () {
   # Set up common PATHs
   for dir in "$HOME/bin" "$HOME/.npm_packages/bin" "$HOME/go/bin"; do
     if [[ -d "$dir" ]]; then
-      export PATH="$PATH:$dir"
+      export PATH="${dir}:$PATH"
     else
       myErrTab "Directory $dir does not exist, cannot be added to PATH"
     fi
