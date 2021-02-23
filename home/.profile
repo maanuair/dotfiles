@@ -114,9 +114,7 @@ function main () {
   umask 077
 
   # Loads the local custom script when it exists
-  set -x
   sourceOrWarn "${HOME}/.shell_local_script"
-  set +x
 
   # iTerm2 integration
   sourceOrWarn "${HOME}/.iterm2_shell_integration.bash"
