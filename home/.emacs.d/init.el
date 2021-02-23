@@ -191,13 +191,17 @@
   (interactive)
   (find-file (expand-file-name "init.el" user-emacs-directory)))
 
-(defun my/find-profile-file () "Visit my Bash profile file."
+(defun my/find-bash-profile-file () "Visit my Bash profile file."
   (interactive)
   (find-file "~/.profile"))
 
-(defun my/find-profile-local-file () "Visit my Bash local profile."
+(defun my/find-local-script-file () "Visit my local script file."
   (interactive)
-  (find-file "~/.profile.local"))
+  (find-file "~/.shell_local_script"))
+
+(defun my/find-zshrc-file () "Visit my Zshrc file."
+  (interactive)
+  (find-file "~/.zshrc"))
 
 (defun my/is-macos ()
   "Return t when the system is a macOS."
@@ -279,8 +283,9 @@
 
           ;; Dot files
           ("C-= . i"   . my/find-init-file)
-          ("C-= . p"   . my/find-profile-file)
-          ("C-= . l"   . my/find-profile-local-file)
+          ("C-= . p"   . my/find-bash-profile-file)
+          ("C-= . l"   . my/find-local-script-file)
+          ("C-= . z"   . my/find-zshrc-file)
 
           ;; Buffers
           ("C-= b s"   . my/buffer-new-scratch)
@@ -324,8 +329,27 @@
   (when (my/is-macos)
     (setq
       trash-directory            "~/.Trash/" ; Trash folder is ~/.Trash
-      mac-right-option-modifier  'none       ; Make the right Alt key (option) native
+      mac-option-modifier        'meta       ; Mac's left  Alt key (option) is Emacs's meta
+      mac-right-option-modifier  'none       ; Mac's right Alt key (option) is macOS native
+      mac-command-modifier       'super      ; Mac's command is macOS native
       )
+    ;; Key bindings
+    (global-set-key (kbd "s-`") 'other-frame)
+    (global-set-key (kbd "s--") 'text-scale-adjust)
+    (global-set-key (kbd "s-+") 'text-scale-adjust)
+    (global-set-key (kbd "s-0") 'text-scale-adjust)
+    (global-set-key (kbd "s-a") 'mark-whole-buffer)
+    (global-set-key (kbd "s-c") 'kill-ring-save)
+    (global-set-key (kbd "s-k") 'kill-current-buffer)
+    (global-set-key (kbd "s-l") 'goto-line)
+    (global-set-key (kbd "s-m") 'iconify-frame)
+    (global-set-key (kbd "s-n") 'make-frame)
+    (global-set-key (kbd "s-s") 'save-buffer)
+    (global-set-key (kbd "s-x") 'kill-region)
+    (global-set-key (kbd "s-v") 'yank)
+    (global-set-key (kbd "s-w") (lambda () (interactive) (delete-frame)))
+    (global-set-key (kbd "s-z") 'undo)
+
     ;; Make title bar transparent
     (add-to-list 'default-frame-alist'(ns-transparent-titlebar . t))
     (add-to-list 'default-frame-alist'(ns-appearance . light))
