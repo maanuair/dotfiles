@@ -355,6 +355,22 @@
     (add-to-list 'default-frame-alist'(ns-appearance . light))
     )
 
+  ;; Specific settings for emacs TUI
+  (unless (display-graphic-p)
+    ;; See https://stackoverflow.com/questions/10660060/how-do-i-bind-c-in-emacs
+    (defun my/global-map-and-set-key (key command &optional prefix suffix)
+      "Calls `my/map-key' KEY, then `global-set-key' KEY with COMMAND. PREFIX or SUFFIX can wrap the key when passing to `global-set-key'."
+      (my/map-key key)
+      (global-set-key (kbd (concat prefix key suffix)) command))
+
+    (defun my/map-key (key)
+      "Map KEY from escape sequence \"\e[emacs-KEY\."
+      (define-key function-key-map (concat "\e[emacs-" key) (kbd key)))
+
+    ;; The following assumes the underlying Terminal has been configured to send the escape sequence \e[emacs-= when C-= is pressed
+    (my/map-key "C-=")
+    )
+
   :custom
   (cursor-type                   'hbar        "Uses the horizontal bar cursor." )
   (delete-by-moving-to-trash      t           "Uses OS's trash when deleting stuff.")
