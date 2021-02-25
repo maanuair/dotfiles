@@ -1,4 +1,4 @@
--- Copyright © 2016, 2018, 2019, 2020 Emmanuel Roubion
+-- Copyright © 2016, 2018, 2019, 2020, 2021, 2021 Emmanuel Roubion
 --
 -- Author: Emmanuel Roubion
 -- URL: https://github.com/maanuair/dotfiles
@@ -221,9 +221,8 @@ function utils.typeDate()
   hs.eventtap.keyStrokes(s)
 end
 
--- Turn on/off Focus Mode
+-- Turn on/off macOS's menu bar
 function utils.toggleMenuBar()
-  -- Hide/show the menu bar
   -- Unforunately, the script is locale dependent! :-/
   hs.osascript.applescript([[
     tell application "System Preferences"
@@ -237,6 +236,22 @@ function utils.toggleMenuBar()
       quit
     end tell
     ]])
+end
+
+-- Open a new note in OneNote
+function utils.newOneNote()
+  log.df("yes!!")
+  -- Unforunately, the script is locale dependent! :-/
+  hs.osascript.applescript([[
+    tell application "Microsoft OneNote" to activate
+    delay 1
+	  tell application "System Events"
+		  click menu item "Nouvelle page" of ((process "OneNote")'s (menu bar 1)'s (menu bar item "Fichier")'s (menu "Fichier"))
+	  end tell
+    delay 1
+    ]])
+  utils.typeDate()
+  hs.eventtap.keyStrokes(' ')
 end
 
 return utils
