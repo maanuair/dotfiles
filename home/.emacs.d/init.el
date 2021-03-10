@@ -318,7 +318,7 @@
   :config
   (set-fontset-font                   t nil "Roboto Mono 13")
   (set-fontset-font                   t 'symbol (font-spec :family "Apple Color Emoji"))
-  (add-to-list                        'default-frame-alist '(fullscreen . maximized))
+  ;; (add-to-list                        'default-frame-alist '(fullscreen . maximized))
   (add-to-list                        'default-frame-alist '(font . "Roboto Mono 13"))
   (set-face-attribute 'default        nil :family "Roboto Mono"    :height 130)
   (set-face-attribute 'fixed-pitch    nil :family "Roboto Mono"    :height 130)
@@ -812,10 +812,9 @@
   (setq seoul256-background 253)
   )
 
-(use-package solarized-theme)
-
-(use-package svelte-mode
-  :pin melpa-unstable)
+(use-package solarized-theme
+  :config
+  (my/theme-load 'solarized-light))
 
 (use-package treemacs
   :defer 2
