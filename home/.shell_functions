@@ -79,6 +79,40 @@ function getShell () {
   echo "$shell"
 }
 
+# Return the time stamps directory, in which the script stores its tile stamps file
+function getTimestampsDir() {
+  # The timestamps directory
+  local dir="${HOME}/.myTimestamps"
+
+  # Make sure it exists
+  if [[ ! -d "${dir}" ]]; then
+    mkdir -p "${dir}"
+  fi
+  echo "${dir}"
+}
+
+# Did the given $1 setup function has been already run in the last $2 minutes?
+function hasSetupRunSinceLastMinutes() {
+  # Check whether the given time stamp file exists AND is newer than the given minutes value
+  local file="$(getTimestampsDir)/${1}"
+  local exitcode=0
+  if [[ -f "${file}" && $(find "$file" -mtime -${2}m -print) ]]; then
+    # File is newer than the provided minutes
+    exitCode=0
+  else
+    # File is older or does not exist
+    exitCode=1
+  fi
+  return exitCode
+}
+
+# Touch the timestamp file for the given $1 setup
+function touchSetupTimestamp() {
+  local file="$(getTimestampsDir)/$1"
+  touch "${file}"
+  myOutTab "Touched timestamp file: \"$file\""
+}
+
 # Some log helpers
 function myOut () {
   # A litle bit of blue
@@ -186,12 +220,15 @@ function setupEnvVars () {
 function setupGit() {
   myOut "Setting up git..."
 
-  # Check whether we need to... check :)
-  local file="$HOME/.lastGitCheckTimestamp"
-
-  # Already checked in last 24h or not?
-  if [[ ! -f "$file" || $(find "$file" -mtime +1 -print) ]]; then
-    if [[ `getOS` == 'osx' ]]; then
+  # Check whether we need to... check :-)
+  local minutes="$(expr 24 \* 60)"
+  if hasSetupRunSinceLastMinutes "$0" "${minutes}"; then
+    myOutTab "git check... Already done in last ${minutes} minutes, no need to check again..."
+  else
+    myOutTab "git check..."
+    if [[ `getOS` != 'osx' ]]; then
+      myErr "git check: NOT checking on non-macOS systems, sorry."
+    else
       if brew ls --versions git > /dev/null; then
         # Git is already installed !
         myOutTab "Git has been already installed with Homebrew package manager."
@@ -202,15 +239,8 @@ function setupGit() {
         myOutTab "You may want to install git through Homebrew package manager with (otherwise, completions will not work):"
         myOutTab "${GIT_CMD}"
       fi
-    else
-      myErr "Not checking Git env on non-macOS systems, sorry."
+      touchSetupTimestamp "$0"
     fi
-
-    # Put our timestamp
-    [[ ! -f "$file" ]] && myOutTab "Future \"Git check\" will be done after 24h, using file's timestamp: \"$file\"..."
-    touch "$file"
-  else
-    myOutTab "Git env check already done in last 24h, no need to check again..."
   fi
 }
 
@@ -218,10 +248,8 @@ function setupGit() {
 function setupHomeshick () {
   myOut "Setting up homeshick..."
 
-  # Some constants
-  local HOMESHICK="${HOME}/.homesick/repos/homeshick/homeshick.sh"
-
   # Go through setup...
+  local HOMESHICK="${HOME}/.homesick/repos/homeshick/homeshick.sh"
   if [[ -f "${HOMESHICK}" ]]; then
     # Loads homeshick
     source "${HOMESHICK}"
@@ -238,18 +266,13 @@ function setupHomeshick () {
     homeshick --quiet refresh
 
     # Check whether we need to... "homeshick check"
-    local file="$HOME/.lastHomeshickCheckTimestamp"
-
-    # Already checked in last 24h or not?
-    if [[ ! -f "$file" || $(find "$file" -mtime +1 -print) ]]; then
+    local minutes="$(expr 24 \* 60)"
+    if hasSetupRunSinceLastMinutes "$0" "${minutes}"; then
+      myOutTab "homeshick check... Already done in last ${minutes} minutes, no need to check again..."
+    else
       myOutTab "homeshick check..."
       homeshick check
-      if [[ ! -f "$file" ]]; then
-        myOutTab "Future \"homeshich check\" will be done after 24h, using file's timestamp: \"$file\"..."
-        touch "$file"
-      fi
-    else
-      myOutTab "homeshick check already done in last 24h, no need to check again..."
+      touchSetupTimestamp "$0"
     fi
   else
     myErrTab "Not found: ${HOMESHICK}"
@@ -268,38 +291,30 @@ function setupHomeshick () {
 function setupNode() {
   myOut "Setting up Node env..."
 
-  # Check whether we need to... check :)
-  local file="$HOME/.lastNodeCheckTimestamp"
+  # Is NodeJS installed ?
+  if [[ `getOS` == 'osx' ]]; then
+    export NVM_DIR="$HOME/.nvm"
+    if [[ -d "${NVM_DIR}" ]]; then
+      local NVM_SH="$NVM_DIR/nvm.sh"
+      local NVM_UPGRADE_CMD='( cd "$NVM_DIR"; git fetch origin; git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`; ) && . "$NVM_DIR/nvm.sh"'
+      myOutTab "Sourcing $NVM_SH..."
+      . "${NVM_SH}"
+      myOutTab "Reminder: to manually upgrade, run: ${NVM_UPGRADE_CMD}"
 
-  # Already checked in last 24h or not?
-  if [[ ! -f "$file" || $(find "$file" -mtime +1 -print) ]]; then
-    # Is NodeJS installed ?
-    if [[ `getOS` == 'osx' ]]; then
-      export NVM_DIR="$HOME/.nvm"
-      if [[ -d "${NVM_DIR}" ]]; then
-        local NVM_SH="$NVM_DIR/nvm.sh"
-        local NVM_UPGRADE_CMD='( cd "$NVM_DIR"; git fetch origin; git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`; ) && . "$NVM_DIR/nvm.sh"'
+      # Load Bash completions
+      if [[ "$(getShell)" == "bash" ]]; then
+        myOutTab "Bash detected: sourcing bash completions ${NVM_COMP}..."
         local NVM_COMP="$NVM_DIR/bash_completion"
-        myOutTab "Sourcing $NVM_SH..."
-        . "${NVM_SH}"
-        myOutTab "Reminder: to manually upgrade, run: ${NVM_UPGRADE_CMD}"
-        myOutTab "Sourcing bash completions ${NVM_COMP}..."
         [[ -r ${NVM_COMP} ]] && . ${NVM_COMP} || myErr "Not found: ${NVM_COMP}"
-      else
-        local NVM_INSTALL_CMD='export NVM_DIR="$HOME/.nvm" && mkdir "$NVM_DIR" && ( git clone https://github.com/creationix/nvm.git "$NVM_DIR"; cd "$NVM_DIR"; git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`;) && . "$NVM_DIR/nvm.sh"'
-        myErr "Not found: ${NVM_DIR}"
-        myOutTab "You may want to install nvm first, by running: "
-        myOutTab "${NVM_INSTALL_CMD}"
       fi
     else
-      myErr "Not checking Node env on non-macOS systems, sorry."
+      local NVM_INSTALL_CMD='export NVM_DIR="$HOME/.nvm" && mkdir "$NVM_DIR" && ( git clone https://github.com/creationix/nvm.git "$NVM_DIR"; cd "$NVM_DIR"; git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`;) && . "$NVM_DIR/nvm.sh"'
+      myErr "Not found: ${NVM_DIR}"
+      myOutTab "You may want to install nvm first, by running: "
+      myOutTab "${NVM_INSTALL_CMD}"
     fi
-
-    # Put our timestamp
-    [[ ! -f "$file" ]] && myOutTab "Future \"Node check\" will be done after 24h, using file's timestamp: \"$file\"..."
-    touch "$file"
   else
-    myOutTab "Node env check already done in last 24h, no need to check again..."
+    myErr "Not checking Node env on non-macOS systems, sorry."
   fi
 }
 

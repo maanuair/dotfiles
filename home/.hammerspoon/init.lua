@@ -64,7 +64,7 @@ function remind()
 	  informativeText = "Don't you remind ?\nTTD + PPL + MPC!",
   }):send()
 end
-a = hs.fs.attributes('~/.hammerspoon.timer')
+a = hs.fs.attributes('~/.myTimestamps/hammerspoon.timer')
 if a == nil then
   log.df("No timer set.")
 else
