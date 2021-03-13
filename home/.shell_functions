@@ -26,11 +26,12 @@ function ask () {
     # Ask!
     local REGEXP="^"`echo $2 | tr '[]' '()'`"$"
     local response
+    local timeout=2
     while true; do
       if [[ "$(getShell)" == "zsh" ]]; then
-        read "response?$1 $2 "
+        read -t $timeout "response?$1 $2 "
       else
-        read -r -p "$1 $2 " response
+        read -t $timeout -r -p "$1 $2 " response
       fi
       if [[ "$response" == '' ]]; then
         echo $3
@@ -111,6 +112,13 @@ function touchSetupTimestamp() {
   local file="$(getTimestampsDir)/$1"
   touch "${file}"
   myOutTab "Touched timestamp file: \"$file\""
+}
+
+function myIndent() {
+  local indentSize=2
+  local indent=1
+  if [ -n "$1" ]; then indent=$1; fi
+  pr -to $(($indent * $indentSize))
 }
 
 # Some log helpers
