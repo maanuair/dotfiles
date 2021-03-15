@@ -187,13 +187,17 @@
 	(interactive)
 	(indent-region (point-min) (point-max)))
 
-(defun my/find-init-file () "Visit my Emacs initialization file."
-  (interactive)
-  (find-file (expand-file-name "init.el" user-emacs-directory)))
-
 (defun my/find-bash-profile-file () "Visit my Bash profile file."
   (interactive)
   (find-file "~/.profile"))
+
+(defun my/find-hammerspoon-init-file () "Visit my Emacs initialization file."
+  (interactive)
+  (find-file "~/.hammerspoon/init.lua"))
+
+(defun my/find-emacs-init-file () "Visit my Emacs initialization file."
+  (interactive)
+  (find-file (expand-file-name "init.el" user-emacs-directory)))
 
 (defun my/find-local-script-file () "Visit my local script file."
   (interactive)
@@ -282,7 +286,8 @@
           ("C-= r f"   . my/reformat)
 
           ;; Dot files
-          ("C-= . i"   . my/find-init-file)
+          ("C-= . h"   . my/find-hammerspoon-init-file)
+          ("C-= . i"   . my/find-emacs-init-file)
           ("C-= . p"   . my/find-bash-profile-file)
           ("C-= . l"   . my/find-local-script-file)
           ("C-= . z"   . my/find-zshrc-file)
@@ -313,7 +318,7 @@
                                                     (if (get-buffer "*Occur*")
                                                       (kill-buffer "*Occur*"))
                                                     (delete-other-windows)
-                                                    (my/find-init-file)
+                                                    (my/find-emacs-init-file)
                                                     (occur  "C-= [^C[]")))))
   :config
   (set-fontset-font                   t nil "Roboto Mono 13")
