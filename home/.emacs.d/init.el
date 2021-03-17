@@ -38,6 +38,7 @@
 ;;   <even before>: 1.86 seconds, with 5 Cs
 ;;   2020-09:       2.49 seconds, with 11 GCs
 ;;   2021-01:       5.26 seconds, with 11 GCs
+;;   2021-03:       1.15 seconds, with 14 GCs (on Apple Silicon M1)
 
 ;; Make startup faster by reducing the frequency of GC.
 (setq
@@ -176,34 +177,25 @@
     (set-buffer-major-mode buffer)
     (switch-to-buffer buffer)))
 
-(defun my/reformat ()
-  "Re-indent and refontify whole buffer."
-	(interactive)
-	(my/reindent)
-	(font-lock-ensure))
-
-(defun my/reindent ()
-  "Indent the whole currently visited buffer."
-	(interactive)
-	(indent-region (point-min) (point-max)))
-
-(defun my/find-bash-profile-file () "Visit my Bash profile file."
-  (interactive)
-  (find-file "~/.profile"))
-
-(defun my/find-hammerspoon-init-file () "Visit my Emacs initialization file."
-  (interactive)
-  (find-file "~/.hammerspoon/init.lua"))
+(defun my/find-bash-profile-file () "Visit my Bash profile."
+  (interactive) (find-file "~/.profile"))
 
 (defun my/find-emacs-init-file () "Visit my Emacs initialization file."
-  (interactive)
-  (find-file (expand-file-name "init.el" user-emacs-directory)))
+  (interactive) (find-file (expand-file-name "init.el" user-emacs-directory)))
 
-(defun my/find-local-script-file () "Visit my local script file."
-  (interactive)
-  (find-file "~/.shell_local_script"))
+(defun my/find-hammerspoon-init-file () "Visit my Hammerspoon init file."
+  (interactive) (find-file "~/.hammerspoon/init.lua"))
 
-(defun my/find-zshrc-file () "Visit my Zshrc file."
+(defun my/find-shell-aliases-file () "Visit my shell aliases file."
+  (interactive) (find-file "~/.shell_aliases"))
+
+(defun my/find-shell-functions-file () "Visit my shell functions file."
+  (interactive) (find-file "~/.shell_functions"))
+
+(defun my/find-shell-local-script-file () "Visit my local shell file."
+  (interactive) (find-file "~/.shell_local_script"))
+
+(defun my/find-zshrc-file () "Visit my Zshrc."
   (interactive)
   (find-file "~/.zshrc"))
 
@@ -221,6 +213,25 @@
 	(interactive)
 	(message (oblique-strategy)))
 
+(defun my/reformat ()
+  "Re-indent and refontify whole buffer."
+	(interactive)
+	(my/reindent)
+	(font-lock-ensure))
+
+(defun my/reindent ()
+  "Indent the whole currently visited buffer."
+	(interactive)
+	(indent-region (point-min) (point-max)))
+
+(defun my/set-face-show-paren-match-expression (&optional inverse-video)
+  "Customises how to show paren matching, according to INVERSE-VIDEO."
+  (interactive)
+  (if inverse-video
+    (set-face-attribute 'show-paren-match-expression nil
+      ;; :inherit nil
+      :inverse-video inverse-video)))
+
 (defun my/theme-reset () "Disable loaded theme(s)."
   (interactive)
   (dolist (theme custom-enabled-themes) (disable-theme theme)))
@@ -233,14 +244,6 @@
     (load-theme theme t))
   (if inverse-paren-expr
     (my/set-face-show-paren-match-expression inverse-paren-expr)))
-
-(defun my/set-face-show-paren-match-expression (&optional inverse-video)
-  "Customises how to show paren matching, according to INVERSE-VIDEO."
-  (interactive)
-  (if inverse-video
-    (set-face-attribute 'show-paren-match-expression nil
-      ;; :inherit nil
-      :inverse-video inverse-video)))
 
 ;; ======================================================================
 ;; Act IV
@@ -274,10 +277,11 @@
 
 (use-package emacs
   :bind (
-          ;; Disable C-z
-          ("C-z"         . nil)
+          ;; Disable annoying C-z
+          ;; ("C-z"         . nil)
 
           ;; All my custom bindings starts with C-=, avalable in all encoutnered modes so far.
+          ;; NB: C-= requires special config in the terminal emulator in TUI mode (see TUI comment below)
 
           ;; Edition related
           ("C-= /"     . comment-region)
@@ -286,10 +290,12 @@
           ("C-= r f"   . my/reformat)
 
           ;; Dot files
+          ("C-= . a"   . my/find-shell-aliases-file)
+          ("C-= . b"   . my/find-bash-profile-file)
+          ("C-= . e"   . my/find-emacs-init-file)
+          ("C-= . f"   . my/find-shell-functions-file)
           ("C-= . h"   . my/find-hammerspoon-init-file)
-          ("C-= . i"   . my/find-emacs-init-file)
-          ("C-= . p"   . my/find-bash-profile-file)
-          ("C-= . l"   . my/find-local-script-file)
+          ("C-= . l"   . my/find-shell-local-script-file)
           ("C-= . z"   . my/find-zshrc-file)
 
           ;; Buffers
@@ -319,7 +325,8 @@
                                                       (kill-buffer "*Occur*"))
                                                     (delete-other-windows)
                                                     (my/find-emacs-init-file)
-                                                    (occur  "C-= [^C[]")))))
+                                                    ;; Occurences of "C-=" or "s-", excluding this and next line ;-)
+                                                    (occur "\\(\"C-= [^C[\"]+\"\\)\\|\\(\"s-[^C[\"]+\"\\)")))))
   :config
   (set-fontset-font                   t nil "Roboto Mono 13")
   (set-fontset-font                   t 'symbol (font-spec :family "Apple Color Emoji"))
@@ -329,6 +336,26 @@
   (set-face-attribute 'fixed-pitch    nil :family "Roboto Mono"    :height 130)
   (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 130)
   ;; (add-hook 'text-mode-hook (lambda () (variable-pitch-mode 1)))
+
+  ;; Specific settings for emacs TUI and C-= handling
+  (unless (display-graphic-p)
+    ;; See https://stackoverflow.com/questions/10660060/how-do-i-bind-c-in-emacs
+    (defun my/global-map-and-set-key (key command &optional prefix suffix)
+      "Calls `my/map-key' KEY, then `global-set-key' KEY with COMMAND. PREFIX or SUFFIX can wrap the key when passing to `global-set-key'."
+      (my/map-key key)
+      (global-set-key (kbd (concat prefix key suffix)) command))
+
+    (defun my/map-key (key)
+      "Map KEY from escape sequence \"\e[emacs-KEY\."
+      ;; It assumes that the underlying terminal has been configured to send the escape sequence \e[emacs-= when pressing C-=
+      ;; For instance one can configure iTerm2 in iTerm2 > Preferences > Keys > Key Binding > +
+      ;;  Keyboard shortcut: ^=
+      ;;  Action:            Send keystrokes > Send Escape Sequence
+      ;;  Esc+:              [emacs-C-=
+      (define-key function-key-map (concat "\e[emacs-" key) (kbd key)))
+
+    ;; Intercept \e[emacs-= to play C-=
+    (my/map-key "C-="))
 
   ;; Specific settings for macOS
   (when (my/is-macos)
@@ -360,24 +387,7 @@
 
     ;; Make title bar transparent
     (add-to-list 'default-frame-alist'(ns-transparent-titlebar . t))
-    (add-to-list 'default-frame-alist'(ns-appearance . light))
-    )
-
-  ;; Specific settings for emacs TUI
-  (unless (display-graphic-p)
-    ;; See https://stackoverflow.com/questions/10660060/how-do-i-bind-c-in-emacs
-    (defun my/global-map-and-set-key (key command &optional prefix suffix)
-      "Calls `my/map-key' KEY, then `global-set-key' KEY with COMMAND. PREFIX or SUFFIX can wrap the key when passing to `global-set-key'."
-      (my/map-key key)
-      (global-set-key (kbd (concat prefix key suffix)) command))
-
-    (defun my/map-key (key)
-      "Map KEY from escape sequence \"\e[emacs-KEY\."
-      (define-key function-key-map (concat "\e[emacs-" key) (kbd key)))
-
-    ;; The following assumes the underlying Terminal has been configured to send the escape sequence \e[emacs-= when C-= is pressed
-    (my/map-key "C-=")
-    )
+    (add-to-list 'default-frame-alist'(ns-appearance . light)))
 
   :custom
   (cursor-type                   'hbar        "Uses the horizontal bar cursor." )
@@ -614,22 +624,6 @@
   :config
   (auto-package-update-maybe))
 
-(use-package dashboard
-  :disabled
-  :config
-  (dashboard-setup-startup-hook)
-  :custom
-  (dashboard-items
-    '(
-       (recents   . 15)
-       (bookmarks . 5)
-       (registers . 5))
-		"Set the items to put at startup" )
-  (dashboard-set-heading-icons t)
-  (dashboard-set-file-icons    t)
-  (dashboard-set-navigator     t)
-  (dashboard-startup-banner    'logo))
-
 (use-package editorconfig
   :config
   (editorconfig-mode           t))              ; Enable EditorConfig
@@ -779,13 +773,6 @@
   (add-hook 'org-mode-hook
 	  (lambda ()
 	    (org-bullets-mode t))))
-
-(use-package org-roam
-  :pin melpa-unstable
-  :init
-  (add-hook 'after-init-hook 'org-roam-mode)
-  :custom
-  (org-roam-directory "~/Org-Roam"))
 
 (use-package ox-hugo
   :after ox)
