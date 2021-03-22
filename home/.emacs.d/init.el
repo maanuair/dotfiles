@@ -155,7 +155,7 @@
           (let
             ((buf-name (buffer-name buf)))
             (when
-              (and
+              (andT
                 ;; if a buffer's name is enclosed by * with optional leading space characters
                 ;; (string-match-p "\\` *\\*.*\\*\\'" buf-name)
                 ;; The buffer must not be associated with a process
@@ -328,12 +328,12 @@
                                                     ;; Occurences of "C-=" or "s-", excluding this and next line ;-)
                                                     (occur "\\(\"C-= [^C[\"]+\"\\)\\|\\(\"s-[^C[\"]+\"\\)")))))
   :config
-  (set-fontset-font                   t nil "Roboto Mono 13")
+  (set-fontset-font                   t nil "Monaco 12")
   (set-fontset-font                   t 'symbol (font-spec :family "Apple Color Emoji"))
   ;; (add-to-list                        'default-frame-alist '(fullscreen . maximized))
   (add-to-list                        'default-frame-alist '(font . "Roboto Mono 13"))
-  (set-face-attribute 'default        nil :family "Roboto Mono"    :height 130)
-  (set-face-attribute 'fixed-pitch    nil :family "Roboto Mono"    :height 130)
+  (set-face-attribute 'default        nil :family "Monaco"    :height 120)
+  (set-face-attribute 'fixed-pitch    nil :family "Monaco"    :height 120)
   (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 130)
   ;; (add-hook 'text-mode-hook (lambda () (variable-pitch-mode 1)))
 
