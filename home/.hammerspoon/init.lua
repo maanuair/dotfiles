@@ -61,15 +61,30 @@ hs.hotkey.bind(m2, "S", "Type a Story scenario template, in Jira mark-up style",
 function remind()
   hs.notify.new({
     title = "Reminder",
-	  informativeText = "Don't you remind ?\nTTD + PPL + MPC!",
+	  informativeText = " Remind!\nTTD + PPL + MPC!",
   }):send()
+  log.df("Sent reminder.")
 end
+
+function remind2()
+  hs.notify.new({
+    title = "Reminder",
+	  informativeText = "Mini break!\n!",
+  }):send()
+  log.df("Sent reminder2.")
+end
+
 a = hs.fs.attributes('~/.myTimestamps/hammerspoon.timer')
 if a == nil then
   log.df("No timer set.")
 else
   hs.hotkey.bind(m1, 	"R", "Reminder", remind)
   hs.timer.doEvery(60*15 , remind)
-  log.df("Reminder timer is set.")
+
+  hs.hotkey.bind(m2, 	"R", "Reminder2", remind2)
+  hs.timer.doEvery(60, remind2)
+
+  log.df("Reminder timers are set.")
   remind()
+  remind2()
 end
