@@ -69,7 +69,7 @@ end
 function remind2()
   hs.notify.new({
     title = "Reminder",
-	  informativeText = "Mini break!\n!",
+	  informativeText = "Mini break!\n",
   }):send()
   log.df("Sent reminder2.")
 end
@@ -82,7 +82,7 @@ else
   hs.timer.doEvery(60*15 , remind)
 
   hs.hotkey.bind(m2, 	"R", "Reminder2", remind2)
-  hs.timer.doEvery(60, remind2)
+  hs.timer.doEvery(60*5+1, remind2)
 
   log.df("Reminder timers are set.")
   remind()
