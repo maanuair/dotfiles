@@ -105,17 +105,6 @@
 (add-to-list 'package-archives (cons "melpa-stable"   "https://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives (cons "melpa-unstable" "https://melpa.org/packages/") t)
 
-;; A few package.el settings
-(if init-file-debug
-  (setq
-    use-package-verbose            t
-    use-package-expand-minimally   nil
-    use-package-compute-statistics t
-    debug-on-error                 t)
-  (setq
-    use-package-verbose            nil
-    use-package-expand-minimally   t))
-
 ;; Initialize package.el
 (unless package--initialized (package-initialize nil))
 
@@ -128,6 +117,17 @@
 (eval-when-compile
   (require 'use-package)
   (require 'bind-key))
+
+;; A few use-package settings
+(if init-file-debug
+  (setq
+    use-package-verbose            t
+    use-package-expand-minimally   nil
+    use-package-compute-statistics t
+    debug-on-error                 t)
+  (setq
+    use-package-verbose            nil
+    use-package-expand-minimally   t))
 
 (require 'use-package-ensure)
 (setq
@@ -155,7 +155,7 @@
           (let
             ((buf-name (buffer-name buf)))
             (when
-              (andT
+              (and
                 ;; if a buffer's name is enclosed by * with optional leading space characters
                 ;; (string-match-p "\\` *\\*.*\\*\\'" buf-name)
                 ;; The buffer must not be associated with a process
@@ -224,13 +224,13 @@
 	(interactive)
 	(indent-region (point-min) (point-max)))
 
-(defun my/set-face-show-paren-match-expression (&optional inverse-video)
-  "Customises how to show paren matching, according to INVERSE-VIDEO."
+(defun my/set-face-show-paren-match-expression (&optional is-inverse-video)
+  "Customises how to show paren matching, according to IS-INVERSE-VIDEO."
   (interactive)
-  (if inverse-video
+  (if is-inverse-video
     (set-face-attribute 'show-paren-match-expression nil
       ;; :inherit nil
-      :inverse-video inverse-video)))
+      :inverse-video is-inverse-video)))
 
 (defun my/theme-reset () "Disable loaded theme(s)."
   (interactive)
@@ -276,6 +276,7 @@
   (delete-selection-mode t))           ; Delete text when typing over selection
 
 (use-package emacs
+  :functions my/buffer-kill-all-exceptions my/map-key
   :bind (
           ;; Disable annoying C-z
           ;; ("C-z"         . nil)
@@ -305,6 +306,7 @@
 
           ;; Themes
           ("C-= t d"   . (lambda () (interactive) (my/theme-load 'dichromacy t)))
+          ("C-= t j"   . (lambda () (interactive) (my/theme-load 'solo-jazz t)))
           ("C-= t e"   . (lambda () (interactive) (my/theme-load 'seoul256 t)))
           ("C-= t m o" . (lambda () (interactive) (my/theme-load 'modus-operandi)))
           ("C-= t m v" . (lambda () (interactive) (my/theme-load 'modus-vivendi)))
@@ -331,20 +333,14 @@
   (set-fontset-font                   t nil "Monaco 12")
   (set-fontset-font                   t 'symbol (font-spec :family "Apple Color Emoji"))
   ;; (add-to-list                        'default-frame-alist '(fullscreen . maximized))
-  (add-to-list                        'default-frame-alist '(font . "Roboto Mono 13"))
+  (add-to-list                        'default-frame-alist '(font . "Monaco 12"))
   (set-face-attribute 'default        nil :family "Monaco"    :height 120)
   (set-face-attribute 'fixed-pitch    nil :family "Monaco"    :height 120)
-  (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 130)
-  ;; (add-hook 'text-mode-hook (lambda () (variable-pitch-mode 1)))
+  (set-face-attribute 'variable-pitch nil :family "charter"   :height 170)
 
   ;; Specific settings for emacs TUI and C-= handling
   (unless (display-graphic-p)
     ;; See https://stackoverflow.com/questions/10660060/how-do-i-bind-c-in-emacs
-    (defun my/global-map-and-set-key (key command &optional prefix suffix)
-      "Calls `my/map-key' KEY, then `global-set-key' KEY with COMMAND. PREFIX or SUFFIX can wrap the key when passing to `global-set-key'."
-      (my/map-key key)
-      (global-set-key (kbd (concat prefix key suffix)) command))
-
     (defun my/map-key (key)
       "Map KEY from escape sequence \"\e[emacs-KEY\."
       ;; It assumes that the underlying terminal has been configured to send the escape sequence \e[emacs-= when pressing C-=
@@ -353,6 +349,12 @@
       ;;  Action:            Send keystrokes > Send Escape Sequence
       ;;  Esc+:              [emacs-C-=
       (define-key function-key-map (concat "\e[emacs-" key) (kbd key)))
+
+    (defun my/global-map-and-set-key (key command &optional prefix suffix)
+      "Calls `my/map-key' KEY, then `global-set-key' KEY with COMMAND. PREFIX or SUFFIX can wrap the key when passing to `global-set-key'."
+      (my/map-key key)
+      (global-set-key (kbd (concat prefix key suffix)) command))
+
 
     ;; Intercept \e[emacs-= to play C-=
     (my/map-key "C-="))
@@ -366,8 +368,10 @@
       mac-command-modifier       'super      ; Mac's command is macOS native
       )
     ;; Key bindings
-    (global-set-key (kbd "s-<left>")  'previous-buffer)
-    (global-set-key (kbd "s-<right>") 'next-buffer)
+    (global-set-key (kbd "s-<left>")  'move-beginning-of-line) ;; was 'previous-buffer, but too conflicting with macOS defaults
+    (global-set-key (kbd "s-<right>") 'move-end-of-line)       ;; was 'next-buffer, but same as above
+    (global-set-key (kbd "s-<up>")    'beginning-of-buffer)
+    (global-set-key (kbd "s-<down>")  'end-of-buffer)
     (global-set-key (kbd "s-`")       'other-frame)
     (global-set-key (kbd "s--")       'text-scale-adjust)
     (global-set-key (kbd "s-+")       'text-scale-adjust)
@@ -449,26 +453,6 @@
   :config
   (global-hl-line-mode           t))          ; Enable global hl-line mode
 
-(use-package modus-themes
-  :init
-  ;; Add all your customizations prior to loading the themes
-
-  ;; Make headings larger in height relative to the main text.
-  (setq modus-themes-scale-headings t)
-
-  ;; Use a more prominent background color hl-line-mode
-  (setq modus-themes-intense-hl-line t)
-
-  :config
-  (let
-    ((line (face-attribute 'mode-line :underline)))
-    (set-face-attribute 'mode-line          nil :overline   line)
-    (set-face-attribute 'mode-line-inactive nil :overline   line)
-    (set-face-attribute 'mode-line-inactive nil :underline  line)
-    (set-face-attribute 'mode-line          nil :box        nil)
-    (set-face-attribute 'mode-line-inactive nil :box        nil)
-    (set-face-attribute 'mode-line-inactive nil :background "#f6f6f6"))) ;; "#d33682")))
-
 (use-package mouse
   :ensure nil
   :custom
@@ -476,12 +460,12 @@
 
 (use-package org-mode
   :ensure nil
+  :functions my/show-org
   :init
   ;; My org files
-  (setq
-    my/agendas-file "~/Org/Agendas.org"
-    my/meta-file    "~/Org/Meta.org"
-    my/todos-file   "~/Org/Todos.org")
+  (defvar my/agendas-file "~/Org/Agendas.org" "This variable points to my Agenda.org file.")
+  (defvar my/meta-file    "~/Org/Meta.org"    "This variable points to my Meta.org file.")
+  (defvar my/todos-file   "~/Org/Todos.org"   "This variable points to my Todos.org file.")
   (defun my/show-org ()
     "Loads my org files, and set-up window accordingly"
     (interactive)
@@ -490,6 +474,41 @@
     (find-file my/todos-file)
     (split-window-right)
     (find-file-other-window my/agendas-file))
+  ;; Use a nice readable proportional fonts
+  (let* ((variable-tuple
+           (cond
+             ((x-list-fonts "charter")         '(:font "charter"))
+             ((x-list-fonts "Georgia")         '(:font "Georgia"))
+             ((x-list-fonts "Cambria")         '(:font "Cambria"))
+             ((x-list-fonts "Times New Roman") '(:font "Times New Roman"))
+             ((x-list-fonts "Times")           '(:font "Times"))
+             (nil (warn "Cannot find a serif font: install one."))))
+          (headline           `(:inherit default :weight bold)))
+    ;; Adapt headings size
+    (custom-theme-set-faces
+      'user
+      `(org-level-8               ((t (,@headline ,@variable-tuple))))
+      `(org-level-7               ((t (,@headline ,@variable-tuple))))
+      `(org-level-6               ((t (,@headline ,@variable-tuple))))
+      `(org-level-5               ((t (,@headline ,@variable-tuple))))
+      `(org-level-4               ((t (,@headline ,@variable-tuple :height 1.1))))
+      `(org-level-3               ((t (,@headline ,@variable-tuple :height 1.25))))
+      `(org-level-2               ((t (,@headline ,@variable-tuple :height 1.5))))
+      `(org-level-1               ((t (,@headline ,@variable-tuple :height 1.75))))
+      `(org-block                 ((t (:inherit fixed-pitch))))
+      `(org-code                  ((t (:inherit (shadow fixed-pitch)))))
+      `(org-document-info         ((t (:foreground "dark orange"))))
+      `(org-document-info-keyword ((t (:inherit (shadow fixed-pitch)))))
+      `(org-document-title        ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))
+      ;; `(org-headline-done         ((t (,@headline ,@variable-tuple :strike-through t))))
+      `(org-indent                ((t (:inherit (org-hide fixed-pitch)))))
+      `(org-link                  ((t (:foreground "royal blue" :underline t))))
+      `(org-meta-line             ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+      `(org-property-value        ((t (:inherit fixed-pitch))) t)
+      `(org-special-keyword       ((t (:inherit (font-lock-comment-face fixed-pitch)))))
+      `(org-table                 ((t (:inherit fixed-pitch :foreground "#83a598"))))
+      `(org-tag                   ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
+      `(org-verbatim              ((t (:inherit (shadow fixed-pitch)))))))
   :bind (
           ("C-= o a"   . (lambda () (interactive) (find-file my/agendas-file)))
           ("C-= o m"   . (lambda () (interactive) (find-file my/meta-file)))
@@ -497,15 +516,20 @@
           ("C-= o o"   . (lambda () (interactive) (my/show-org))))
   :mode ("\\.org\\'" . org-mode)
   :hook (
-          ;; (org-mode . turn-on-auto-fill)
           ;; (org-mode    . org-num-mode)
+          (org-mode    . variable-pitch-mode)
           (org-mode    . visual-line-mode))
   :custom
-  ;; Org-mode related
   (org-agenda-files                       (directory-files-recursively
                                             (file-name-directory "~/Org/MyTodos.org") "org$"))
+  (org-catch-invisible-edits              'error)
   (org-descriptive-links                  nil                    "Do not decorate hyperlinks.")
+  (org-hide-emphasis-markers              t                      "Hide emphasis markup")
   (org-link-frame-setup                   '((file . find-file)))
+  (org-list-demote-modify-bullet          '(
+                                             ("+" . "-")
+                                             ("-" . "+")
+                                             ("*" . "+")))
   (org-log-done                           t                      "Insert the DONE's timestamp.")
   (org-refile-targets                     '(
 				                                     ;; (nil :maxlevel . 2)
@@ -516,10 +540,11 @@
   (org-startup-indented                   'indet                 "Alternate stars and indent scheme.")
 
   ;; Org-babel related
-  (org-babel-load-languages    '( (emacs-lisp . t)
-                                  (shell . t)))
-  (org-confirm-babel-evaluate  nil)
-  (org-src-tab-acts-natively   t                  "Apply the indentation in source blocks"))
+  (org-babel-load-languages               '(
+                                             (emacs-lisp . t)
+                                             (shell . t)))
+  (org-confirm-babel-evaluate             nil)
+  (org-src-tab-acts-natively              t                      "Apply the indentation in source blocks"))
 
 (use-package paren
   :ensure nil
@@ -631,6 +656,8 @@
 (use-package emmet-mode
   :hook (sgml-mode css-mode web-mode))
 
+;; (setq byte-compile-warnings '(cl-functions))
+
 (use-package esup
   :commands esup
   :config
@@ -655,6 +682,8 @@
   (flycheck-status-emoji-mode))
 
 (use-package flyspell
+  :defines.  flyspell-correct-word
+  :functions flyspell-correct-word
   :bind (
           ("C-= f m"   . flyspell-mode)
           ("C-= f p"   . flyspell-prog-mode)
@@ -746,11 +775,20 @@
           ("\\.markdown\\'"    . markdown-mode)))
 
 (use-package moody
+  :commands moody-slant-apple-rgb
   :config
   (setq x-underline-at-descent-line t)
   (setq moody-slant-function #'moody-slant-apple-rgb)
   (moody-replace-mode-line-buffer-identification)
   (moody-replace-vc-mode))
+
+(use-package string-inflection
+  :bind (
+          ("C-= s i c C" . string-inflection-camelcase)
+          ("C-= s i c c" . string-inflection-lower-camelcase)
+          ("C-= s i u"   . string-inflection-underscore)
+          ("C-= s i U"   . string-inflection-capital-underscore)
+          ("C-= s i k"   . string-inflection-kebab-case)))
 
 (use-package oblique
   ;; :defer 5
@@ -770,22 +808,23 @@
 (use-package org-bullets
   :commands (org-bullets-mode)
   :init
-  (add-hook 'org-mode-hook
-	  (lambda ()
-	    (org-bullets-mode t))))
+  (add-hook 'org-mode-hook 'org-bullets-mode)
+  (setq  org-bullets-bullet-list '("◉" "○" "●" "►" "•")))
 
 (use-package ox-hugo
-  :after ox)
+  :after ox
+  :pin melpa-unstable)
 
 (use-package pandoc-mode
   :config
-  (add-hook 'markdown-mode-hook 'pandoc-mode)
   ;; (add-hook 'org-mode-hook 'pandoc-mode)
-  )
+  (add-hook 'markdown-mode-hook 'pandoc-mode))
 
 (use-package powerline
+  :commands powerline-wave-left powerline-wave-right powerline-render
+  :functions my/tab-line-tab-name-buffer
   :config
-  ;; Use Powerline to make tabs nicer
+  ;; Use package to make tabs nicer
   (defvar my/tab-height 22 "Height of my custom tabs.")
   (defvar my/tab-left   (powerline-wave-right 'tab-line nil my/tab-height) "Left character to use in displayed tab name.")
   (defvar my/tab-right  (powerline-wave-left nil 'tab-line my/tab-height) "Right character to use in displayed tab name.")
@@ -798,15 +837,41 @@
   (setq tab-line-close-button-show nil)
   )
 
+;; The themes section
+
+(use-package modus-themes
+  :init
+  ;; Add all your customizations prior to loading the themes
+
+  ;; Make headings larger in height relative to the main text.
+  (setq modus-themes-scale-headings t)
+
+  ;; Use a more prominent background color hl-line-mode
+  (setq modus-themes-intense-hl-line t)
+
+  :config
+  (let
+    ((line (face-attribute 'mode-line :underline)))
+    (set-face-attribute 'mode-line          nil :overline   line)
+    (set-face-attribute 'mode-line-inactive nil :overline   line)
+    (set-face-attribute 'mode-line-inactive nil :underline  line)
+    (set-face-attribute 'mode-line          nil :box        nil)
+    (set-face-attribute 'mode-line-inactive nil :box        nil)
+    (set-face-attribute 'mode-line-inactive nil :background "#f6f6f6"))) ;; "#d33682")))
+
 (use-package seoul256-theme
   :pin melpa-unstable
   :config
   (setq seoul256-background 253)
   )
 
-(use-package solarized-theme
-  :config
-  (my/theme-load 'solarized-light))
+(use-package solarized-theme)
+
+(use-package solo-jazz-theme
+  :config)
+;;(my/theme-load 'solo-jazz))
+
+;; End of themes section
 
 (use-package treemacs
   :defer 2
