@@ -656,8 +656,6 @@
 (use-package emmet-mode
   :hook (sgml-mode css-mode web-mode))
 
-;; (setq byte-compile-warnings '(cl-functions))
-
 (use-package esup
   :commands esup
   :config
