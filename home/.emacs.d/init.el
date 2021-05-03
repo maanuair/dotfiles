@@ -59,11 +59,11 @@
 
 ;; Use a hook so we restore settings after init
 (add-hook 'after-init-hook
-  `(lambda ()
-     (setq
-       gc-cons-threshold  (* 800 1024)
-       gc-cons-percentage 0.1)
-     (garbage-collect)) t)
+	`(lambda ()
+	   (setq
+	     gc-cons-threshold  (* 800 1024)
+	     gc-cons-percentage 0.1)
+	   (garbage-collect)) t)
 
 ;; ======================================================================
 ;; Act I
@@ -155,7 +155,7 @@
           (let
             ((buf-name (buffer-name buf)))
             (when
-              (and
+		          (and
                 ;; if a buffer's name is enclosed by * with optional leading space characters
                 ;; (string-match-p "\\` *\\*.*\\*\\'" buf-name)
                 ;; The buffer must not be associated with a process
@@ -168,7 +168,7 @@
                     (string-match-p exception buf-name)
                     (my/buffer-kill-all-exceptions)))
                 (kill-buffer buf)))))
-    (buffer-list)))
+	  (buffer-list)))
 
 (defun my/buffer-new-scratch ()
   "Create a new frame with a new empty buffer."
@@ -201,36 +201,36 @@
 
 (defun my/is-macos ()
   "Return t when the system is a macOS."
-	(interactive)
-	(equal system-type 'darwin))
+  (interactive)
+  (equal system-type 'darwin))
 
 (defun my/is-win32 ()
   "Return t when the system is a Windows."
-	(interactive)
-	(equal system-type 'windows-nt))
+  (interactive)
+  (equal system-type 'windows-nt))
 
 (defun my/oblique-strategy ()  "Draw and message an oblique strategy."
-	(interactive)
-	(message (oblique-strategy)))
+  (interactive)
+  (message (oblique-strategy)))
 
 (defun my/reformat ()
   "Re-indent and refontify whole buffer."
-	(interactive)
-	(my/reindent)
-	(font-lock-ensure))
+  (interactive)
+  (my/reindent)
+  (font-lock-ensure))
 
 (defun my/reindent ()
   "Indent the whole currently visited buffer."
-	(interactive)
-	(indent-region (point-min) (point-max)))
+  (interactive)
+  (indent-region (point-min) (point-max)))
 
 (defun my/set-face-show-paren-match-expression (&optional is-inverse-video)
   "Customises how to show paren matching, according to IS-INVERSE-VIDEO."
   (interactive)
   (if is-inverse-video
     (set-face-attribute 'show-paren-match-expression nil
-      ;; :inherit nil
-      :inverse-video is-inverse-video)))
+			;; :inherit nil
+			:inverse-video is-inverse-video)))
 
 (defun my/theme-reset () "Disable loaded theme(s)."
   (interactive)
@@ -303,6 +303,9 @@
           ("C-= b s"   . my/buffer-new-scratch)
           ("C-= b k"   . my/buffer-kill-all-but-exceptions)
           ("C-= b r"   . recentf-open-files)
+
+          ;; Org caprture
+          ("C-= C-c C-c"  . org-capture)
 
           ;; Themes
           ("C-= t d"   . (lambda () (interactive) (my/theme-load 'dichromacy t)))
@@ -458,7 +461,12 @@
   :custom
   (mouse-buffer-menu-mode-mult   20          "Longer mouse buffer menu (major mode)."))
 
-(use-package org-mode
+(use-package org-capture
+  :ensure nil
+  :after org
+  )
+
+(use-package org
   :ensure nil
   :functions my/show-org
   :init
@@ -510,13 +518,13 @@
       `(org-tag                   ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
       `(org-verbatim              ((t (:inherit (shadow fixed-pitch)))))))
   :bind (
-          ("C-= o a"   . (lambda () (interactive) (find-file my/agendas-file)))
-          ("C-= o m"   . (lambda () (interactive) (find-file my/meta-file)))
-          ("C-= o t"   . (lambda () (interactive) (find-file my/todos-file)))
-          ("C-= o o"   . (lambda () (interactive) (my/show-org))))
-  :mode ("\\.org\\'" . org-mode)
+          ("C-= o a"  . (lambda () (interactive) (find-file my/agendas-file)))
+          ("C-= o m"  . (lambda () (interactive) (find-file my/meta-file)))
+          ("C-= o t"  . (lambda () (interactive) (find-file my/todos-file)))
+          ("C-= o o"  . (lambda () (interactive) (my/show-org))))
+  :mode ("\\.org\\'"  . org-mode)
   :hook (
-          ;; (org-mode    . org-num-mode)
+          (org-mode    . org-num-mode)        ;; Best with (org-bullets-bullet-list '("\u200b")
           (org-mode    . variable-pitch-mode)
           (org-mode    . visual-line-mode))
   :custom
@@ -524,12 +532,13 @@
                                             (file-name-directory "~/Org/MyTodos.org") "org$"))
   (org-catch-invisible-edits              'error)
   (org-descriptive-links                  nil                    "Do not decorate hyperlinks.")
+  (org-ellipsis                           " ⤵"                  "Use this ellipsis string.")
   (org-hide-emphasis-markers              t                      "Hide emphasis markup")
   (org-link-frame-setup                   '((file . find-file)))
   (org-list-demote-modify-bullet          '(
-                                             ("+" . "-")
                                              ("-" . "+")
-                                             ("*" . "+")))
+                                             ("+" . "*")
+                                             ("*" . "-")))
   (org-log-done                           t                      "Insert the DONE's timestamp.")
   (org-refile-targets                     '(
 				                                     ;; (nil :maxlevel . 2)
@@ -537,6 +546,7 @@
 				                                       :maxlevel . 2))   "Specify targets for refile.")
   (org-refile-use-outline-path            'file                  "Include the file name (w/o directory) into path.")
   (org-refile-allow-creating-parent-nodes 'confirm               "Allow node creation upon refile.")
+  (org-src-tab-acts-natively              t                      "TAB in a code block follows the language major mode buffer.")
   (org-startup-indented                   'indet                 "Alternate stars and indent scheme.")
 
   ;; Org-babel related
@@ -544,7 +554,12 @@
                                              (emacs-lisp . t)
                                              (shell . t)))
   (org-confirm-babel-evaluate             nil)
-  (org-src-tab-acts-natively              t                      "Apply the indentation in source blocks"))
+  (org-src-tab-acts-natively              t                      "Apply the indentation in source blocks")
+  (org-capture-templates
+    '(("h" "Hugo post"
+        entry (file+olp "~/www/all-posts.org" "Posts")
+        (function org-hugo-new-subtree-post-capture-template))
+       )))
 
 (use-package paren
   :ensure nil
@@ -649,9 +664,20 @@
   :config
   (auto-package-update-maybe))
 
+
 (use-package editorconfig
   :config
   (editorconfig-mode           t))              ; Enable EditorConfig
+
+(use-package deft
+  :bind ("C-= d"   . deft)
+  :commands (deft)
+  :custom
+  (deft-default-extension             "org")
+  (deft-directory                      "~/Deft")
+  (deft-extensions                     '("org" "md" "txt"))
+  (deft-recursive                      t)
+  (deft-use-filter-string-for-filename t))
 
 (use-package emmet-mode
   :hook (sgml-mode css-mode web-mode))
@@ -680,8 +706,8 @@
   (flycheck-status-emoji-mode))
 
 (use-package flyspell
-  :defines.  flyspell-correct-word
-  :functions flyspell-correct-word
+  :commands   flyspell-correct-word
+  :functions flyspell-correct-word my/current-dictionary-mode-line ring-insert ring-ref
   :bind (
           ("C-= f m"   . flyspell-mode)
           ("C-= f p"   . flyspell-prog-mode)
@@ -793,8 +819,8 @@
   :ensure nil ;; Loaded locally
   :config
   (add-hook 'after-init-hook
-    (lambda ()
-      (setq initial-scratch-message (oblique-strategy))))
+	  (lambda ()
+	    (setq initial-scratch-message (oblique-strategy))))
   ;; Does not seem to work. Use instead:
   ;; https://github.com/tecosaur/emacs-config/blob/master/config.org#splash-screen
   :bind (
@@ -804,14 +830,35 @@
   (oblique-edition "strategies/oblique-strategies-condensed.txt" "Version to draw a strategy from."))
 
 (use-package org-bullets
-  :commands (org-bullets-mode)
-  :init
-  (add-hook 'org-mode-hook 'org-bullets-mode)
-  (setq  org-bullets-bullet-list '("◉" "○" "●" "►" "•")))
+  :hook
+  (org-mode . org-bullets-mode)
+  :custom
+  ;; (org-bullets-bullet-list '("◉" "○" "●" "►" "•"))
+  (org-bullets-bullet-list '("\u200b"))) ;; Zero width space, best used with (org-num-mode)
+
+(use-package ox-jira
+  :pin melpa-unstable
+  :after ox)
 
 (use-package ox-hugo
+  :pin melpa-unstable
   :after ox
-  :pin melpa-unstable)
+  :commands (org-hugo-new-subtree-post-capture-template)
+  :init
+  ;; Define a template for Hugo posts
+  (defun org-hugo-new-subtree-post-capture-template ()
+    "Returns `org-capture' template string for new Hugo post. See `org-capture-templates' for more information."
+    (let* (
+            (title (read-from-minibuffer "Post Title: ")) ; Prompt to enter the post title
+            (fname (org-hugo-slug title)))                ; Slug it
+      (mapconcat #'identity
+		    `(
+		       ,(concat "* IDEA " title)
+		       ":PROPERTIES:"
+		       ,(concat ":export_file_name: " fname)
+		       ":END:"
+		       "%?\n")                                        ; Place the cursor here finally
+		    "\n"))))
 
 (use-package pandoc-mode
   :config
@@ -866,8 +913,8 @@
 (use-package solarized-theme)
 
 (use-package solo-jazz-theme
-  :config)
-;;(my/theme-load 'solo-jazz))
+  :config
+  (my/theme-load 'solo-jazz))
 
 ;; End of themes section
 
