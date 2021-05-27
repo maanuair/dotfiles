@@ -147,6 +147,9 @@
      "\\` \\*Echo Area [[:digit:]]+\\*\\'")
   "Exception list for `my/buffer-kill-all-but-exceptions'.")
 
+(defun my/log (text) "Message the given TEXT in *Messages* with a custom, timestamped, prefix."
+  (message (format "[%S] %S" (format-time-string "%Y/%m/%d %H:%M:%S:%3N %z") text)))
+
 (defun my/buffer-kill-all-but-exceptions ()
   "Kill all buffers except those in `my/buffer-kill-all-exceptions'."
   (interactive)
@@ -227,9 +230,11 @@
   "Customises how to show paren matching, according to IS-INVERSE-VIDEO."
   (interactive)
   (if is-inverse-video
-    (set-face-attribute 'show-paren-match-expression nil
-			;; :inherit nil
-			:inverse-video is-inverse-video)))
+    (progn
+      (set-face-attribute 'show-paren-match-expression nil
+			  ;; :inherit nil
+			  :inverse-video is-inverse-video)
+      (my/log (format "Set face attribute 'show-paren-match-expression' to %S." is-inverse-video)))))
 
 (defun my/theme-reset () "Disable loaded theme(s)."
   (interactive)
@@ -238,9 +243,12 @@
 (defun my/theme-load (theme &optional inverse-paren-expr)
   "Load the given THEME in parameter.  Optionally set our custom show-paren-match expression to use INVERSE-PAREN-EXPR."
   (interactive)
+  (my/log "Nullified theme.")
   (my/theme-reset)
   (if theme
-    (load-theme theme t))
+    (progn
+      (load-theme theme t)
+      (my/log (format "Loaded theme %S." theme))))
   (if inverse-paren-expr
     (my/set-face-show-paren-match-expression inverse-paren-expr)))
 
