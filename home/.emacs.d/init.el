@@ -610,6 +610,7 @@
             dired-directory)))))
   :hook (dired-mode . recentf-add-dired-directory)
   :custom
+  (recentf-auto-cleanup          'never          "Don't try to clean-up the files list")
   (recentf-max-menu-items        50              "How many recent files in menu?")
   (recentf-max-saved-items       50              "How many recent files to save?")
   :config
