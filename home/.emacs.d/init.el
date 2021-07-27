@@ -695,7 +695,9 @@
 
 (use-package doom-modeline
   :init
-  (doom-modeline-mode 1))
+  (doom-modeline-mode 1)
+  :config
+  (setq doom-modeline-minor-modes t))
 
 (use-package editorconfig
   :config
@@ -922,8 +924,7 @@
 
 (use-package doom-themes
   :config
-  (doom-themes-visual-bell-config)
-  (my/theme-load 'doom-one-light))
+  (doom-themes-visual-bell-config))
 
 (use-package modus-themes
   :init
@@ -943,7 +944,9 @@
     (set-face-attribute 'mode-line-inactive nil :underline  line)
     (set-face-attribute 'mode-line          nil :box        nil)
     (set-face-attribute 'mode-line-inactive nil :box        nil)
-    (set-face-attribute 'mode-line-inactive nil :background "#f6f6f6"))) ;; "#d33682")))
+    (set-face-attribute 'mode-line-inactive nil :background "#f6f6f6")) ;; "#d33682"))
+  (my/theme-load 'modus-operandi))
+
 
 (use-package seoul256-theme
   :pin melpa-unstable
