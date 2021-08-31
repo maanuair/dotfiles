@@ -319,8 +319,28 @@
           ("C-= b k"   . my/buffer-kill-all-but-exceptions)
           ("C-= b r"   . recentf-open-files)
 
-          ;; Org caprture
+          ;; Org capture
           ("C-= C-c C-c"  . org-capture)
+
+          ;; Modes
+          ("C-= m c"   . css-mode)
+          ("C-= m f"   . fundamental-mode)
+          ("C-= m g"   . groovy-mode)
+          ("C-= m h"   . html-mode)
+          ("C-= m j 2" . js2-mode)
+          ("C-= m j a" . java-mode)
+          ("C-= m j s" . json-mode)
+          ("C-= m l i" . lisp-interaction-mode)
+          ("C-= m l u" . lua-mode)
+          ("C-= m l m" . lisp-mode)
+          ("C-= m m"   . markdown-mode)
+          ("C-= m o"   . org-mode)
+          ("C-= m O"   . org-bullets-mode)
+          ("C-= m p"   . pandoc-mode)
+          ("C-= m s"   . sgml-mode)
+          ("C-= m t"   . text-mode)
+          ("C-= m x"   . xml-mode)
+          ("C-= m w"   . web-mode)
 
           ;; Themes
           ;; ("C-= t d"   . (lambda () (interactive) (my/theme-load 'dichromacy t)))
