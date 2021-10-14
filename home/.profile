@@ -105,7 +105,7 @@ function main () {
   setupAliases
   setupEnvVars
   setupHomeshick
-  setupNode
+  # setupNode
   setupGit
   setupBashCompletion
   setupPrompts
