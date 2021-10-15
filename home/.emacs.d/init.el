@@ -1,7 +1,9 @@
-;;; init.el --- Emmanuel Roubion's personal init file -*- lexical-binding: t; -*-
+;;; init.el --- Emmanuel Roubion's personal init file -*- lexical-binding: t; coding: utf-8  -*-
+
 ;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Emmanuel Roubion
 
 ;; Author: Emmanuel Roubion
+;; Keywords: Emacs
 ;; URL: https://github.com/maanuair/dotfiles
 
 ;; This file is part of Emmanuel's Roubion dot files, released under
@@ -33,19 +35,27 @@
 ;; On other OSes:
 ;;   emacs -q --eval='(message "%s" (emacs-init-time))'
 
-;; Currently, startup time is:
+;; Currently, startup time in graphical macOS environment is:
 ;;   <even before>: 1.86 seconds, with 5 Cs
 ;;   2020-09:       2.49 seconds, with 11 GCs
 ;;   2021-01:       5.26 seconds, with 11 GCs
 ;;   2021-03:       1.15 seconds, with 14 GCs (on Apple Silicon M1)
+;;   2021-10:       1.36 seconds, with 13 GCs (on Apple Silicon M1)
 
-;; Make startup faster by reducing the frequency of GC.
+;; Avoid GC during Emacs startup. Garbage collection when Emacs loses focus.
+;; Inspiration from https://github.com/narendraj9/dot-emacs/blob/master/init.el
 (setq
   ;; The default is 800 kilobytes. Measured in bytes.
-  gc-cons-threshold (* 50 1000 1024)
+  gc-cons-threshold most-positive-fixnum
 
   ;; Portion of heap used for allocation. Defaults to 0.1.
   gc-cons-percentage 0.4)
+
+;; Restore good defaults post startup
+(add-hook 'after-init-hook
+  (lambda () (setq
+               gc-cons-threshold (* 10 1024 1024)
+               gc-cons-percentage 0.1)))
 
 ;; Use a hook so the message doesn't get clobbered by other messages.
 (add-hook 'emacs-startup-hook
@@ -55,14 +65,6 @@
 			  (float-time
 			    (time-subtract after-init-time before-init-time)))
 		  gcs-done)))
-
-;; Use a hook so we restore settings after init
-(add-hook 'after-init-hook
-	`(lambda ()
-	   (setq
-	     gc-cons-threshold  (* 800 1024)
-	     gc-cons-percentage 0.1)
-	   (garbage-collect)) t)
 
 ;; ======================================================================
 ;; Act I
@@ -362,13 +364,26 @@
 
           ;; Meta-shortcut to show all custom shortcuts
           ;; Note: it's the only one with a "C-= C" prefix, which is precisely unmatched
-          ("C-= C-="   . (lambda () (interactive) (progn
-                                                    (if (get-buffer "*Occur*")
-                                                      (kill-buffer "*Occur*"))
-                                                    (delete-other-windows)
-                                                    (my/find-emacs-init-file)
-                                                    ;; Occurences of "C-=" or "s-", excluding this and next line ;-)
-                                                    (occur "\\(\"C-= [^C[\"]+\"\\)\\|\\(\"s-[^C[\"]+\"\\)")))))
+          ("C-= C-="   . (lambda ()
+                           (interactive)
+                           (progn
+                             (if (get-buffer "*Occur*")
+                               (kill-buffer "*Occur*"))
+                             (delete-other-windows)
+                             (my/find-emacs-init-file)
+                             ;; Occurences of "C-=" or "s-", excluding this and next line ;-)
+                             (occur "\\(\"C-= [^C[\"]+\"\\)\\|\\(\"s-[^C[\"]+\"\\)")))))
+  :init
+  ;; Thanks to https://www.masteringemacs.org/article/working-coding-systems-unicode-emacs
+  (prefer-coding-system 'utf-8)
+  (set-default-coding-systems 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+
+  ;; Man pages are rendered properly irrespective of LC_* variable values.
+  (setq locale-coding-system 'utf-8)
+  (setq buffer-file-coding-system 'utf-8)
+
   :config
   (set-fontset-font                   t nil     "Monaco 12")
   (set-fontset-font                   t 'symbol (font-spec :family "Apple Color Emoji"))
