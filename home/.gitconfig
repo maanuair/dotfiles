@@ -45,11 +45,12 @@
   rebase = true
 [push]
   default = simple
-[includeIf "gitdir:~/GitC*/"]
-  path = ~/.gitconfig-c
+[includeIf "gitdir:~/GitT*/"]
+  path = ~/.gitconfig-t
 [includeIf "gitdir:~/GitH*/"]
   path = ~/.gitconfig-h
 [includeIf "gitdir:~/GitL*/"]
   path = ~/.gitconfig-l
-[includeIf "gitdir:~/GitP*/"]
-  path = ~/.gitconfig-p
+[user]
+	name = Emmanuel Roubion
+	email = eroubion@tenable.com
