@@ -385,12 +385,12 @@
   (setq buffer-file-coding-system 'utf-8)
 
   :config
-  (set-fontset-font                   t nil     "Monaco 12")
+  (set-fontset-font                   t nil     "Menlo 12")
   (set-fontset-font                   t 'symbol (font-spec :family "Apple Color Emoji"))
   ;; (add-to-list                        'default-frame-alist '(fullscreen . maximized))
   (add-to-list                        'default-frame-alist '(font . "Monaco 12"))
-  (set-face-attribute 'default        nil :family "Monaco"    :height 120)
-  (set-face-attribute 'fixed-pitch    nil :family "Monaco"    :height 120)
+  (set-face-attribute 'default        nil :family "Menlo"    :height 120)
+  (set-face-attribute 'fixed-pitch    nil :family "Menlo"    :height 120)
   (set-face-attribute 'variable-pitch nil :family "Charter"   :height 170)
 
   ;; Specific settings for emacs TUI and C-= handling
