@@ -94,6 +94,10 @@ function setupBashCompletion() {
 
 # Main entry point, because I like unique entry point
 function main () {
+  # Do we display our script output / debug info or not?
+  myOutEnabled=false
+  myDebugEnable=false
+
   # Load some custom shell functions
   source ~/.shell_functions
   myOut "Starting bash setup..."

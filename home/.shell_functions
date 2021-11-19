@@ -124,11 +124,15 @@ function myIndent() {
 # Some log helpers
 function myOut () {
   # A litle bit of blue
-  printf "%s [\033[34mDOT-INFOR\033[0m] ${@}\033[0m\n" `date "+%H:%M:%S"`
+  if [[ "myOutEnabled" == 'true' ]]; then
+    printf "%s [\033[34mDOT-INFOR\033[0m] ${@}\033[0m\n" `date "+%H:%M:%S"`
+  fi;
 }
 
 function myOutTab () {
-  myOut "  \033[2m==> ${@}"
+  if [[ "myOutEnabled" == 'true' ]]; then
+    myOut "  \033[2m==> ${@}"
+  fi
 }
 
 function myErr () {
@@ -142,7 +146,9 @@ function myErrTab () {
 
 function myDebug () {
   # And a little bit of highlighted green
-  printf "%s [\033[30m\033[42mDOT-DEBUG\033[0m] ${@}\033[0m\n" `date "+%H:%M:%S"`
+  if [[ "myDebugEnabled" == 'true' ]]; then
+    printf "%s [\033[30m\033[42mDOT-DEBUG\033[0m] ${@}\033[0m\n" `date "+%H:%M:%S"`
+  fi
 }
 
 # Set up aliases
@@ -162,11 +168,12 @@ function setupEnvVars () {
   export PAGER=/usr/bin/less
 
   # Set up common PATHs
-  for dir in "$HOME/bin" "$HOME/.npm_packages/bin" "$HOME/go/bin"; do
+  for dir in "$HOME/bin" # "$HOME/.npm_packages/bin" "$HOME/go/bin"
+  do
     if [[ -d "$dir" ]]; then
       export PATH="${dir}:$PATH"
     else
-      myErrTab "Directory $dir does not exist, cannot be added to PATH"
+      myOutTab "Directory $dir does not exist, cannot be added to PATH"
     fi
   done
 
@@ -317,7 +324,7 @@ function setupNode() {
       fi
     else
       local NVM_INSTALL_CMD='export NVM_DIR="$HOME/.nvm" && mkdir "$NVM_DIR" && ( git clone https://github.com/creationix/nvm.git "$NVM_DIR"; cd "$NVM_DIR"; git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`;) && . "$NVM_DIR/nvm.sh"'
-      myErr "Not found: ${NVM_DIR}"
+      myOutTab "Not found: ${NVM_DIR}"
       myOutTab "You may want to install nvm first, by running: "
       myOutTab "${NVM_INSTALL_CMD}"
     fi
