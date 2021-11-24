@@ -706,6 +706,7 @@
 ;; ======================================================================
 
 (use-package all-the-icons)
+;; Do a manual 'all-the-icons-install-fonts' at fresh install
 
 (use-package auto-package-update
   :disabled                                         ; It raises some "Warning (package): Unnecessary call to ‘package-initialize’ in init file..."
