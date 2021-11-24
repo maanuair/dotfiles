@@ -1,4 +1,4 @@
--- Copyright © 2019, 2020 Emmanuel Roubion
+-- Copyright © 2019, 2020, 2021 Emmanuel Roubion
 --
 -- Author: Emmanuel Roubion
 -- URL: https://github.com/maanuair/dotfiles
@@ -48,7 +48,12 @@ function utilsAccount.getLastName()
    return "undefined-SetMeFirst"
 end
 
--- Returns the phone number  for this account
+-- Returns the phone number for this account
+function utilsAccount.getPhoneNumber()
+   return "undefined-SetMeFirst"
+end
+
+-- Returns the alt. phone number for this account
 function utilsAccount.getPhoneNumber()
    return "undefined-SetMeFirst"
 end

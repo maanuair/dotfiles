@@ -54,6 +54,7 @@ hs.hotkey.bind(m2, "E", "Type my alt. email", utils.typeAltEmail)
 hs.hotkey.bind(m2, "I", "Insert current timestamp", utils.typeTimestamp)
 hs.hotkey.bind(m2, "J", "Jira generic URL is typed (highlighted selection appended)", jira.typeBrowseUrl)
 hs.hotkey.bind(m2, "O", "Oblique Strategy pop-up!", oblique_strategies.showStrategy)
+hs.hotkey.bind(m2, "P", "Type my alt. phone number", utils.typeAltPhoneNumber)
 hs.hotkey.bind(m2, "S", "Type a Story scenario template, in Jira mark-up style", jira.typeStoryTemplate)
 
 -- Timer attempts

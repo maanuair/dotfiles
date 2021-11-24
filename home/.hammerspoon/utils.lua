@@ -1,4 +1,4 @@
--- Copyright © 2016, 2018, 2019, 2020, 2021, 2021 Emmanuel Roubion
+-- Copyright © 2016, 2018, 2019, 2020, 2021 Emmanuel Roubion
 --
 -- Author: Emmanuel Roubion
 -- URL: https://github.com/maanuair/dotfiles
@@ -197,6 +197,13 @@ end
 function utils.typePhoneNumber()
   local s = utilsAccount.getPhoneNumber()
   log.df("Going to type phone number \"%s\"", s)
+  hs.eventtap.keyStrokes(s)
+end
+
+-- Type my phone number
+function utils.typeAltPhoneNumber()
+  local s = utilsAccount.getAltPhoneNumber()
+  log.df("Going to type alt. phone number \"%s\"", s)
   hs.eventtap.keyStrokes(s)
 end
 
