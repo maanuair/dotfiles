@@ -385,13 +385,13 @@
   (setq buffer-file-coding-system 'utf-8)
 
   :config
-  (set-fontset-font                   t nil     "Menlo 12")
+  (set-fontset-font                   t nil     "Menlo 14")
   (set-fontset-font                   t 'symbol (font-spec :family "Apple Color Emoji"))
-  ;; (add-to-list                        'default-frame-alist '(fullscreen . maximized))
-  (add-to-list                        'default-frame-alist '(font . "Monaco 12"))
-  (set-face-attribute 'default        nil :family "Menlo"    :height 120)
-  (set-face-attribute 'fixed-pitch    nil :family "Menlo"    :height 120)
-  (set-face-attribute 'variable-pitch nil :family "Charter"   :height 170)
+  ;; (add-to-list                     'default-frame-alist '(fullscreen . maximized))
+  (add-to-list                        'default-frame-alist '(font . "Menlo 14"))
+  (set-face-attribute 'default        nil :family "Menlo"          :height 140)
+  (set-face-attribute 'fixed-pitch    nil :family "Menlo"          :height 140)
+  (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 170)
 
   ;; Specific settings for emacs TUI and C-= handling
   (unless (display-graphic-p)
@@ -522,9 +522,9 @@
   :functions my/show-org
   :init
   ;; My org files
-  (defvar my/agendas-file "~/Org/Agendas.org" "This variable points to my Agenda.org file.")
-  (defvar my/meta-file    "~/Org/Meta.org"    "This variable points to my Meta.org file.")
-  (defvar my/todos-file   "~/Org/Todos.org"   "This variable points to my Todos.org file.")
+  ;;(defvar my/agendas-file "~/Org/Agendas.org" "This variable points to my Agenda.org file.")
+  ;;(defvar my/meta-file    "~/Org/Meta.org"    "This variable points to my Meta.org file.")
+  ;;(defvar my/todos-file   "~/Org/Todos.org"   "This variable points to my Todos.org file.")
   (defun my/show-org ()
     "Loads my org files, and set-up window accordingly"
     (interactive)
@@ -536,24 +536,33 @@
   ;; Use a nice readable proportional fonts
   (let* ((variable-tuple
            (cond
+             ;; Sans-serif
+             ;;((x-list-fonts "SF Pro Text")     '(:font "SF Pro Text"))
+             ;;((x-list-fonts "SF Pro Icons")    '(:font "SF Pro Icons"))
+             ((x-list-fonts "Helvetica Neue")  '(:font "Helvetica Neue"))
+             ((x-list-fonts "Helvetica")       '(:font "Helvetica"))
+             ((x-list-fonts "Arial")           '(:font "Arial"))
+             ((x-list-fonts "sans-serif")      '(:font "sans-serif"))
+             ;; Serif, just in case :-)
              ((x-list-fonts "charter")         '(:font "charter"))
              ((x-list-fonts "Georgia")         '(:font "Georgia"))
              ((x-list-fonts "Cambria")         '(:font "Cambria"))
              ((x-list-fonts "Times New Roman") '(:font "Times New Roman"))
              ((x-list-fonts "Times")           '(:font "Times"))
-             (nil (warn "Cannot find a serif font: install one."))))
-          (headline           `(:inherit default :weight bold)))
+             (nil (warn "Cannot find an elegant: install one please")) ;; Should not happen!
+             ))
+          (headline           `(:inherit default ))) ;;:weight bold)))
     ;; Adapt headings size
     (custom-theme-set-faces
       'user
-      `(org-level-8               ((t (,@headline ,@variable-tuple))))
-      `(org-level-7               ((t (,@headline ,@variable-tuple))))
-      `(org-level-6               ((t (,@headline ,@variable-tuple))))
+      `(org-level-1               ((t (,@headline ,@variable-tuple :height 1.05))))
+      `(org-level-2               ((t (,@headline ,@variable-tuple :height 1.05))))
+      `(org-level-3               ((t (,@headline ,@variable-tuple :height 1.05))))
+      `(org-level-4               ((t (,@headline ,@variable-tuple :height 1.05))))
       `(org-level-5               ((t (,@headline ,@variable-tuple))))
-      `(org-level-4               ((t (,@headline ,@variable-tuple :height 1.1))))
-      `(org-level-3               ((t (,@headline ,@variable-tuple :height 1.25))))
-      `(org-level-2               ((t (,@headline ,@variable-tuple :height 1.5))))
-      `(org-level-1               ((t (,@headline ,@variable-tuple :height 1.75))))
+      `(org-level-6               ((t (,@headline ,@variable-tuple))))
+      `(org-level-7               ((t (,@headline ,@variable-tuple))))
+      `(org-level-8               ((t (,@headline ,@variable-tuple))))
       `(org-block                 ((t (:inherit fixed-pitch))))
       `(org-code                  ((t (:inherit (shadow fixed-pitch)))))
       `(org-document-info         ((t (:foreground "dark orange"))))
@@ -575,12 +584,18 @@
           ("C-= o o"  . (lambda () (interactive) (my/show-org))))
   :mode ("\\.org\\'"  . org-mode)
   :hook (
-          (org-mode    . org-num-mode)        ;; Best with (org-bullets-bullet-list '("\u200b")
+          ;; (org-mode    . org-num-mode)        ;; Best with (org-bullets-bullet-list '("\u200b")
           (org-mode    . variable-pitch-mode)
           (org-mode    . visual-line-mode))
   :custom
-  (org-agenda-files                       (directory-files-recursively
-                                            (file-name-directory "~/Org/MyTodos.org") "org$"))
+  ; (org-agenda-files                       (directory-files-recursively
+  ;                                           (file-name-directory "~/Org/MyTodos.org") "org$"))
+  (org-blank-before-new-entry             '(
+                                             (heading . nil)
+                                             (plain-list-item . nil))
+                                                                "Removes gap when you add a new heading.")
+
+
   (org-catch-invisible-edits              'error)
   (org-descriptive-links                  nil                    "Do not decorate hyperlinks.")
   (org-ellipsis                           " ⤵"                  "Use this ellipsis string.")
@@ -880,12 +895,22 @@
   :custom
   (oblique-edition "strategies/oblique-strategies-condensed.txt" "Version to draw a strategy from."))
 
-(use-package org-bullets
+;; (use-package org-bullets
+;;   :hook
+;;   (org-mode . org-bullets-mode)
+;;   :custom
+;;   ;; (org-bullets-bullet-list '("◉" "○" "●" "►" "•"))
+;;   (org-bullets-bullet-list '("\u200b"))) ;; Zero width space, best used with (org-num-mode)
+
+(use-package org-superstar
+  :config
+  (setq org-superstar-leading-bullet " ")
+  (setq org-superstar-special-todo-items t)                ; Makes TODO header bullets into boxes
+  (setq org-superstar-todo-bullet-alist '(("TODO" . 9744)
+                                          ("RM" . 9744)
+                                          ("SOMEDAY" . 9744)))
   :hook
-  (org-mode . org-bullets-mode)
-  :custom
-  ;; (org-bullets-bullet-list '("◉" "○" "●" "►" "•"))
-  (org-bullets-bullet-list '("\u200b"))) ;; Zero width space, best used with (org-num-mode)
+  (org-mode . org-superstar-mode))
 
 (use-package ox-jira
   :pin melpa-unstable
