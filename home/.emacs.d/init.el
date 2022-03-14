@@ -1,6 +1,6 @@
 ;;; init.el --- Emmanuel Roubion's personal init file -*- lexical-binding: t; coding: utf-8  -*-
 
-;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Emmanuel Roubion
+;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Emmanuel Roubion
 
 ;; Author: Emmanuel Roubion
 ;; Keywords: Emacs
@@ -940,6 +940,14 @@
   :config
   ;; (add-hook 'org-mode-hook 'pandoc-mode)
   (add-hook 'markdown-mode-hook 'pandoc-mode))
+
+;; More info found here:
+;;  - https://docs.microsoft.com/en-us/archive/blogs/dotnetinterop/run-powershell-as-a-shell-within-emacs
+;;  - https://www.reddit.com/r/emacs/comments/m3cx27/powershellwindows_terminal_from_emacs/
+(use-package powershell
+  :pin melpa-unstable
+  :mode
+  ("\\.ps1\\'" . powershell-mode))
 
 (use-package string-inflection
   :bind (

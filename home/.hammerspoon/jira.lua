@@ -86,7 +86,8 @@ end
 
 -- Search the highlighted selection in Request.jira.com
 function jira.search()
-  local url = jiraAccount.getBaseUrl() .. "issues/?jql=project IN " .. jiraAccount.getDefaultSearchProjects() .. " AND text ~ '" .. utils.getTrimmedSelectedText() .. "' AND issueType IN (Epic, Story, Bug) ORDER BY issueKey DESC"
+  local url = jiraAccount.getBaseUrl() .. "/issues/?jql=text ~ '" .. utils.getTrimmedSelectedText() .. "' AND project IN " .. jiraAccount.getDefaultSearchProjects() .. " AND statusCategory in ('To Do', 'In Progress', Done) AND issueType IN (Epic, Story, Bug) ORDER BY project ASC, issueKey DESC"
+
   log.f("Searching '%s'", url)
   -- TODO: if empty, pop-up a chooser
   utils.browseUrl(url)
