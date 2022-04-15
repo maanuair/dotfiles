@@ -385,12 +385,12 @@
   (setq buffer-file-coding-system 'utf-8)
 
   :config
-  (set-fontset-font                   t nil     "Menlo 14")
+  (set-fontset-font                   t nil     "Fira Code 14")
   (set-fontset-font                   t 'symbol (font-spec :family "Apple Color Emoji"))
   ;; (add-to-list                     'default-frame-alist '(fullscreen . maximized))
-  (add-to-list                        'default-frame-alist '(font . "Menlo 14"))
-  (set-face-attribute 'default        nil :family "Menlo"          :height 140)
-  (set-face-attribute 'fixed-pitch    nil :family "Menlo"          :height 140)
+  (add-to-list                        'default-frame-alist '(font . "Fira Code 14"))
+  (set-face-attribute 'default        nil :family "Fira Code"          :height 140)
+  (set-face-attribute 'fixed-pitch    nil :family "Fira Code"          :height 140)
   (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 170)
 
   ;; Specific settings for emacs TUI and C-= handling
@@ -1014,18 +1014,19 @@
     (set-face-attribute 'mode-line          nil :box        nil)
     (set-face-attribute 'mode-line-inactive nil :box        nil)
     (set-face-attribute 'mode-line-inactive nil :background "#f6f6f6")) ;; "#d33682"))
-  (my/theme-load 'modus-operandi))
-
+  ;; (my/theme-load 'modus-operandi t)
+  )
 
 (use-package seoul256-theme
   :pin melpa-unstable
   :config
-  (setq seoul256-background 253)
-  )
+  (setq seoul256-background 253))
 
 (use-package solarized-theme)
 
-(use-package solo-jazz-theme)
+(use-package solo-jazz-theme
+  :config
+  (my/theme-load 'solo-jazz nil))
 
 ;; Key bindings reminders:
 ;; C-u C-SPC    Move cursor to previous marked position in current buffer.
