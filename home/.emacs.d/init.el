@@ -391,7 +391,7 @@
   (add-to-list                        'default-frame-alist '(font . "Fira Code 14"))
   (set-face-attribute 'default        nil :family "Fira Code"          :height 140)
   (set-face-attribute 'fixed-pitch    nil :family "Fira Code"          :height 140)
-  (set-face-attribute 'variable-pitch nil :family "Helvetica Neue" :height 170)
+  (set-face-attribute 'variable-pitch nil :family "Georgia" :height 170)
 
   ;; Specific settings for emacs TUI and C-= handling
   (unless (display-graphic-p)
@@ -536,6 +536,8 @@
   ;; Use a nice readable proportional fonts
   (let* ((variable-tuple
            (cond
+             ;; Preferred
+             ((x-list-fonts "Georgia")         '(:font "Georgia"))
              ;; Sans-serif
              ;;((x-list-fonts "SF Pro Text")     '(:font "SF Pro Text"))
              ;;((x-list-fonts "SF Pro Icons")    '(:font "SF Pro Icons"))
@@ -543,13 +545,12 @@
              ((x-list-fonts "Helvetica")       '(:font "Helvetica"))
              ((x-list-fonts "Arial")           '(:font "Arial"))
              ((x-list-fonts "sans-serif")      '(:font "sans-serif"))
-             ;; Serif, just in case :-)
+             ;; Other serif, just in case :-)
              ((x-list-fonts "charter")         '(:font "charter"))
-             ((x-list-fonts "Georgia")         '(:font "Georgia"))
              ((x-list-fonts "Cambria")         '(:font "Cambria"))
              ((x-list-fonts "Times New Roman") '(:font "Times New Roman"))
              ((x-list-fonts "Times")           '(:font "Times"))
-             (nil (warn "Cannot find an elegant: install one please")) ;; Should not happen!
+             (nil (warn "Cannot find an elegant font: install one please")) ;; Should not happen!
              ))
           (headline           `(:inherit default ))) ;;:weight bold)))
     ;; Adapt headings size
