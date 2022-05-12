@@ -1,4 +1,4 @@
-# Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Emmanuel Roubion -*- mode: shell-script ;-*-
+# Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Emmanuel Roubion -*- mode: shell-script ;-*-
 #
 # Author: Emmanuel Roubion
 # URL: https://github.com/maanuair/dotfiles
@@ -24,10 +24,9 @@ alias egrep="egrep --color=auto"
 
 alias fgrep="fgrep --color=auto"
 
+alias gitscan="find . -name .git \( -execdir pwd \; -false -o -execdir git st {} \; -exec echo "--" \; \) 2>/dev/null"
+
 alias grep="grep --color=auto"
-
-alias j=jobs
-
 # Only run for bash, not zsh
 if [[ "$(getShell)" == "bash" ]]; then
   myOutTab "Bash detected: 'ls' aliases setting up now."
