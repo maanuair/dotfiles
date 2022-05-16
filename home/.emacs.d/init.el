@@ -32,6 +32,8 @@
 ;; My default, naked, Emacs startup time is ~ 0.4 seconds in GUI mode.
 ;; On macOS, run the following to discover it:
 ;;   open -n /Applications/Emacs.app --args -q --eval='(message "%s" (emacs-init-time))'
+;; (or something similar to)
+;;   open -n /usr/local/Cellar/emacs-mac/emacs-28.1-mac-9.0/Emacs.app --args -q --eval='(message "%s" (emacs-init-time))'
 ;; On other OSes:
 ;;   emacs -q --eval='(message "%s" (emacs-init-time))'
 
@@ -41,21 +43,23 @@
 ;;   2021-01:       5.26 seconds, with 11 GCs
 ;;   2021-03:       1.15 seconds, with 14 GCs (on Apple Silicon M1)
 ;;   2021-10:       1.36 seconds, with 13 GCs (on Apple Silicon M1)
+;;   2022-05:       2.17 seconds, with 15 garbage collections (On 2 GHz Intel Core i5 quadcore)
 
 ;; Avoid GC during Emacs startup. Garbage collection when Emacs loses focus.
 ;; Inspiration from https://github.com/narendraj9/dot-emacs/blob/master/init.el
 (setq
   ;; The default is 800 kilobytes. Measured in bytes.
-  gc-cons-threshold most-positive-fixnum
+  gc-cons-threshold (* 50 1000 1000)
 
   ;; Portion of heap used for allocation. Defaults to 0.1.
-  gc-cons-percentage 0.4)
+  gc-cons-percentage 0.6)
 
 ;; Restore good defaults post startup
 (add-hook 'after-init-hook
   (lambda () (setq
-               gc-cons-threshold (* 10 1024 1024)
+               gc-cons-threshold (* 2 1000 1000)
                gc-cons-percentage 0.1)))
+
 
 ;; Use a hook so the message doesn't get clobbered by other messages.
 (add-hook 'emacs-startup-hook
@@ -514,8 +518,8 @@
   (mouse-buffer-menu-mode-mult   20          "Longer mouse buffer menu (major mode)."))
 
 (use-package org-capture
-  :ensure nil
-  :after org)
+  :after org
+  :ensure nil)
 
 (use-package org
   :ensure nil
@@ -629,16 +633,16 @@
        )))
 
 (use-package org-indent
-  :ensure nil
-  :after org)
+  :after org
+  :ensure nil)
 
 (use-package org-num
-  :ensure nil
-  :after org)
+  :after org
+  :ensure nil)
 
 (use-package paren
   :ensure nil
-  :defer 2
+  :defer 5
   :config
   (show-paren-mode               t)              ; Visualize matching parens
   (setq
@@ -783,6 +787,7 @@
 
 (use-package flyspell
   :commands   flyspell-correct-word
+  :defer 10
   :functions flyspell-correct-word my/current-dictionary-mode-line ring-insert ring-ref
   :bind (
           ("C-= f m"   . flyspell-mode)
@@ -882,7 +887,7 @@
           ("\\.markdown\\'"    . markdown-mode)))
 
 (use-package oblique
-  ;; :defer 5
+  :defer 10
   :ensure nil ;; Loaded locally
   :config
   (add-hook 'after-init-hook
@@ -904,22 +909,22 @@
 ;;   (org-bullets-bullet-list '("\u200b"))) ;; Zero width space, best used with (org-num-mode)
 
 (use-package org-superstar
+  :after org
   :config
   (setq org-superstar-leading-bullet " ")
   (setq org-superstar-special-todo-items t)                ; Makes TODO header bullets into boxes
   (setq org-superstar-todo-bullet-alist '(("TODO" . 9744)
                                           ("RM" . 9744)
                                           ("SOMEDAY" . 9744)))
-  :hook
-  (org-mode . org-superstar-mode))
+  :hook (org-mode . org-superstar-mode))
 
 (use-package ox-jira
-  :pin melpa-unstable
-  :after ox)
+  :after ox
+  :pin melpa-unstable)
 
 (use-package ox-hugo
-  :pin melpa-unstable
   :after ox
+  :pin melpa-unstable
   :commands (org-hugo-new-subtree-post-capture-template)
   :init
   ;; Define a template for Hugo posts
