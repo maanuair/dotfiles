@@ -347,6 +347,7 @@
           ("C-= m t"   . text-mode)
           ("C-= m x"   . xml-mode)
           ("C-= m w"   . web-mode)
+          ("C-= m W"   . whitespace-mode)
 
           ;; Themes
           ;; ("C-= t d"   . (lambda () (interactive) (my/theme-load 'dichromacy t)))
@@ -641,8 +642,8 @@
   :ensure nil)
 
 (use-package paren
+  :defer 1
   :ensure nil
-  :defer 5
   :config
   (show-paren-mode               t)              ; Visualize matching parens
   (setq
@@ -651,8 +652,9 @@
     ))
 
 (use-package recentf
-  :ensure nil
   :commands (recentf-add-file recentf-apply-filename-handlers recentf-mode )
+  :ensure nil
+  :defer 1
   :preface
   (defun recentf-add-dired-directory ()
     (if (and dired-directory
@@ -675,8 +677,8 @@
   (recentf-mode                  t))             ; Enable recent files
 
 (use-package saveplace
-  :ensure nil
   :defer 2
+  :ensure nil
   :unless noninteractive
   :config
   (save-place-mode               t))             ; Automatically save place.
@@ -688,8 +690,8 @@
   (scroll-bar-mode               "right"         "Use scroll bar on right"))
 
 (use-package server
-  :ensure nil
   :defer 2
+  :ensure nil
   :custom
   (server-auth-dir
     ( ; Directory for server auth files
