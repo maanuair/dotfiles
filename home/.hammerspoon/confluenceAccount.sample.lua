@@ -1,4 +1,4 @@
--- Copyright © 2016, 2019 Emmanuel Roubion
+-- Copyright © 2016, 2019, 2022 Emmanuel Roubion
 --
 -- Author: Emmanuel Roubion
 -- URL: https://github.com/maanuair/dotfiles
@@ -35,6 +35,11 @@ end
 
 -- Returns the Confluence base URL
 function confluenceAccount.getBaseUrl()
+   return "https://undefined-SetMeFirst"
+end
+
+-- Returns the Confluence search URL
+function confluenceAccount.getSearchUrl()
    return "https://undefined-SetMeFirst"
 end
 

@@ -1,4 +1,4 @@
--- Copyright © 2016, 2017, 2019 Emmanuel Roubion
+-- Copyright © 2016, 2017, 2019, 2022 Emmanuel Roubion
 --
 -- Author: Emmanuel Roubion
 -- URL: https://github.com/maanuair/dotfiles
@@ -24,7 +24,7 @@ local confluence = {}
 
 -- Search the highlighted selection in Confluence
 function confluence.search()
-   local url = string.format("%s%s%s", confluenceAccount.getBaseUrl(), "dosearchsite.action?queryString=", utils.getTrimmedSelectedText())
+  local url =  confluenceAccount.getSearchUrl(utils.getTrimmedSelectedText())
    log.f("confluence.search: opening url '%s'", url)
    utils.browseUrl(url)
 end
