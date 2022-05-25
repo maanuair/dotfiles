@@ -1,4 +1,4 @@
--- Copyright © 2016, 2018, 2019, 2020, 2021 Emmanuel Roubion
+-- Copyright © 2016, 2018, 2019, 2020, 2021, 2022 Emmanuel Roubion
 --
 -- Author: Emmanuel Roubion
 -- URL: https://github.com/maanuair/dotfiles
@@ -64,7 +64,7 @@ function utils.openDict()
 end
 
 -- Browse the  current selection
-function utils.openBrowser()
+function utils.openBrowser ()
   local uri = utils.getTrimmedSelectedText()
   log.f("Browse '%s'", uri)
   utils.browseUrl(uri)
@@ -73,9 +73,9 @@ end
 -- Open the given URI in Safari
 function utils.browseUrl (url)
   log.df("browseUrl(\"%s\")", url)
-  local cmd = "open \"" .. url .. "\""
+  local cmd = string.format("open \"%s\"", url)
   hs.execute(cmd)
-  log.df("hs.execute(\"" .. cmd .. "\")")
+  log.df("hs.execute(\"%s\")", cmd)
 end
 
 -- Google the highlighted selection
