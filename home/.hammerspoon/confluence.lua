@@ -24,7 +24,7 @@ local confluence = {}
 
 -- Search the highlighted selection in Confluence
 function confluence.search()
-  local url =  confluenceAccount.getSearchUrl(utils.getTrimmedSelectedText())
+  local url =  confluenceAccount.getSearchUrl(confluenceAccount.getBaseUrl(), utils.getTrimmedSelectedText())
    log.f("confluence.search: opening url '%s'", url)
    utils.browseUrl(url)
 end
