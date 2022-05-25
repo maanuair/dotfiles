@@ -624,7 +624,9 @@
   ;; Org-babel related
   (org-babel-load-languages               '(
                                              (emacs-lisp . t)
-                                             (shell . t)))
+                                             (shell . t)
+                                             (python . t)))
+  (org-babel-python-command               "python3")
   (org-confirm-babel-evaluate             nil)
   (org-src-tab-acts-natively              t                      "Apply the indentation in source blocks")
   (org-capture-templates
