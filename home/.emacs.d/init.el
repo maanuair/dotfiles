@@ -627,6 +627,7 @@
                                              (shell . t)
                                              (python . t)))
   (org-babel-python-command               "python3")
+  (python-shell-completion-native-disabled-interpreters '("python3"))
   (org-confirm-babel-evaluate             nil)
   (org-src-tab-acts-natively              t                      "Apply the indentation in source blocks")
   (org-capture-templates
