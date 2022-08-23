@@ -1,30 +1,32 @@
 ;;; init.el --- Emmanuel Roubion's personal init file -*- lexical-binding: t; coding: utf-8  -*-
 
-;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Emmanuel Roubion
+;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022
+;; Emmanuel Roubion
 
 ;; Author: Emmanuel Roubion
 ;; Keywords: Emacs
 ;; URL: https://github.com/maanuair/dotfiles
 
 ;; This file is part of Emmanuel's Roubion dot files, released under
-;; the MIT License as published by the Massachusetts Institute of Technology
+;; the MIT License as published by the Massachusetts Institute of
+;; Technology
 
 ;;; Commentary:
 
 ;; These dotfiles are distributed in the hope they will be useful, but
 ;; without any warranty.  See the MIT License for more details.
 ;;
-;; You should have received a copy of the MIT License along with this file.
-;; If not, see https://opensource.org/licenses/mit-license.php
+;; You should have received a copy of the MIT License along with this
+;; file. If not, see https://opensource.org/licenses/mit-license.php
 
 ;; This file is NOT part of GNU Emacs.
 
 ;;; Code:
 
-;; ======================================================================
+;; ====================================================================
 ;; Prologue
 ;; Startup time performance
-;; ======================================================================
+;; ====================================================================
 
 
 ;; I followed some advices on https://blog.d46.us/advanced-emacs-startup/
@@ -70,10 +72,10 @@
 			    (time-subtract after-init-time before-init-time)))
 		  gcs-done)))
 
-;; ======================================================================
+;; ====================================================================
 ;; Act I
 ;; Set up the load path
-;; ======================================================================
+;; ====================================================================
 
 (defconst my/elisp-dir
   (setq my/elisp-dir (expand-file-name "my-elisp/" user-emacs-directory))
@@ -99,10 +101,10 @@
 (defconst no-littering-var-directory (expand-file-name "var/" my/no-littering-dir) "Where no-literring stores the variable data.")
 (require 'no-littering)
 
-;; ======================================================================
+;; ====================================================================
 ;; Act II
 ;; Bootstrap package management
-;; ======================================================================
+;; ====================================================================
 
 (require 'package)
 
@@ -139,11 +141,11 @@
   use-package-always-ensure t               ; Always install packages automatically
   use-package-always-pin    "melpa-stable") ; Prefer stable packages
 
-;; ======================================================================
+;; ====================================================================
 ;; Act III
 ;; Declaring my functions here
 ;; (flycheck will warn when defined in use-package clauses)
-;; ======================================================================
+;; ====================================================================
 
 ;; Adapted from source: https://stackoverflow.com/a/11916238/3899249
 (defvar my/buffer-kill-all-exceptions
@@ -217,6 +219,57 @@
   (interactive)
   (equal system-type 'windows-nt))
 
+(defun my/markdownlint-clean ()
+  "Perform some cleaning in Markdown files, for markdownlint-cli to be happy."
+  (interactive)
+
+  ;; No polluting tabs
+  (untabify (point-min) (point-max))
+
+  ;; No trailing white space
+  (delete-trailing-whitespace)
+
+  ;; No consecutive newlines but just one
+  (query-replace-regexp "^
+
++" "
+")
+
+  ;; No spaces/tabs before headings
+  (query-replace-regexp "^[ 	]+\\(#+.*\\)" "\\1")
+
+  ;; Headings are always followed by a newline
+  (query-replace-regexp "\\(##+ .*\\)
+\\([^
+]+\\)" "\\1
+
+\\2")
+
+  ;; Timestamps titles are H2
+  (query-replace-regexp "^# 202" "## 202")
+
+  ;; Isolated **emphasis** on a single line after a newline should really be H3
+  (query-replace-regexp "
+
+\\*\\*\\(.*\\)\\*\\*$" "
+
+### \\1
+")
+
+  ;; No empty list items
+  (query-replace-regexp " *- *$" "")
+
+  ;; Lists must start with an empty line:
+;;  (query-replace-regexp "^\\( *-.*\\)
+;;\\(- .*\\)" "\\1
+;;
+;;\\2")
+
+  ;; And, to apply this regex to multiple files, you can mark the
+  ;; files in Dired and type Q to do a query-replace-regexp on all the
+  ;; marked files
+  )
+
 (defun my/oblique-strategy ()  "Draw and message an oblique strategy."
   (interactive)
   (message (oblique-strategy)))
@@ -247,7 +300,9 @@
   (dolist (theme custom-enabled-themes) (disable-theme theme)))
 
 (defun my/theme-load (theme &optional inverse-paren-expr)
-  "Load the given THEME in parameter.  Optionally set our custom show-paren-match expression to use INVERSE-PAREN-EXPR."
+  "Load the given THEME in parameter.
+Optionally set our custom show-paren-match expression to use
+INVERSE-PAREN-EXPR."
   (interactive)
   (my/log "Nullified theme.")
   (my/theme-reset)
@@ -260,15 +315,16 @@
 
 ;; Adapted from https://www.emacswiki.org/emacs/UnfillRegion
 (defun my/unfill-region (beg end)
-  "Unfill the region from BEG to END, joining text paragraphs into a single logical line."
+  "Unfill the region.
+From BEG to END, joining text paragraphs into a single logical line."
   (interactive "*r")
   (let ((fill-column (point-max)))
     (fill-region beg end)))
 
-;; ======================================================================
+;; ====================================================================
 ;; Act IV
 ;; 1st party Emacs packages
-;; ======================================================================
+;; ====================================================================
 
 (use-package apropos
   :ensure nil
@@ -390,12 +446,13 @@
   (setq buffer-file-coding-system 'utf-8)
 
   :config
-  (set-fontset-font                   t nil     "Fira Code 14")
+  (global-display-fill-column-indicator-mode 1)
+  (set-fontset-font                   t nil     "Roboto Mono 13")
   (set-fontset-font                   t 'symbol (font-spec :family "Apple Color Emoji"))
   ;; (add-to-list                     'default-frame-alist '(fullscreen . maximized))
-  (add-to-list                        'default-frame-alist '(font . "Fira Code 14"))
-  (set-face-attribute 'default        nil :family "Fira Code"          :height 140)
-  (set-face-attribute 'fixed-pitch    nil :family "Fira Code"          :height 140)
+  (add-to-list                        'default-frame-alist '(font . "Roboto Mono 13"))
+  (set-face-attribute 'default        nil :family "Roboto Mono"          :height 140)
+  (set-face-attribute 'fixed-pitch    nil :family "Roboto Mono"          :height 140)
   (set-face-attribute 'variable-pitch nil :family "Georgia" :height 170)
 
   ;; Specific settings for emacs TUI and C-= handling
@@ -411,7 +468,9 @@
       (define-key function-key-map (concat "\e[emacs-" key) (kbd key)))
 
     (defun my/global-map-and-set-key (key command &optional prefix suffix)
-      "Calls `my/map-key' KEY, then `global-set-key' KEY with COMMAND. PREFIX or SUFFIX can wrap the key when passing to `global-set-key'."
+      "Calls `my/map-key' KEY, then `global-set-key' KEY with
+COMMAND. PREFIX or SUFFIX can wrap the key when passing to
+`global-set-key'."
       (my/map-key key)
       (global-set-key (kbd (concat prefix key suffix)) command))
 
@@ -503,6 +562,8 @@
 
 (use-package frame
   :ensure nil
+  :config
+  (global-unset-key (kbd "C-z"))
   :custom
   (blink-cursor-blinks           0            "Cursor blinks for ever.")
   (blink-cursor-delay            0.2          "Minimal idle time before first blink.")
@@ -600,7 +661,6 @@
                                              (heading . nil)
                                              (plain-list-item . nil))
                                                                 "Removes gap when you add a new heading.")
-
 
   (org-catch-invisible-edits              'error)
   (org-descriptive-links                  nil                    "Do not decorate hyperlinks.")
@@ -725,10 +785,10 @@
   :config
   (windmove-default-keybindings))                ; Shifted arrow keys
 
-;; ======================================================================
+;; ====================================================================
 ;; Act V
 ;; 3rd party Emacs packages
-;; ======================================================================
+;; ====================================================================
 
 (use-package all-the-icons)
 ;; Do a manual 'all-the-icons-install-fonts' at fresh install
@@ -748,11 +808,13 @@
   :bind ("C-= d"   . deft)
   :commands (deft)
   :custom
-  (deft-default-extension             "org")
+  (deft-default-extension             "md")
   (deft-directory                      "~/Deft")
-  (deft-extensions                     '("org" "md" "txt"))
+  (deft-extensions                     '("md" "org" "txt"))
   (deft-recursive                      t)
+  (deft-use-filename-as-title          nil)
   (deft-use-filter-string-for-filename t))
+;; See https://leanpub.com/markdown-mode/read#leanpub-auto-integration-with-deft-mode
 
 (use-package doom-modeline
   :init
@@ -783,7 +845,8 @@
   ;; Reminders, for Bash adn HTML files syntax checker:
   ;; `brew install shellcheck tidy-html5 markdownlint-cli`
   :custom
-  (flycheck-emacs-lisp-load-path 'inherit))
+  (flycheck-checker-error-threshold 2000)
+  (flycheck-emacs-lisp-load-path    'inherit))
 
 (use-package flycheck-status-emoji
   :init
@@ -853,7 +916,8 @@
     (setq my/languages-ring (make-ring (length languages)))
     (dolist (elem languages) (ring-insert my/languages-ring elem)))
   (defun my/cycle-ispell-languages ()
-    "Cycle ispell languages in `my/languages-ring'. Change dictionary and mode-line lighter accordingly."
+    "Cycle ispell languages in `my/languages-ring'.
+Change dictionary and mode-line lighter accordingly."
     (interactive)
     (let ((language (ring-ref my/languages-ring -1)))
       (ring-insert my/languages-ring language)
@@ -889,7 +953,11 @@
 
 (use-package markdown-mode
   :mode ( ("\\.md\\'"          . markdown-mode)
-          ("\\.markdown\\'"    . markdown-mode)))
+          ("\\.markdown\\'"    . markdown-mode))
+  :hook
+  (markdown-mode . auto-fill-mode)
+  :custom
+  (markdown-header-scaling t))
 
 (use-package oblique
   :defer 10
@@ -997,10 +1065,10 @@
   :config
   (which-key-mode))
 
-;; ======================================================================
+;; ====================================================================
 ;; Act VI
 ;; 3rd party Emacs themes
-;; ======================================================================
+;; ====================================================================
 
 (use-package doom-themes
   :config
@@ -1038,6 +1106,8 @@
 (use-package solo-jazz-theme
   :config
   (my/theme-load 'solo-jazz nil))
+
+(use-package zenburn-theme)
 
 ;; Key bindings reminders:
 ;; C-u C-SPC    Move cursor to previous marked position in current buffer.
