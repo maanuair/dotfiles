@@ -416,6 +416,9 @@ From BEG to END, joining text paragraphs into a single logical line."
           ("C-= t n"   . (lambda () (interactive) (my/theme-load nil)))
           ("C-= t s d" . (lambda () (interactive) (my/theme-load 'solarized-dark t)))
           ("C-= t s l" . (lambda () (interactive) (my/theme-load 'solarized-light t)))
+          ("C-= t p d" . (lambda () (interactive) (my/theme-load 'spacemacs-dark t)))
+          ("C-= t p l" . (lambda () (interactive) (my/theme-load 'spacemacs-light t)))
+          ("C-= t z"   . (lambda () (interactive) (my/theme-load 'zenburn t)))
 
           ;; Elisp Navigation
           ("C-= e f"   . find-function)
@@ -1102,6 +1105,10 @@ Change dictionary and mode-line lighter accordingly."
   (setq seoul256-background 253))
 
 (use-package solarized-theme)
+
+(use-package spacemacs-theme
+  :pin melpa-stable
+  :defer t)
 
 (use-package solo-jazz-theme
   :config
