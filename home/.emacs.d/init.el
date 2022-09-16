@@ -17,7 +17,7 @@
 ;; without any warranty.  See the MIT License for more details.
 ;;
 ;; You should have received a copy of the MIT License along with this
-;; file. If not, see https://opensource.org/licenses/mit-license.php
+;; file.  If not, see https://opensource.org/licenses/mit-license.php
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -59,8 +59,8 @@
 ;; Restore good defaults post startup
 (add-hook 'after-init-hook
   (lambda () (setq
-               gc-cons-threshold (* 2 1000 1000)
-               gc-cons-percentage 0.1)))
+		           gc-cons-threshold (* 2 1000 1000)
+		           gc-cons-percentage 0.1)))
 
 
 ;; Use a hook so the message doesn't get clobbered by other messages.
@@ -209,6 +209,10 @@
   (interactive)
   (find-file "~/.zshrc"))
 
+(defun my/insert-buffer-name () "Insert the buffer-name at point."
+  (interactive)
+  (insert (buffer-name (window-buffer (minibuffer-selected-window)))))
+
 (defun my/is-macos ()
   "Return t when the system is a macOS."
   (interactive)
@@ -227,43 +231,53 @@
   (untabify (point-min) (point-max))
 
   ;; No trailing white space
-  (delete-trailing-whitespace)
+  (delete-trailing-whitespace (point-min) (point-max))
+
+  ;; No spaces/tabs before headings
+  (query-replace-regexp
+    "^[ ]+\\(#+.*\\)" "\\1"
+    nil (point-min) (point-max))
+
+  ;; Timestamps titles are H2
+  (query-replace-regexp
+    "^# 202" "## 202"
+    nil (point-min) (point-max))
+
+  ;; Headings are always followed by a newline
+  (query-replace-regexp
+    "\\(##+ .*\\)
+\\([^
+]+\\)" "\\1
+
+\\2"
+    nil (point-min) (point-max))
 
   ;; No consecutive newlines but just one
   (query-replace-regexp "^
 
 +" "
-")
+" nil (point-min) (point-max))
 
-  ;; No spaces/tabs before headings
-  (query-replace-regexp "^[ 	]+\\(#+.*\\)" "\\1")
-
-  ;; Headings are always followed by a newline
-  (query-replace-regexp "\\(##+ .*\\)
-\\([^
-]+\\)" "\\1
-
-\\2")
-
-  ;; Timestamps titles are H2
-  (query-replace-regexp "^# 202" "## 202")
-
-  ;; Isolated **emphasis** on a single line after a newline should really be H3
+  ;; Isolated **emphasis** on a single line after a newline should
+  ;; really be without emphasis but with a colon inserted after:
   (query-replace-regexp "
 
 \\*\\*\\(.*\\)\\*\\*$" "
 
-### \\1
-")
+\\1:
+"
+    nil (point-min) (point-max))
 
   ;; No empty list items
-  (query-replace-regexp " *- *$" "")
+  (query-replace-regexp
+    " *- *$" ""
+    nil (point-min) (point-max))
 
   ;; Lists must start with an empty line:
-;;  (query-replace-regexp "^\\( *-.*\\)
-;;\\(- .*\\)" "\\1
-;;
-;;\\2")
+  ;;  (query-replace-regexp "^\\( *-.*\\)
+  ;;\\(- .*\\)" "\\1
+  ;;
+  ;;\\2" nil (point-min) (point-max))
 
   ;; And, to apply this regex to multiple files, you can mark the
   ;; files in Dired and type Q to do a query-replace-regexp on all the
@@ -290,10 +304,10 @@
   (interactive)
   (if is-inverse-video
     (progn
-      (set-face-attribute 'show-paren-match-expression nil
+	    (set-face-attribute 'show-paren-match-expression nil
 			  ;; :inherit nil
 			  :inverse-video is-inverse-video)
-      (my/log (format "Set face attribute 'show-paren-match-expression' to %S." is-inverse-video)))))
+	    (my/log (format "Set face attribute 'show-paren-match-expression' to %S." is-inverse-video)))))
 
 (defun my/theme-reset () "Disable loaded theme(s)."
   (interactive)
@@ -308,8 +322,8 @@ INVERSE-PAREN-EXPR."
   (my/theme-reset)
   (if theme
     (progn
-      (load-theme theme t)
-      (my/log (format "Loaded theme %S." theme))))
+	    (load-theme theme t)
+	    (my/log (format "Loaded theme %S." theme))))
   (if inverse-paren-expr
     (my/set-face-show-paren-match-expression inverse-paren-expr)))
 
@@ -360,12 +374,20 @@ From BEG to END, joining text paragraphs into a single logical line."
           ;; All my custom bindings starts with C-=, avalable in all encoutnered modes so far.
           ;; NB: C-= requires special config in the terminal emulator in TUI mode (see TUI comment below)
 
-          ;; Edition related
+          ;; Edition — Comments
           ("C-= /"     . comment-region)
           ("C-= \\"    . uncomment-region)
+
+          ;; Edition — Insertion
+          ("C-= i b"  . my/insert-buffer-name)
+
+          ;; Edition — Redo operations
           ("C-= r i"   . my/reindent)
           ("C-= r f"   . my/reformat)
-          ("C-= r u"   . my/unfill-region)
+
+          ;; Edition — Undo operations
+          ("C-= u t"   . my/untabify)
+          ("C-= u f"   . my/unfill-region)
 
           ;; Dot files
           ("C-= . a"   . my/find-shell-aliases-file)
@@ -432,7 +454,7 @@ From BEG to END, joining text paragraphs into a single logical line."
                            (interactive)
                            (progn
                              (if (get-buffer "*Occur*")
-                               (kill-buffer "*Occur*"))
+				                       (kill-buffer "*Occur*"))
                              (delete-other-windows)
                              (my/find-emacs-init-file)
                              ;; Occurences of "C-=" or "s-", excluding this and next line ;-)
@@ -449,11 +471,10 @@ From BEG to END, joining text paragraphs into a single logical line."
   (setq buffer-file-coding-system 'utf-8)
 
   :config
-  (global-display-fill-column-indicator-mode 1)
-  (set-fontset-font                   t nil     "Roboto Mono 13")
+  (set-fontset-font                   t nil     "Roboto Mono 14")
   (set-fontset-font                   t 'symbol (font-spec :family "Apple Color Emoji"))
   ;; (add-to-list                     'default-frame-alist '(fullscreen . maximized))
-  (add-to-list                        'default-frame-alist '(font . "Roboto Mono 13"))
+  (add-to-list                        'default-frame-alist '(font . "Roboto Mono 14"))
   (set-face-attribute 'default        nil :family "Roboto Mono"          :height 140)
   (set-face-attribute 'fixed-pitch    nil :family "Roboto Mono"          :height 140)
   (set-face-attribute 'variable-pitch nil :family "Georgia" :height 170)
@@ -603,8 +624,11 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
     (split-window-right)
     (find-file-other-window my/agendas-file))
   ;; Use a nice readable proportional fonts
+
   (let* ((variable-tuple
            (cond
+	           ;; Terminal only ?
+	           ((eq window-system nil) nil)
              ;; Preferred
              ((x-list-fonts "Georgia")         '(:font "Georgia"))
              ;; Sans-serif
@@ -658,12 +682,12 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
           (org-mode    . variable-pitch-mode)
           (org-mode    . visual-line-mode))
   :custom
-  ; (org-agenda-files                       (directory-files-recursively
-  ;                                           (file-name-directory "~/Org/MyTodos.org") "org$"))
+                                        ; (org-agenda-files                       (directory-files-recursively
+                                        ;                                           (file-name-directory "~/Org/MyTodos.org") "org$"))
   (org-blank-before-new-entry             '(
                                              (heading . nil)
                                              (plain-list-item . nil))
-                                                                "Removes gap when you add a new heading.")
+    "Removes gap when you add a new heading.")
 
   (org-catch-invisible-edits              'error)
   (org-descriptive-links                  nil                    "Do not decorate hyperlinks.")
@@ -716,6 +740,12 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
     show-paren-delay             nil             ; Highlights without delay
     show-paren-style             'expression     ; Shows the matching expression
     ))
+
+(use-package re-builder
+  :defer 5
+  :ensure nil
+  :custom
+  (reb-re-syntax 'string))
 
 (use-package recentf
   :commands (recentf-add-file recentf-apply-filename-handlers recentf-mode )
@@ -816,7 +846,7 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
   (deft-extensions                     '("md" "org" "txt"))
   (deft-recursive                      t)
   (deft-use-filename-as-title          nil)
-  (deft-use-filter-string-for-filename t))
+  (deft-use-filter-string-for-filename nil))
 ;; See https://leanpub.com/markdown-mode/read#leanpub-auto-integration-with-deft-mode
 
 (use-package doom-modeline
@@ -853,7 +883,8 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
 
 (use-package flycheck-status-emoji
   :init
-  ;; Warning, on macOS, requires `(set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji"))`
+  ;; Warning, on macOS, requires `(set-fontset-font t 'symbol
+  ;; (font-spec :family "Apple Color Emoji"))`
   (flycheck-status-emoji-mode))
 
 (use-package flyspell
@@ -910,7 +941,7 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
     ;; (concat " " dict)))
     ;; (concat " " language)
     (concat " "
-      (cond
+	    (cond
         ((string=  language "en_GB") "🇬🇧")
         ((string=  language "fr-moderne") "🇫🇷")
 	      ("🏳"))))
@@ -941,6 +972,10 @@ Change dictionary and mode-line lighter accordingly."
   (iedit-toggle-key-default (kbd "C-S-s"))
   )
 
+(use-package imenu-list
+  :pin melpa-stable
+  :bind (("C-' " . imenu-list-smart-toggle)))
+
 (use-package js2-mode
   :mode ("\\.js\\'" . js2-mode))
 
@@ -959,7 +994,10 @@ Change dictionary and mode-line lighter accordingly."
           ("\\.markdown\\'"    . markdown-mode))
   :hook
   (markdown-mode . auto-fill-mode)
+  (markdown-mode . display-fill-column-indicator-mode)
   :custom
+  (markdown-css-paths '("/Users/emmanuelroubion/GitHub/modest/css/modest.css"))
+  ;; (markdown-css-paths '("/Users/emmanuelroubion/GitHub/splendor/css/splendor.css"))
   (markdown-header-scaling t))
 
 (use-package oblique
@@ -990,8 +1028,8 @@ Change dictionary and mode-line lighter accordingly."
   (setq org-superstar-leading-bullet " ")
   (setq org-superstar-special-todo-items t)                ; Makes TODO header bullets into boxes
   (setq org-superstar-todo-bullet-alist '(("TODO" . 9744)
-                                          ("RM" . 9744)
-                                          ("SOMEDAY" . 9744)))
+                                           ("RM" . 9744)
+                                           ("SOMEDAY" . 9744)))
   :hook (org-mode . org-superstar-mode))
 
 (use-package ox-jira
@@ -1040,7 +1078,7 @@ Change dictionary and mode-line lighter accordingly."
           ("C-= s i k"   . string-inflection-kebab-case)))
 
 (use-package treemacs
-  :defer 2
+  :defer 5
   :bind (
           ("C-= b t"   . treemacs))
   :custom
@@ -1107,8 +1145,8 @@ Change dictionary and mode-line lighter accordingly."
 (use-package solarized-theme)
 
 (use-package spacemacs-theme
-  :pin melpa-stable
-  :defer t)
+  :defer t
+  :pin melpa-stable)
 
 (use-package solo-jazz-theme
   :config
