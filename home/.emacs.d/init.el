@@ -209,7 +209,7 @@
   (interactive)
   (find-file "~/.zshrc"))
 
-(defun my/insert-buffer-name () "Insert the buffer-name at point."
+(defun my/insert-buffer-name () "Insert the 'buffer-name' at point."
   (interactive)
   (insert (buffer-name (window-buffer (minibuffer-selected-window)))))
 
@@ -431,6 +431,8 @@ From BEG to END, joining text paragraphs into a single logical line."
           ;; ("C-= t d"   . (lambda () (interactive) (my/theme-load 'dichromacy t)))
           ("C-= t d d" . (lambda () (interactive) (my/theme-load 'doom-one t)))
           ("C-= t d l" . (lambda () (interactive) (my/theme-load 'doom-one-light t)))
+          ("C-= t h d" . (lambda () (interactive) (my/theme-load 'humanoid-dark t)))
+          ("C-= t h l" . (lambda () (interactive) (my/theme-load 'humanoid-ligt t)))
           ("C-= t j"   . (lambda () (interactive) (my/theme-load 'solo-jazz t)))
           ("C-= t e"   . (lambda () (interactive) (my/theme-load 'seoul256 t)))
           ("C-= t m o" . (lambda () (interactive) (my/theme-load 'modus-operandi)))
@@ -471,13 +473,29 @@ From BEG to END, joining text paragraphs into a single logical line."
   (setq buffer-file-coding-system 'utf-8)
 
   :config
-  (set-fontset-font                   t nil     "Roboto Mono 14")
-  (set-fontset-font                   t 'symbol (font-spec :family "Apple Color Emoji"))
-  ;; (add-to-list                     'default-frame-alist '(fullscreen . maximized))
-  (add-to-list                        'default-frame-alist '(font . "Roboto Mono 14"))
-  (set-face-attribute 'default        nil :family "Roboto Mono"          :height 140)
-  (set-face-attribute 'fixed-pitch    nil :family "Roboto Mono"          :height 140)
-  (set-face-attribute 'variable-pitch nil :family "Georgia" :height 170)
+  ;; Starts maximised
+  (add-to-list        'default-frame-alist '(fullscreen . maximized))
+
+  ;; Default Symbol fonts
+  (set-fontset-font   t 'symbol (font-spec :family "Apple Color Emoji"))
+
+  ;; Default variable font
+  (defvar my/font-var-name          "Georgia")
+  (defvar my/font-var-height        170)
+  (set-face-attribute 'variable-pitch nil :family my/font-var-name :height my/font-var-height)
+
+  ;; Default fixed font
+  (defvar my/font-mono "SF Mono 13")
+  (defvar my/font-mono-digit-index (string-match "[0-9]+$" my/font-mono))
+  (defvar my/font-mono-name
+    (string-trim (substring my/font-mono 0 my/font-mono-digit-index)))
+  (defvar my/font-mono-height
+    (* 10 (string-to-number
+            (substring my/font-mono my/font-mono-digit-index))))
+  (set-fontset-font   t nil my/font-mono)
+  (add-to-list        'default-frame-alist (cons 'font my/font-mono))
+  (set-face-attribute 'default        nil :family my/font-mono-name  :height my/font-mono-height)
+  (set-face-attribute 'fixed-pitch    nil :family my/font-mono-name  :height my/font-mono-height)
 
   ;; Specific settings for emacs TUI and C-= handling
   (unless (display-graphic-p)
@@ -612,9 +630,9 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
   :functions my/show-org
   :init
   ;; My org files
-  ;;(defvar my/agendas-file "~/Org/Agendas.org" "This variable points to my Agenda.org file.")
-  ;;(defvar my/meta-file    "~/Org/Meta.org"    "This variable points to my Meta.org file.")
-  ;;(defvar my/todos-file   "~/Org/Todos.org"   "This variable points to my Todos.org file.")
+  (defvar my/agendas-file "~/Org/Agendas.org" "This variable points to my Agenda.org file.")
+  (defvar my/meta-file    "~/Org/Meta.org"    "This variable points to my Meta.org file.")
+  (defvar my/todos-file   "~/Org/Todos.org"   "This variable points to my Todos.org file.")
   (defun my/show-org ()
     "Loads my org files, and set-up window accordingly"
     (interactive)
@@ -1137,6 +1155,10 @@ Change dictionary and mode-line lighter accordingly."
   ;; (my/theme-load 'modus-operandi t)
   )
 
+(use-package humanoid-themes
+  :defer t
+  :pin melpa-stable)
+
 (use-package seoul256-theme
   :pin melpa-unstable
   :config
@@ -1145,8 +1167,8 @@ Change dictionary and mode-line lighter accordingly."
 (use-package solarized-theme)
 
 (use-package spacemacs-theme
-  :defer t
-  :pin melpa-stable)
+  :pin melpa-stable
+  :defer t)
 
 (use-package solo-jazz-theme
   :config
