@@ -4,3 +4,6 @@
 [submodule "home/.emacs.d/my-elisp/oblique-strategies"]
 	path = home/.emacs.d/my-elisp/oblique-strategies
 	url = https://github.com/zzkt/oblique-strategies.git
+[submodule "home/.emacs.d/my-elisp/lambda-themes"]
+	path = home/.emacs.d/my-elisp/lambda-themes
+	url = git@github.com:Lambda-Emacs/lambda-themes.git

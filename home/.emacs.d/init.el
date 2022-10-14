@@ -1,4 +1,4 @@
-;;; init.el --- Emmanuel Roubion's personal init file -*- lexical-binding: t; coding: utf-8  -*-
+;; init.el --- Emmanuel Roubion's personal init file -*- lexical-binding: t; coding: utf-8  -*-
 
 ;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022
 ;; Emmanuel Roubion
@@ -84,6 +84,7 @@
 
 ;; Add our git sub modules in load-path
 (add-to-list 'load-path (expand-file-name "no-littering" my/elisp-dir))
+(add-to-list 'load-path (expand-file-name "lambda-themes" my/elisp-dir))
 (add-to-list 'load-path (expand-file-name "oblique-strategies" my/elisp-dir))
 
 ;; Reminder about Git submodules option, when cloning this project
@@ -94,6 +95,11 @@
 ;;
 ;; Or simply:
 ;;   git submodule update --init
+;;
+;; To add a submodule, don't forget to commit it, since it is only staged:
+;;   git submodule add <remote_url> <destination_folder>
+;;   git commit -m "Added the submodule to the project."
+;;   git push
 
 ;; Bootstrap no-littering.el
 (defconst my/no-littering-dir        (expand-file-name "../.emacs.runtime-dirs/" user-emacs-directory) "Location of the no-littering-dir package.")
@@ -432,9 +438,11 @@ From BEG to END, joining text paragraphs into a single logical line."
           ("C-= t d d" . (lambda () (interactive) (my/theme-load 'doom-one t)))
           ("C-= t d l" . (lambda () (interactive) (my/theme-load 'doom-one-light t)))
           ("C-= t h d" . (lambda () (interactive) (my/theme-load 'humanoid-dark t)))
-          ("C-= t h l" . (lambda () (interactive) (my/theme-load 'humanoid-ligt t)))
+          ("C-= t h l" . (lambda () (interactive) (my/theme-load 'humanoid-light t)))
           ("C-= t j"   . (lambda () (interactive) (my/theme-load 'solo-jazz t)))
           ("C-= t e"   . (lambda () (interactive) (my/theme-load 'seoul256 t)))
+          ("C-= t l d" . (lambda () (interactive) (my/theme-load 'lambda-dark t)))
+          ("C-= t l l" . (lambda () (interactive) (my/theme-load 'lambda-light t)))
           ("C-= t m o" . (lambda () (interactive) (my/theme-load 'modus-operandi)))
           ("C-= t m v" . (lambda () (interactive) (my/theme-load 'modus-vivendi)))
           ("C-= t n"   . (lambda () (interactive) (my/theme-load nil)))
@@ -1159,6 +1167,15 @@ Change dictionary and mode-line lighter accordingly."
   :defer t
   :pin melpa-stable)
 
+(use-package lambda-themes
+  :ensure nil
+  :custom
+  (lambda-themes-set-italic-comments t)
+  (lambda-themes-set-italic-keywords t)
+  (lambda-themes-set-variable-pitch t)
+  :config
+  (my/theme-load 'lambda-light nil))
+
 (use-package seoul256-theme
   :pin melpa-unstable
   :config
@@ -1170,9 +1187,7 @@ Change dictionary and mode-line lighter accordingly."
   :pin melpa-stable
   :defer t)
 
-(use-package solo-jazz-theme
-  :config
-  (my/theme-load 'solo-jazz nil))
+(use-package solo-jazz-theme)
 
 (use-package zenburn-theme)
 
