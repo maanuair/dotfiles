@@ -202,6 +202,9 @@
 (defun my/find-hammerspoon-init-file () "Visit my Hammerspoon init file."
   (interactive) (find-file "~/.hammerspoon/init.lua"))
 
+(defun my/find-markown-home-file () "Visit my Home.md file."
+  (interactive) (find-file "~/Deft/Home.md"))
+
 (defun my/find-shell-aliases-file () "Visit my shell aliases file."
   (interactive) (find-file "~/.shell_aliases"))
 
@@ -394,6 +397,9 @@ From BEG to END, joining text paragraphs into a single logical line."
           ;; Edition — Undo operations
           ("C-= u t"   . my/untabify)
           ("C-= u f"   . my/unfill-region)
+
+          ;; Home markdown file
+          ("C-= h"     . my/find-markown-home-file)
 
           ;; Dot files
           ("C-= . a"   . my/find-shell-aliases-file)
