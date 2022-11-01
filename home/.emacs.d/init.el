@@ -222,6 +222,10 @@
   (interactive)
   (insert (buffer-name (window-buffer (minibuffer-selected-window)))))
 
+(defun my/insert-file-name () "Insert the 'buffer-file-name' at point."
+  (interactive)
+  (insert (buffer-file-name (window-buffer (minibuffer-selected-window)))))
+
 (defun my/is-macos ()
   "Return t when the system is a macOS."
   (interactive)
@@ -389,6 +393,7 @@ From BEG to END, joining text paragraphs into a single logical line."
 
           ;; Edition — Insertion
           ("C-= i b"  . my/insert-buffer-name)
+          ("C-= i f"  . my/insert-file-name)
 
           ;; Edition — Redo operations
           ("C-= r i"   . my/reindent)
@@ -441,22 +446,30 @@ From BEG to END, joining text paragraphs into a single logical line."
 
           ;; Themes
           ;; ("C-= t d"   . (lambda () (interactive) (my/theme-load 'dichromacy t)))
-          ("C-= t d d" . (lambda () (interactive) (my/theme-load 'doom-one t)))
-          ("C-= t d l" . (lambda () (interactive) (my/theme-load 'doom-one-light t)))
-          ("C-= t h d" . (lambda () (interactive) (my/theme-load 'humanoid-dark t)))
-          ("C-= t h l" . (lambda () (interactive) (my/theme-load 'humanoid-light t)))
-          ("C-= t j"   . (lambda () (interactive) (my/theme-load 'solo-jazz t)))
-          ("C-= t e"   . (lambda () (interactive) (my/theme-load 'seoul256 t)))
-          ("C-= t l d" . (lambda () (interactive) (my/theme-load 'lambda-dark t)))
-          ("C-= t l l" . (lambda () (interactive) (my/theme-load 'lambda-light t)))
-          ("C-= t m o" . (lambda () (interactive) (my/theme-load 'modus-operandi)))
-          ("C-= t m v" . (lambda () (interactive) (my/theme-load 'modus-vivendi)))
-          ("C-= t n"   . (lambda () (interactive) (my/theme-load nil)))
-          ("C-= t s d" . (lambda () (interactive) (my/theme-load 'solarized-dark t)))
-          ("C-= t s l" . (lambda () (interactive) (my/theme-load 'solarized-light t)))
-          ("C-= t p d" . (lambda () (interactive) (my/theme-load 'spacemacs-dark t)))
-          ("C-= t p l" . (lambda () (interactive) (my/theme-load 'spacemacs-light t)))
-          ("C-= t z"   . (lambda () (interactive) (my/theme-load 'zenburn t)))
+          ("C-= t c f"   . (lambda () (interactive) (my/theme-load 'catppuccin-frappe t)))
+          ("C-= t c l"   . (lambda () (interactive) (my/theme-load 'catppuccin-latte t)))
+          ("C-= t c m a" . (lambda () (interactive) (my/theme-load 'catppuccin-macchiato t)))
+          ("C-= t c m o" . (lambda () (interactive) (my/theme-load 'catppuccin-mocha t)))
+          ("C-= t d d"   . (lambda () (interactive) (my/theme-load 'doom-one t)))
+          ("C-= t d l"   . (lambda () (interactive) (my/theme-load 'doom-one-light t)))
+          ("C-= t h d"   . (lambda () (interactive) (my/theme-load 'humanoid-dark t)))
+          ("C-= t h l"   . (lambda () (interactive) (my/theme-load 'humanoid-light t)))
+          ("C-= t j"     . (lambda () (interactive) (my/theme-load 'solo-jazz t)))
+          ("C-= t e"     . (lambda () (interactive) (my/theme-load 'seoul256 t)))
+          ("C-= t l d"   . (lambda () (interactive) (my/theme-load 'lambda-dark t)))
+          ("C-= t l l"   . (lambda () (interactive) (my/theme-load 'lambda-light t)))
+          ("C-= t m o"   . (lambda () (interactive) (my/theme-load 'modus-operandi t)))
+          ("C-= t m v"   . (lambda () (interactive) (my/theme-load 'modus-vivendi t)))
+          ("C-= t n i"   . (lambda () (interactive) (my/theme-load nil)))
+          ("C-= t n o"   . (lambda () (interactive) (my/theme-load 'nord t)))
+          ("C-= t s d"   . (lambda () (interactive) (my/theme-load 'solarized-dark t)))
+          ("C-= t s l"   . (lambda () (interactive) (my/theme-load 'solarized-light t)))
+          ("C-= t p d"   . (lambda () (interactive) (my/theme-load 'spacemacs-dark t)))
+          ("C-= t p l"   . (lambda () (interactive) (my/theme-load 'spacemacs-light t)))
+          ("C-= t z"     . (lambda () (interactive) (my/theme-load 'zenburn t)))
+
+          ;; Preferred light themes:
+          ;; catppuccin-latte, solo-jazz, humanoid-light, modus-operandi, spacemacs-light, doom-nord-light, doom-opera-light, doom-one-light, seoul256, solarized-light
 
           ;; Elisp Navigation
           ("C-= e f"   . find-function)
@@ -488,18 +501,19 @@ From BEG to END, joining text paragraphs into a single logical line."
 
   :config
   ;; Starts maximised
-  (add-to-list        'default-frame-alist '(fullscreen . maximized))
+  ;; (add-to-list        'default-frame-alist '(fullscreen . maximized))
 
   ;; Default Symbol fonts
   (set-fontset-font   t 'symbol (font-spec :family "Apple Color Emoji"))
 
   ;; Default variable font
-  (defvar my/font-var-name          "Georgia")
-  (defvar my/font-var-height        170)
+  (defvar my/font-var-name          "Charter")
+  (defvar my/font-var-height        130)
   (set-face-attribute 'variable-pitch nil :family my/font-var-name :height my/font-var-height)
 
   ;; Default fixed font
-  (defvar my/font-mono "SF Mono 13")
+  ;; (defvar my/font-mono "SF Mono 13")
+  (defvar my/font-mono "Fira Code 13")
   (defvar my/font-mono-digit-index (string-match "[0-9]+$" my/font-mono))
   (defvar my/font-mono-name
     (string-trim (substring my/font-mono 0 my/font-mono-digit-index)))
@@ -1143,6 +1157,14 @@ Change dictionary and mode-line lighter accordingly."
 ;; 3rd party Emacs themes
 ;; ====================================================================
 
+(use-package autothemer)
+
+(use-package catppuccin-theme
+  :pin melpa-unstable
+  :requires autothemer
+  :config
+  (my/theme-load 'catppuccin-latte t))
+
 (use-package doom-themes
   :config
   (doom-themes-visual-bell-config))
@@ -1166,12 +1188,12 @@ Change dictionary and mode-line lighter accordingly."
     (set-face-attribute 'mode-line          nil :box        nil)
     (set-face-attribute 'mode-line-inactive nil :box        nil)
     (set-face-attribute 'mode-line-inactive nil :background "#f6f6f6")) ;; "#d33682"))
-  ;; (my/theme-load 'modus-operandi t)
   )
 
 (use-package humanoid-themes
   :defer t
-  :pin melpa-stable)
+  :pin melpa-stable
+  :defer t)
 
 (use-package lambda-themes
   :ensure nil
@@ -1179,23 +1201,30 @@ Change dictionary and mode-line lighter accordingly."
   (lambda-themes-set-italic-comments t)
   (lambda-themes-set-italic-keywords t)
   (lambda-themes-set-variable-pitch t)
-  :config
-  (my/theme-load 'lambda-light nil))
+  )
+
+(use-package nord-theme
+  :defer t
+  :pin melpa-stable)
 
 (use-package seoul256-theme
   :pin melpa-unstable
+  :defer t
   :config
   (setq seoul256-background 253))
 
-(use-package solarized-theme)
+(use-package solarized-theme
+  :defer t)
 
 (use-package spacemacs-theme
   :pin melpa-stable
   :defer t)
 
-(use-package solo-jazz-theme)
+(use-package solo-jazz-theme
+  :defer t)
 
-(use-package zenburn-theme)
+(use-package zenburn-theme
+  :defer t)
 
 ;; Key bindings reminders:
 ;; C-u C-SPC    Move cursor to previous marked position in current buffer.
