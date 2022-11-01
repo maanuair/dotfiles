@@ -513,7 +513,7 @@ From BEG to END, joining text paragraphs into a single logical line."
 
   ;; Default fixed font
   ;; (defvar my/font-mono "SF Mono 13")
-  (defvar my/font-mono "Fira Code 13")
+  (defvar my/font-mono "Fira Code 14")
   (defvar my/font-mono-digit-index (string-match "[0-9]+$" my/font-mono))
   (defvar my/font-mono-name
     (string-trim (substring my/font-mono 0 my/font-mono-digit-index)))
