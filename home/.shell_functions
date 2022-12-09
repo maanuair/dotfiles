@@ -1,4 +1,4 @@
-# Copyright © 2021 Emmanuel Roubion -*- mode: shell-script ;-*-
+# Copyright © 2021, 2022 Emmanuel Roubion -*- mode: shell-script ;-*-
 #
 # Author: Emmanuel Roubion
 # URL: https://github.com/maanuair/dotfiles
@@ -19,7 +19,7 @@
 function ask () {
   # Inputs check
   if [[ $# != 2 && $# != 3 ]]; then
-    myErr "Function $FUNCNAME(): bad arguments count, ignored."
+    myErr "Function $FUNCNAME: bad arguments count, ignored."
     myErr "Synopsis: $FUNCNAME \"So we quit?\" \"[y|yes|Y|n|no|N]\" [\"N\"]"
     return;
   else
@@ -281,7 +281,7 @@ function setupHomeshick () {
     homeshick --quiet refresh
 
     # Check whether we need to... "homeshick check"
-    local minutes="$(expr 24 \* 60)"
+    local minutes="$(expr 24 \* 60 \* 5)" # 5 days in minutes
     if hasSetupRunSinceLastMinutes "$0" "${minutes}"; then
       myOutTab "homeshick check... Already done in last ${minutes} minutes, no need to check again..."
     else
