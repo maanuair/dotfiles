@@ -46,6 +46,8 @@
   rebase = true
 [push]
   default = simple
+[includeIf "gitdir:~/.homesick/repos*/"]
+  path = ~/.gitconfig-h
 [includeIf "gitdir:~/GitH*/"]
   path = ~/.gitconfig-h
 [includeIf "gitdir:~/GitL*/"]
