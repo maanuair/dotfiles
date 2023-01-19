@@ -1,6 +1,6 @@
 ;; init.el --- Emmanuel Roubion's personal init file -*- lexical-binding: t; coding: utf-8  -*-
 
-;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022
+;; Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023
 ;; Emmanuel Roubion
 
 ;; Author: Emmanuel Roubion
@@ -446,10 +446,10 @@ From BEG to END, joining text paragraphs into a single logical line."
 
           ;; Themes
           ;; ("C-= t d"   . (lambda () (interactive) (my/theme-load 'dichromacy t)))
-          ("C-= t c f"   . (lambda () (interactive) (my/theme-load 'catppuccin-frappe t)))
-          ("C-= t c l"   . (lambda () (interactive) (my/theme-load 'catppuccin-latte t)))
-          ("C-= t c m a" . (lambda () (interactive) (my/theme-load 'catppuccin-macchiato t)))
-          ("C-= t c m o" . (lambda () (interactive) (my/theme-load 'catppuccin-mocha t)))
+          ("C-= t c f"   . (lambda () (interactive) (progn (setq catppuccin-flavor 'frappe) (my/theme-load 'catppuccin t))))
+          ("C-= t c l"   . (lambda () (interactive) (progn (setq catppuccin-flavor 'latte) (my/theme-load 'catppuccin t))))
+          ("C-= t c m a" . (lambda () (interactive) (progn (setq catppuccin-flavor 'macchiatto) (my/theme-load 'catppuccin t))))
+          ("C-= t c m o" . (lambda () (interactive) (progn (setq catppuccin-flavor 'mocha) (my/theme-load 'catppuccin t))))
           ("C-= t d d"   . (lambda () (interactive) (my/theme-load 'doom-one t)))
           ("C-= t d l"   . (lambda () (interactive) (my/theme-load 'doom-one-light t)))
           ("C-= t h d"   . (lambda () (interactive) (my/theme-load 'humanoid-dark t)))
@@ -1163,7 +1163,8 @@ Change dictionary and mode-line lighter accordingly."
   :pin melpa-unstable
   :requires autothemer
   :config
-  (my/theme-load 'catppuccin-latte t))
+  (setq catppuccin-flavor 'latte)
+  (my/theme-load 'catppuccin t))
 
 (use-package doom-themes
   :config
