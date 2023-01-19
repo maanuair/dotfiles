@@ -1,4 +1,4 @@
-# Copyright © 2021, 2022 Emmanuel Roubion -*- mode: shell-script ;-*-
+# Copyright © 2021, 2022, 2023 Emmanuel Roubion -*- mode: shell-script ;-*-
 #
 # Author: Emmanuel Roubion
 # URL: https://github.com/maanuair/dotfiles
@@ -228,6 +228,14 @@ function setupEnvVars () {
     if [[ -d "$CHOME" ]]; then
       export PATH="${PATH}:${CHOME}"
     fi
+
+    # QT5
+    local QTHOME="/usr/local/opt/qt@5"
+    if [[ -d "$QTHOME" ]]; then
+      export PATH="$PATH:$QTHOME/bin"
+      # export LDFLAGS="-L$QTHOME/lib"
+      # export CPPFLAGS="-I$QTHOME5/include"
+      fi
   fi
 }
 
