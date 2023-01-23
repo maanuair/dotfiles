@@ -24,7 +24,7 @@ alias egrep="egrep --color=auto"
 
 alias fgrep="fgrep --color=auto"
 
-alias gitscan="find . -name .git \( -execdir pwd \; -false -o -execdir git st {} \; -exec echo "--" \; \) 2>/dev/null"
+alias git-scan-all="find . -name .git \( -execdir pwd \; -false -o -execdir git st {} \; -exec echo "--" \; \) 2>/dev/null"
 
 alias grep="grep --color=auto"
 # Only run for bash, not zsh
