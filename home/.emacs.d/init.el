@@ -446,10 +446,10 @@ From BEG to END, joining text paragraphs into a single logical line."
 
           ;; Themes
           ;; ("C-= t d"   . (lambda () (interactive) (my/theme-load 'dichromacy t)))
-          ("C-= t c f"   . (lambda () (interactive) (progn (setq catppuccin-flavor 'frappe) (my/theme-load 'catppuccin t))))
-          ("C-= t c l"   . (lambda () (interactive) (progn (setq catppuccin-flavor 'latte) (my/theme-load 'catppuccin t))))
-          ("C-= t c m a" . (lambda () (interactive) (progn (setq catppuccin-flavor 'macchiatto) (my/theme-load 'catppuccin t))))
-          ("C-= t c m o" . (lambda () (interactive) (progn (setq catppuccin-flavor 'mocha) (my/theme-load 'catppuccin t))))
+          ("C-= t c f"   . (lambda () (interactive) (progn (setq catppuccin-flavor 'frappe) (my/theme-load 'catppuccin t))))     ;; Dark
+          ("C-= t c l"   . (lambda () (interactive) (progn (setq catppuccin-flavor 'latte) (my/theme-load 'catppuccin t))))      ;; Light
+          ("C-= t c m a" . (lambda () (interactive) (progn (setq catppuccin-flavor 'macchiatto) (my/theme-load 'catppuccin t)))) ;; Lightest
+          ("C-= t c m o" . (lambda () (interactive) (progn (setq catppuccin-flavor 'mocha) (my/theme-load 'catppuccin t))))      ;; Darkest
           ("C-= t d d"   . (lambda () (interactive) (my/theme-load 'doom-one t)))
           ("C-= t d l"   . (lambda () (interactive) (my/theme-load 'doom-one-light t)))
           ("C-= t h d"   . (lambda () (interactive) (my/theme-load 'humanoid-dark t)))
