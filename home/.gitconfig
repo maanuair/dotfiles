@@ -48,6 +48,8 @@
   default = simple
 [includeIf "gitdir:~/.homesick/repos*/"]
   path = ~/.gitconfig-h
+[includeIf "gitdir:~/BitB*/"]
+  path = ~/.gitconfig-b
 [includeIf "gitdir:~/GitH*/"]
   path = ~/.gitconfig-h
 [includeIf "gitdir:~/GitL*/"]
