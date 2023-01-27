@@ -48,11 +48,11 @@
   default = simple
 [includeIf "gitdir:~/.homesick/repos*/"]
   path = ~/.gitconfig-h
-[includeIf "gitdir:~/BitB*/"]
+[includeIf "gitdir:~/*itB*/"]
   path = ~/.gitconfig-b
-[includeIf "gitdir:~/GitH*/"]
+[includeIf "gitdir:~/*itH*/"]
   path = ~/.gitconfig-h
-[includeIf "gitdir:~/GitL*/"]
+[includeIf "gitdir:~/*itL*/"]
   path = ~/.gitconfig-l
 [user]
 	name = Emmanuel Roubion
