@@ -224,18 +224,23 @@ function setupEnvVars () {
     fi
 
     # Visual Studio Code
-    local CHOME="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
-    if [[ -d "$CHOME" ]]; then
-      export PATH="${PATH}:${CHOME}"
+    local VSC_HOME="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+    if [[ -d "$VSC_HOME" ]]; then
+      export PATH="${PATH}:${VSC_HOME}"
     fi
 
     # QT5
-    local QTHOME="/usr/local/opt/qt@5"
-    if [[ -d "$QTHOME" ]]; then
-      export PATH="$PATH:$QTHOME/bin"
-      # export LDFLAGS="-L$QTHOME/lib"
-      # export CPPFLAGS="-I$QTHOME5/include"
-      fi
+    local QT_HOME="/usr/local/opt/qt@5"
+    if [[ -d "$QT_HOME" ]]; then
+      export PATH="$PATH:$QT_HOME/bin"
+      # export LDFLAGS="-L$QTH_OME/lib"
+      # export CPPFLAGS="-I$QT_HOME5/include"
+    fi
+
+    # bat command theme
+    if command -v bat &> /dev/null; then
+      export BAT_THEME=zenburn
+    fi
   fi
 }
 
