@@ -23,14 +23,13 @@ ZSH_THEME="agnoster"
 # Case-sensitive completion must be off. _ and - will be interchangeable.
 # HYPHEN_INSENSITIVE="true"
 
-# Uncomment the following line to disable bi-weekly auto-update checks.
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment the following line to automatically update without prompting.
-# DISABLE_UPDATE_PROMPT="true"
+# Uncomment one of the following lines to change the auto-update behavior
+# zstyle ':omz:update' mode disabled  # disable automatic updates
+zstyle ':omz:update' mode auto      # update automatically without asking
+# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
 
 # Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
+# zstyle ':omz:update' frequency 13
 
 # Uncomment the following line if pasting URLs and other text is messed up.
 # DISABLE_MAGIC_FUNCTIONS="true"
@@ -45,9 +44,10 @@ ZSH_THEME="agnoster"
 # ENABLE_CORRECTION="true"
 
 # Uncomment the following line to display red dots whilst waiting for completion.
-# Caution: this setting can cause issues with multiline prompts (zsh 5.7.1 and newer seem to work)
-# See https://github.com/ohmyzsh/ohmyzsh/issues/5765
-# COMPLETION_WAITING_DOTS="true"
+# You can also set it to another string to have that shown instead of the default red dots.
+# e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
+# Caution: this setting can cause issues with multiline prompts in zsh < 5.7.1 (see #5765)
+COMPLETION_WAITING_DOTS="true"
 
 # Uncomment the following line if you want to disable marking untracked files
 # under VCS as dirty. This makes repository status check for large repositories
@@ -77,10 +77,11 @@ plugins=(git systemadmin)
 # So, 1/3: source our own custom functions (shared between Bash and Zsh)
 source "${HOME}/.shell_functions"
 
-# Then, 2/3: set up homeshick itself
+# 2/3: Set up homeshick itself
 setupHomeshick
 
-# After, 3/3: set the fpath for Zsh
+# 3/3: Set the fpath for Zsh
+# (Homeshick completions must be sourced before Oh My Zsh !)
 fpath=(${HOME}/.homesick/repos/homeshick/completions ${fpath})
 
 # Finally, now we can source Oh My Zsh!
@@ -123,7 +124,7 @@ function main () {
 
   # A few completion options
   setopt MENU_COMPLETE # Insert the first match immediately upon ambiguous completion
-  unsetopt LIST_BEEP   # No beep on ambiguous completion
+  setopt LIST_BEEP     # Beep on ambiguous completion
 
   # Now set all up!
   setupAliases
