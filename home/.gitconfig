@@ -1,6 +1,6 @@
 [alias]
   applyignorespace = apply --ignore-space-change --ignore-whitespace -3 --verbose --recount
-  br = branch
+  br = !git --no-pager branch
   ci = commit
   co = checkout
   # Under GNU/Linux:
