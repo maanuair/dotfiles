@@ -767,7 +767,10 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
     '(("h" "Hugo post"
         entry (file+olp "~/www/all-posts.org" "Posts")
         (function org-hugo-new-subtree-post-capture-template))
-       )))
+       ))
+  :config
+  (add-to-list 'org-export-backends 'md t) ;; Make sure md is always a loaded back-end
+)
 
 (use-package org-indent
   :after org
