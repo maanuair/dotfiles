@@ -1,4 +1,4 @@
-# Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022 Emmanuel Roubion -*- mode: shell-script ;-*-
+# Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Emmanuel Roubion -*- mode: shell-script ;-*-
 #
 # Author: Emmanuel Roubion
 # URL: https://github.com/maanuair/dotfiles
@@ -24,7 +24,8 @@ alias egrep="egrep --color=auto"
 
 alias fgrep="fgrep --color=auto"
 
-alias git-scan-all="find . -name .git \( -execdir pwd \; -false -o -execdir git st {} \; -exec echo "--" \; \) 2>/dev/null"
+alias git-scan-all='find . -name .git -execdir echo -n "👁️ " \; -execdir pwd \; -execdir git st \; -execdir echo -- \;'
+# find . -name .git \( -execdir pwd \; -false -o -execdir git st {} \; -exec echo "--" \; \) 2>/dev/null"
 
 alias grep="grep --color=auto"
 # Only run for bash, not zsh
