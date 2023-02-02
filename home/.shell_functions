@@ -161,6 +161,11 @@ function setupAliases () {
 function setupEnvVars () {
   myOut "Setting up environment variables..."
 
+  # Locales:
+  export LANGUAGE=fr_FR.UTF-8
+  export LANG=fr_FR.UTF-8
+  export LC_ALL=fr_FR.UTF-8
+
   # Set up the dictionaries path
   export DICPATH="~/Library/Spelling"
 
