@@ -446,10 +446,10 @@ From BEG to END, joining text paragraphs into a single logical line."
 
           ;; Themes
           ;; ("C-= t d"   . (lambda () (interactive) (my/theme-load 'dichromacy t)))
-          ("C-= t c f"   . (lambda () (interactive) (progn (setq catppuccin-flavor 'frappe) (my/theme-load 'catppuccin t))))     ;; Dark
-          ("C-= t c l"   . (lambda () (interactive) (progn (setq catppuccin-flavor 'latte) (my/theme-load 'catppuccin t))))      ;; Light
-          ("C-= t c m a" . (lambda () (interactive) (progn (setq catppuccin-flavor 'macchiatto) (my/theme-load 'catppuccin t)))) ;; Lightest
-          ("C-= t c m o" . (lambda () (interactive) (progn (setq catppuccin-flavor 'mocha) (my/theme-load 'catppuccin t))))      ;; Darkest
+          ("C-= t c 1" . (lambda () (interactive) (progn (setq catppuccin-flavor 'macchiatto) (my/theme-load 'catppuccin t)))) ;; Lightest
+          ("C-= t c 2"   . (lambda () (interactive) (progn (setq catppuccin-flavor 'latte) (my/theme-load 'catppuccin t))))      ;; Light
+          ("C-= t c 3"   . (lambda () (interactive) (progn (setq catppuccin-flavor 'frappe) (my/theme-load 'catppuccin t))))     ;; Dark
+          ("C-= t c 4" . (lambda () (interactive) (progn (setq catppuccin-flavor 'mocha) (my/theme-load 'catppuccin t))))      ;; Darkest
           ("C-= t d d"   . (lambda () (interactive) (my/theme-load 'doom-one t)))
           ("C-= t d l"   . (lambda () (interactive) (my/theme-load 'doom-one-light t)))
           ("C-= t h d"   . (lambda () (interactive) (my/theme-load 'humanoid-dark t)))
@@ -898,6 +898,10 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
   (deft-use-filter-string-for-filename nil))
 ;; See https://leanpub.com/markdown-mode/read#leanpub-auto-integration-with-deft-mode
 
+(use-package dockerfile-mode
+  :config
+  (doom-themes-visual-bell-config))
+
 (use-package doom-modeline
   :init
   (doom-modeline-mode 1)
@@ -1031,6 +1035,12 @@ Change dictionary and mode-line lighter accordingly."
 (use-package json-mode
   :mode ("\\.json\\'" . json-mode))
 
+(use-package langtool
+  :custom
+  (langtool-language-tool-jar "~/opt/LanguageTool-6.0/languagetool-commandline.jar")
+  (langtool-language-tool-server-jar "~/opt/LanguageTool-6.0/languagetool-server.jar")
+  (langtool-java-bin "/usr/bin/java"))
+
 (use-package lua-mode
   :pin melpa-unstable
   :defer 1)
@@ -1044,9 +1054,12 @@ Change dictionary and mode-line lighter accordingly."
   :hook
   (markdown-mode . auto-fill-mode)
   (markdown-mode . display-fill-column-indicator-mode)
+  ;; Following couple of line launch langtool upon save of Markdown files
+  ;; (markdown-mode . (lambda ()
+  ;;                   (add-hook 'after-save-hook 'langtool-check nil 'make-it-local)))
   :custom
-  (markdown-css-paths '("/Users/emmanuelroubion/GitHub/modest/css/modest.css"))
-  ;; (markdown-css-paths '("/Users/emmanuelroubion/GitHub/splendor/css/splendor.css"))
+  (markdown-css-paths '("~/GitHub/modest/css/modest.css")) ;; See http://markdowncss.github.io//
+  ;; (markdown-css-paths '("~/GitHub/splendor/css/splendor.css"))
   (markdown-header-scaling t))
 
 (use-package oblique
