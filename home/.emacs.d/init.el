@@ -153,38 +153,20 @@
 ;; (flycheck will warn when defined in use-package clauses)
 ;; ====================================================================
 
-;; Adapted from source: https://stackoverflow.com/a/11916238/3899249
-(defvar my/buffer-kill-all-exceptions
-  '( "\\`\\*scratch\\*.*\\'"
-     "\\`\\*Messages\\*\\'"
-     "\\` \\*Minibuf-[[:digit:]]+\\*\\'"
-     "\\` \\*Echo Area [[:digit:]]+\\*\\'")
-  "Exception list for `my/buffer-kill-all-but-exceptions'.")
-
 (defun my/log (text) "Message the given TEXT in *Messages* with a custom, timestamped, prefix."
   (message (format "[%S] %S" (format-time-string "%Y/%m/%d %H:%M:%S:%3N %z") text)))
 
-(defun my/buffer-kill-all-but-exceptions ()
-  "Kill all buffers except those in `my/buffer-kill-all-exceptions'."
+;; Comes from https://stackoverflow.com/a/3417472/3899249
+(defun my/kill-all-buffers ()
+  "Kill all buffers."
   (interactive)
-  (mapc (lambda (buf)
-          (let
-            ((buf-name (buffer-name buf)))
-            (when
-		          (and
-                ;; if a buffer's name is enclosed by * with optional leading space characters
-                ;; (string-match-p "\\` *\\*.*\\*\\'" buf-name)
-                ;; The buffer must not be associated with a process
-                (null
-                  (get-buffer-process buf))
-                ;; The buffer's name must not be in `my/buffer-kill-all-exceptions' var
-                (null
-                  (lambda
-                    (exception)
-                    (string-match-p exception buf-name)
-                    (my/buffer-kill-all-exceptions)))
-                (kill-buffer buf)))))
-	  (buffer-list)))
+  (mapc 'kill-buffer (buffer-list)))
+
+;; Comes from https://stackoverflow.com/a/14161165/3899249
+(defun my/kill-all-other-buffers ()
+  "Kill all other buffers."
+  (interactive)
+  (mapc 'kill-buffer (cdr (buffer-list (current-buffer)))))
 
 (defun my/buffer-new-scratch ()
   "Create a new frame with a new empty buffer."
@@ -379,12 +361,12 @@ From BEG to END, joining text paragraphs into a single logical line."
   (delete-selection-mode t))           ; Delete text when typing over selection
 
 (use-package emacs
-  :functions my/buffer-kill-all-exceptions my/map-key
+  :functions my/kill-all-buffers my/kill-all-other-buffers my/map-key
   :bind (
           ;; Disable annoying C-z
           ;; ("C-z"         . nil)
 
-          ;; All my custom bindings starts with C-=, avalable in all encoutnered modes so far.
+          ;; All my custom bindings starts with C-=, prefix available in all encountered modes so far.
           ;; NB: C-= requires special config in the terminal emulator in TUI mode (see TUI comment below)
 
           ;; Edition — Comments
@@ -417,7 +399,8 @@ From BEG to END, joining text paragraphs into a single logical line."
 
           ;; Buffers
           ("C-= b s"   . my/buffer-new-scratch)
-          ("C-= b k"   . my/buffer-kill-all-but-exceptions)
+          ("C-= b k a" . my/kill-all-buffers)
+          ("C-= b k o" . my/kill-all-other-buffers)
           ("C-= b r"   . recentf-open-files)
 
           ;; Org capture
@@ -447,26 +430,26 @@ From BEG to END, joining text paragraphs into a single logical line."
           ;; Themes
           ;; ("C-= t d"   . (lambda () (interactive) (my/theme-load 'dichromacy t)))
           ("C-= t c 1" . (lambda () (interactive) (progn (setq catppuccin-flavor 'macchiatto) (my/theme-load 'catppuccin t)))) ;; Lightest
-          ("C-= t c 2"   . (lambda () (interactive) (progn (setq catppuccin-flavor 'latte) (my/theme-load 'catppuccin t))))      ;; Light
-          ("C-= t c 3"   . (lambda () (interactive) (progn (setq catppuccin-flavor 'frappe) (my/theme-load 'catppuccin t))))     ;; Dark
+          ("C-= t c 2" . (lambda () (interactive) (progn (setq catppuccin-flavor 'latte) (my/theme-load 'catppuccin t))))      ;; Light
+          ("C-= t c 3" . (lambda () (interactive) (progn (setq catppuccin-flavor 'frappe) (my/theme-load 'catppuccin t))))     ;; Dark
           ("C-= t c 4" . (lambda () (interactive) (progn (setq catppuccin-flavor 'mocha) (my/theme-load 'catppuccin t))))      ;; Darkest
-          ("C-= t d d"   . (lambda () (interactive) (my/theme-load 'doom-one t)))
-          ("C-= t d l"   . (lambda () (interactive) (my/theme-load 'doom-one-light t)))
-          ("C-= t h d"   . (lambda () (interactive) (my/theme-load 'humanoid-dark t)))
-          ("C-= t h l"   . (lambda () (interactive) (my/theme-load 'humanoid-light t)))
-          ("C-= t j"     . (lambda () (interactive) (my/theme-load 'solo-jazz t)))
-          ("C-= t e"     . (lambda () (interactive) (my/theme-load 'seoul256 t)))
-          ("C-= t l d"   . (lambda () (interactive) (my/theme-load 'lambda-dark t)))
-          ("C-= t l l"   . (lambda () (interactive) (my/theme-load 'lambda-light t)))
-          ("C-= t m o"   . (lambda () (interactive) (my/theme-load 'modus-operandi t)))
-          ("C-= t m v"   . (lambda () (interactive) (my/theme-load 'modus-vivendi t)))
-          ("C-= t n i"   . (lambda () (interactive) (my/theme-load nil)))
-          ("C-= t n o"   . (lambda () (interactive) (my/theme-load 'nord t)))
-          ("C-= t s d"   . (lambda () (interactive) (my/theme-load 'solarized-dark t)))
-          ("C-= t s l"   . (lambda () (interactive) (my/theme-load 'solarized-light t)))
-          ("C-= t p d"   . (lambda () (interactive) (my/theme-load 'spacemacs-dark t)))
-          ("C-= t p l"   . (lambda () (interactive) (my/theme-load 'spacemacs-light t)))
-          ("C-= t z"     . (lambda () (interactive) (my/theme-load 'zenburn t)))
+          ("C-= t d d" . (lambda () (interactive) (my/theme-load 'doom-one t)))
+          ("C-= t d l" . (lambda () (interactive) (my/theme-load 'doom-one-light t)))
+          ("C-= t h d" . (lambda () (interactive) (my/theme-load 'humanoid-dark t)))
+          ("C-= t h l" . (lambda () (interactive) (my/theme-load 'humanoid-light t)))
+          ("C-= t j"   . (lambda () (interactive) (my/theme-load 'solo-jazz t)))
+          ("C-= t e"   . (lambda () (interactive) (my/theme-load 'seoul256 t)))
+          ("C-= t l d" . (lambda () (interactive) (my/theme-load 'lambda-dark t)))
+          ("C-= t l l" . (lambda () (interactive) (my/theme-load 'lambda-light t)))
+          ("C-= t m o" . (lambda () (interactive) (my/theme-load 'modus-operandi t)))
+          ("C-= t m v" . (lambda () (interactive) (my/theme-load 'modus-vivendi t)))
+          ("C-= t n i" . (lambda () (interactive) (my/theme-load nil)))
+          ("C-= t n o" . (lambda () (interactive) (my/theme-load 'nord t)))
+          ("C-= t s d" . (lambda () (interactive) (my/theme-load 'solarized-dark t)))
+          ("C-= t s l" . (lambda () (interactive) (my/theme-load 'solarized-light t)))
+          ("C-= t p d" . (lambda () (interactive) (my/theme-load 'spacemacs-dark t)))
+          ("C-= t p l" . (lambda () (interactive) (my/theme-load 'spacemacs-light t)))
+          ("C-= t z"   . (lambda () (interactive) (my/theme-load 'zenburn t)))
 
           ;; Preferred light themes:
           ;; catppuccin-latte, solo-jazz, humanoid-light, modus-operandi, spacemacs-light, doom-nord-light, doom-opera-light, doom-one-light, seoul256, solarized-light
@@ -770,7 +753,7 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
        ))
   :config
   (add-to-list 'org-export-backends 'md t) ;; Make sure md is always a loaded back-end
-)
+  )
 
 (use-package org-indent
   :after org
@@ -928,11 +911,16 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
 (use-package flycheck
   :pin melpa-unstable
   :init (global-flycheck-mode)
-  ;; Reminders, for Bash adn HTML files syntax checker:
+  ;; Reminders, for Bash, HTML and markdown files syntax checker:
   ;; `brew install shellcheck tidy-html5 markdownlint-cli`
   :custom
   (flycheck-checker-error-threshold 2000)
   (flycheck-emacs-lisp-load-path    'inherit))
+
+(use-package flycheck-languagetool
+  :hook (text-mode . flycheck-languagetool-setup)
+  :init
+  (setq flycheck-languagetool-server-jar "~/opt/LanguageTool-6.0/languagetool-server.jar"))
 
 (use-package flycheck-status-emoji
   :init
