@@ -1024,6 +1024,14 @@ Change dictionary and mode-line lighter accordingly."
   :mode ("\\.json\\'" . json-mode))
 
 (use-package langtool
+  ;; See https://github.com/mhayashi1120/Emacs-langtool
+  :bind (("C-= l c" . langtool-check)
+          ("C-= l b" . langtool-correct-buffer)
+          ("C-= l d" . langtool-check-done)
+          ("C-= l i" . langtool-interactive-correction)
+          ("C-= l n" . langtool-goto-next-error)
+          ("C-= l p" . langtool-goto-previous-error)
+          ("C-= l s" . langtool-server-stop))
   :custom
   (langtool-language-tool-jar "~/opt/LanguageTool-6.0/languagetool-commandline.jar")
   (langtool-language-tool-server-jar "~/opt/LanguageTool-6.0/languagetool-server.jar")
