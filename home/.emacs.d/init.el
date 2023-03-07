@@ -918,9 +918,15 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
   (flycheck-emacs-lisp-load-path    'inherit))
 
 (use-package flycheck-languagetool
-  :hook (text-mode . flycheck-languagetool-setup)
+  :after flycheck
   :init
-  (setq flycheck-languagetool-server-jar "~/opt/LanguageTool-6.0/languagetool-server.jar"))
+  (setq flycheck-languagetool-server-jar "~/opt/LanguageTool-6.0/languagetool-server.jar")
+  :hook
+  (markdown-mode . (lambda ()
+                     (flycheck-add-next-checker 'markdown-markdownlint-cli 'languagetool)
+                     (flycheck-select-checker 'markdown-markdownlint-cli)))
+  :config
+  (flycheck-languagetool-setup))
 
 (use-package flycheck-status-emoji
   :init
