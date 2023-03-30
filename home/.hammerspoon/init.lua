@@ -48,6 +48,7 @@ hs.hotkey.bind(m1, "Q", "Qwant the highlighted selection", utils.qwantSelection)
 -- m2 Shortcuts
 hs.hotkey.bind(m2, "E", "Type my alt. email", utils.typeAltEmail)
 hs.hotkey.bind(m2, "I", "Insert current timestamp", utils.typeTimestamp)
+hs.hotkey.bind(m2, "L", "Type my LinkedIn profile URL", utils.typeLinkedInProfileURL)
 hs.hotkey.bind(m2, "O", "Oblique Strategy pop-up!", oblique_strategies.showStrategy)
 hs.hotkey.bind(m2, "P", "Type my alt. phone number", utils.typeAltPhoneNumber)
 

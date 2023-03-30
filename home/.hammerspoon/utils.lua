@@ -1,4 +1,4 @@
--- Copyright © 2016, 2018, 2019, 2020, 2021, 2022 Emmanuel Roubion
+-- Copyright © 2016, 2018, 2019, 2020, 2021, 2022, 2023 Emmanuel Roubion
 --
 -- Author: Emmanuel Roubion
 -- URL: https://github.com/maanuair/dotfiles
@@ -191,6 +191,13 @@ function utils.typeLastName()
   local s = utilsAccount.getLastName()
   log.df("Going to type last name \"%s\"", s)
   hs.eventtap.keyStrokes(s)
+end
+
+-- Type my LinkedInProfileURL
+function utils.typeLinkedInProfileURL()
+  local u = utilsAccount.getLinkedInProfileURL()
+  log.df("Going to type LinkedIn profile URL \"%s\"", u)
+  hs.eventtap.keyStrokes(u)
 end
 
 -- Type my phone number

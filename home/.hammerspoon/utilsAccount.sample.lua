@@ -1,4 +1,4 @@
--- Copyright © 2019, 2020, 2021 Emmanuel Roubion
+-- Copyright © 2019, 2020, 2021, 2023 Emmanuel Roubion
 --
 -- Author: Emmanuel Roubion
 -- URL: https://github.com/maanuair/dotfiles
@@ -45,6 +45,11 @@ end
 
 -- Returns the last name for this account
 function utilsAccount.getLastName()
+   return "undefined-SetMeFirst"
+end
+
+-- Returns the LinkedIn profile URL for this account
+function utilsAccount.getLinkedInProfileURL()
    return "undefined-SetMeFirst"
 end
 
