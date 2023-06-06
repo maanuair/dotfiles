@@ -15,7 +15,8 @@
 # A few shell helper functions, bash and zsh compatible.
 
 # Ask the given $1 question, read answer until it matches a choice in given $2 array.
-# Empty answer (Enter) will match $3 choice when sepcified, otherwise it asks again.
+# Empty answer (Enter) will match $3 choice when specified
+# Another unexpected answer will ask again.
 function ask () {
   # Inputs check
   if [[ $# != 2 && $# != 3 ]]; then
@@ -92,16 +93,17 @@ function getTimestampsDir() {
   echo "${dir}"
 }
 
-# Did the given $1 setup function has been already run in the last $2 minutes?
-function hasSetupRunSinceLastMinutes() {
+# Is the given $1 timestamp file still valid with the given $2 lifetime in minutes?
+# Return 0 if valid, 1 otherwise
+function isTimestampAliveInMinutes() {
   # Check whether the given time stamp file exists AND is newer than the given minutes value
   local file="$(getTimestampsDir)/${1}"
-  local exitcode=0
+  local exitCode=0
   if [[ -f "${file}" && $(find "$file" -mtime -${2}m -print) ]]; then
-    # File is newer than the provided minutes
+    # Timestamp is alive
     exitCode=0
   else
-    # File is older or does not exist
+    # Timestamp has expired, or does not exist
     exitCode=1
   fi
   return exitCode
@@ -121,33 +123,88 @@ function myIndent() {
   pr -to $(($indent * $indentSize))
 }
 
+# Some common ANSI escape codes
+ANSI_reset="\033[0m"
+ANSI_bold="\033[1m"
+ANSI_bold_off="\033[22m"
+ANSI_faint="\033[2m"
+ANSI_faint_off="\033[22m"
+ANSI_italic="\033[3m"
+ANSI_italic_off="\033[23m"
+ANSI_underline="\033[4m"
+ANSI_underline_off="\033[24m"
+ANSI_blinking="\033[5m"
+ANSI_blinking_off="\033[25m"
+ANSI_inverse="\033[7m"
+ANSI_inverse_off="\033[27m"
+ANSI_invisible="\033[8m"
+ANSI_invisible_off="\033[28m"
+ANSI_strikethrough="\033[9m"
+ANSI_strikethrough_off="\033[29m"
+ANSI_fg_BK="\033[30m"
+ANSI_fg_RD="\033[31m"
+ANSI_fg_GN="\033[32m"
+ANSI_fg_YW="\033[33m"
+ANSI_fg_BE="\033[34m"
+ANSI_fg_MA="\033[35m"
+ANSI_fg_CN="\033[36m"
+ANSI_fg_WE="\033[37m"
+ANSI_fg_BBK="\033[90m%"
+ANSI_fg_BRD="\033[91m%"
+ANSI_fg_BGN="\033[92m%"
+ANSI_fg_BYW="\033[93m%"
+ANSI_fg_BBE="\033[94m%"
+ANSI_fg_BMA="\033[95m%"
+ANSI_fg_BCN="\033[96m%"
+ANSI_fg_BWE="\033[97m%"
+ANSI_bg_BK="\033[40m"
+ANSI_bg_RD="\033[41m"
+ANSI_bg_GN="\033[42m"
+ANSI_bg_YW="\033[43m"
+ANSI_bg_BE="\033[44m"
+ANSI_bg_MA="\033[45m"
+ANSI_bg_CN="\033[46m"
+ANSI_bg_WE="\033[47m"
+ANSI_bg_BBK="\033[100m"
+ANSI_bg_BRD="\033[101m"
+ANSI_bg_BGN="\033[102m"
+ANSI_bg_BYW="\033[103m"
+ANSI_bg_BBE="\033[104m"
+ANSI_bg_BMA="\033[105m"
+ANSI_bg_BCN="\033[106m"
+ANSI_bg_BWE="\033[107m"
+
+# Do we display our script output / debug info or not?
+export myOutEnabled=true
+export myDebugEnable=true
+
 # Some log helpers
 function myOut () {
   # A litle bit of blue
-  if [[ "myOutEnabled" == 'true' ]]; then
-    printf "%s [\033[34mDOT-INFOR\033[0m] ${@}\033[0m\n" `date "+%H:%M:%S"`
+  if [[ "$myOutEnabled" == 'true' ]]; then
+    printf "%s [${ANSI_fg_BE}DOT-INFOR${ANSI_reset}] ${@}${ANSI_reset}\n" `date "+%H:%M:%S"`
   fi;
 }
 
 function myOutTab () {
-  if [[ "myOutEnabled" == 'true' ]]; then
-    myOut "  \033[2m==> ${@}"
+  if [[ "$myOutEnabled" == 'true' ]]; then
+    myOut "  ${ANSI_faint}==> ${@}"
   fi
 }
 
 function myErr () {
   # A little bit of red, redirected to stderr
-  printf "%s [\033[31mDOT-ERROR\033[0m] ${@}\033[0m\n" `date "+%H:%M:%S"` 1>&2
+  printf "%s [${ANSI_fg_RD}DOT-ERROR${ANSI_reset}] ${@}\n" `date "+%H:%M:%S"` 1>&2
 }
 
 function myErrTab () {
-  myErr "  \033[2m==> ${@}"
+  myErr "  ${ANSI_faint}==> ${@}"
 }
 
 function myDebug () {
-  # And a little bit of highlighted green
-  if [[ "myDebugEnabled" == 'true' ]]; then
-    printf "%s [\033[30m\033[42mDOT-DEBUG\033[0m] ${@}\033[0m\n" `date "+%H:%M:%S"`
+  # And a little bit of black on gren
+  if [[ "$myDebugEnabled" == 'true' ]]; then
+    printf "%s [${ANSI_fg_BK}${ANSI_bg_GN}DOT-DEBUG${ANSI_reset}] ${@}\n" `date "+%H:%M:%S"`
   fi
 }
 
@@ -255,7 +312,7 @@ function setupGit() {
 
   # Check whether we need to... check :-)
   local minutes="$(expr 24 \* 60)"
-  if hasSetupRunSinceLastMinutes "$0" "${minutes}"; then
+  if isTimestampAliveInMinutes "$0" "${minutes}"; then
     myOutTab "git check... Already done in last ${minutes} minutes, no need to check again..."
   else
     myOutTab "git check..."
@@ -300,7 +357,7 @@ function setupHomeshick () {
 
     # Check whether we need to... "homeshick check"
     local minutes="$(expr 24 \* 60 \* 5)" # 5 days in minutes
-    if hasSetupRunSinceLastMinutes "$0" "${minutes}"; then
+    if isTimestampAliveInMinutes "$0" "${minutes}"; then
       myOutTab "homeshick check... Already done in last ${minutes} minutes, no need to check again..."
     else
       myOutTab "homeshick check..."
@@ -351,7 +408,20 @@ function setupNode() {
   fi
 }
 
-# Source the given $1 file if it exists and is readable.
+# Set up Rust environment
+function setupRust() {
+  myOut "Setting up rust environment..."
+  sourceOrWarn "${HOME}/.cargo/env"
+}
+
+# Set up the local script, if it exists
+function setupLocalScript() {
+  local f="${HOME}/.shell_local_script"
+  myOut "Setting up local script \"$f\"..."
+  sourceOrWarn "$f"
+}
+
+# source the given $1 file if it exists and is readable.
 # Otherwise output an error with an appropriate message
 function sourceOrWarn () {
   # Loading $1 if it exists...

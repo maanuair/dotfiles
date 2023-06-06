@@ -1,4 +1,4 @@
-# Copyright © 2016, 2017, 2018, 2019, 2020, 2021 Emmanuel Roubion
+# Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2023 Emmanuel Roubion
 #
 # Author: Emmanuel Roubion
 # URL: https://github.com/maanuair/dotfiles
@@ -94,10 +94,6 @@ function setupBashCompletion() {
 
 # Main entry point, because I like unique entry point
 function main () {
-  # Do we display our script output / debug info or not?
-  myOutEnabled=false
-  myDebugEnable=false
-
   # Load some custom shell functions
   source ~/.shell_functions
   myOut "Starting bash setup..."
@@ -113,15 +109,14 @@ function main () {
   setupGit
   setupBashCompletion
   setupPrompts
+  setupRust
+  setupLocalScript
 
   # Umask: neither group nor others have any perms:
   umask 077
 
-  # Loads the local custom script when it exists
-  sourceOrWarn "${HOME}/.shell_local_script"
-
   # iTerm2 integration
-  sourceOrWarn "${HOME}/.iterm2_shell_integration.bash"
+  # sourceOrWarn "${HOME}/.iterm2_shell_integration.bash"
 }
 
 # Let's go

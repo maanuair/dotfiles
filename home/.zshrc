@@ -131,12 +131,11 @@ function main () {
   setupEnvVars
   setupNode
   setupGit
+  setupRust
+  setupLocalScript
 
   # Umask: neither group nor others have any perms:
   umask 077
-
-  # Loads the local custom script when it exists
-  sourceOrWarn "${HOME}/.shell_local_script"
 
   # iTerm2 integration
   # sourceOrWarn "${HOME}/.iterm2_shell_integration.bash"
