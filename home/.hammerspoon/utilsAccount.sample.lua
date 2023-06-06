@@ -33,6 +33,11 @@ function utilsAccount.getEmail()
    return "undefined-SetMeFirst"
 end
 
+-- Returns the other email for this account
+function utilsAccount.getOtherEmail()
+   return "undefined-SetMeFirst"
+end
+
 -- Returns the alt email for this account
 function utilsAccount.getAltEmail()
    return "undefined-SetMeFirst"
