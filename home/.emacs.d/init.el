@@ -31,7 +31,7 @@
 
 ;; I followed some advices on https://blog.d46.us/advanced-emacs-startup/
 
-;; My default, naked, Emacs startup time is ~ 0.4 seconds in GUI mode.
+;; My default, naked, Emacs startup time is ~ 0.65 seconds in GUI mode.
 ;; On macOS, run the following to discover it:
 ;;   open -n /Applications/Emacs.app --args -q --eval='(message "%s" (emacs-init-time))'
 ;; (or something similar to)
@@ -46,6 +46,7 @@
 ;;   2021-03:       1.15 seconds, with 14 GCs (on Apple Silicon M1)
 ;;   2021-10:       1.36 seconds, with 13 GCs (on Apple Silicon M1)
 ;;   2022-05:       2.17 seconds, with 15 garbage collections (On 2 GHz Intel Core i5 quadcore)
+;;   2023-05:       2.58 seconds, with 17 garbage collections
 
 ;; Avoid GC during Emacs startup. Garbage collection when Emacs loses focus.
 ;; Inspiration from https://github.com/narendraj9/dot-emacs/blob/master/init.el
@@ -61,7 +62,6 @@
   (lambda () (setq
 		           gc-cons-threshold (* 2 1000 1000)
 		           gc-cons-percentage 0.1)))
-
 
 ;; Use a hook so the message doesn't get clobbered by other messages.
 (add-hook 'emacs-startup-hook
@@ -84,8 +84,8 @@
 
 ;; Add our git sub modules in load-path
 (add-to-list 'load-path (expand-file-name "no-littering" my/elisp-dir))
-(add-to-list 'load-path (expand-file-name "lambda-themes" my/elisp-dir))
-(add-to-list 'load-path (expand-file-name "oblique-strategies" my/elisp-dir))
+;; (add-to-list 'load-path (expand-file-name "lambda-themes" my/elisp-dir))
+;; (add-to-list 'load-path (expand-file-name "oblique-strategies" my/elisp-dir))
 
 ;; Reminder about Git submodules option, when cloning this project
 ;;   git clone --recurse-submodules git@github.com:maanuair/dotfiles.git
@@ -496,7 +496,7 @@ From BEG to END, joining text paragraphs into a single logical line."
 
   ;; Default fixed font
   ;; (defvar my/font-mono "SF Mono 13")
-  (defvar my/font-mono "Fira Code 14")
+  (defvar my/font-mono "Roboto Mono 14")
   (defvar my/font-mono-digit-index (string-match "[0-9]+$" my/font-mono))
   (defvar my/font-mono-name
     (string-trim (substring my/font-mono 0 my/font-mono-digit-index)))
@@ -881,15 +881,11 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
   (deft-use-filter-string-for-filename nil))
 ;; See https://leanpub.com/markdown-mode/read#leanpub-auto-integration-with-deft-mode
 
-(use-package dockerfile-mode
-  :config
-  (doom-themes-visual-bell-config))
-
-(use-package doom-modeline
-  :init
-  (doom-modeline-mode 1)
-  :config
-  (setq doom-modeline-minor-modes t))
+;; (use-package doom-modeline
+;;   :init
+;;   (doom-modeline-mode 1)
+;;   :config
+;;   (setq doom-modeline-minor-modes t))
 
 (use-package editorconfig
   :config
@@ -914,19 +910,19 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
   ;; Reminders, for Bash, HTML and markdown files syntax checker:
   ;; `brew install shellcheck tidy-html5 markdownlint-cli`
   :custom
-  (flycheck-checker-error-threshold 2000)
+  (flycheck-checker-error-threshold 200)
   (flycheck-emacs-lisp-load-path    'inherit))
 
-(use-package flycheck-languagetool
-  :after flycheck
-  :init
-  (setq flycheck-languagetool-server-jar "~/opt/LanguageTool-6.0/languagetool-server.jar")
-  :hook
-  (markdown-mode . (lambda ()
-                     (flycheck-add-next-checker 'markdown-markdownlint-cli 'languagetool)
-                     (flycheck-select-checker 'markdown-markdownlint-cli)))
-  :config
-  (flycheck-languagetool-setup))
+;; (use-package flycheck-languagetool
+;;   :after flycheck
+;;   :init
+;;   (setq flycheck-languagetool-server-jar "~/opt/LanguageTool-6.0/languagetool-server.jar")
+;;   ;; :hook
+;;   ;; (markdown-mode . (lambda ()
+;;   ;;                    (flycheck-add-next-checker 'markdown-markdownlint-cli 'languagetool)
+;;   ;;                    (flycheck-select-checker 'markdown-markdownlint-cli)))
+;;   :config
+;;   (flycheck-languagetool-setup))
 
 (use-package flycheck-status-emoji
   :init
@@ -942,9 +938,10 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
           ("C-= f m"   . flyspell-mode)
           ("C-= f p"   . flyspell-prog-mode)
           ("C-= f l"   . my/cycle-ispell-languages))
-  :hook (
-          (text-mode . flyspell-mode)
-          (prog-mode . flyspell-prog-mode))
+  ;; Disabled to increase startup time
+  ;; :hook (
+  ;;         (text-mode . flyspell-mode)
+  ;;         (prog-mode . flyspell-prog-mode))
   :config
   ;; Remap flyspell mouse buttons
   (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
@@ -1141,6 +1138,10 @@ Change dictionary and mode-line lighter accordingly."
           ("C-= s i U"   . string-inflection-capital-underscore)
           ("C-= s i k"   . string-inflection-kebab-case)))
 
+(use-package rust-mode
+  :custom
+  (rust-format-on-save t))
+
 (use-package treemacs
   :defer 5
   :bind (
@@ -1214,13 +1215,13 @@ Change dictionary and mode-line lighter accordingly."
   :pin melpa-stable
   :defer t)
 
-(use-package lambda-themes
-  :ensure nil
-  :custom
-  (lambda-themes-set-italic-comments t)
-  (lambda-themes-set-italic-keywords t)
-  (lambda-themes-set-variable-pitch t)
-  )
+;; (use-package lambda-themes
+;;   :ensure nil
+;;   :custom
+;;   (lambda-themes-set-italic-comments t)
+;;   (lambda-themes-set-italic-keywords t)
+;;   (lambda-themes-set-variable-pitch t)
+;;   )
 
 (use-package nord-theme
   :defer t
