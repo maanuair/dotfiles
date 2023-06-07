@@ -875,11 +875,15 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
   :custom
   (deft-default-extension             "md")
   (deft-directory                      "~/Deft")
+  (deft-archive-directory              "~/Deft/4Z Archives/")
   (deft-extensions                     '("md" "org" "txt"))
   (deft-recursive                      t)
   (deft-use-filename-as-title          nil)
-  (deft-use-filter-string-for-filename nil))
-;; See https://leanpub.com/markdown-mode/read#leanpub-auto-integration-with-deft-mode
+  (deft-use-filter-string-for-filename t)
+  (deft-markdown-mode-title-level      1)
+  (deft-org-mode-title-prefix          t)
+  (deft-current-sort-method            'title))
+  ;; See https://leanpub.com/markdown-mode/read#leanpub-auto-integration-with-deft-mode
 
 ;; (use-package doom-modeline
 ;;   :init
