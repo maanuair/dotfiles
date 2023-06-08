@@ -882,7 +882,8 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
   (deft-use-filter-string-for-filename t)
   (deft-markdown-mode-title-level      1)
   (deft-org-mode-title-prefix          t)
-  (deft-current-sort-method            'title))
+  :config
+  (setq deft-current-sort-method       'title))
   ;; See https://leanpub.com/markdown-mode/read#leanpub-auto-integration-with-deft-mode
 
 ;; (use-package doom-modeline
