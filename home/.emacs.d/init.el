@@ -85,7 +85,7 @@
 ;; Add our git sub modules in load-path
 (add-to-list 'load-path (expand-file-name "no-littering" my/elisp-dir))
 ;; (add-to-list 'load-path (expand-file-name "lambda-themes" my/elisp-dir))
-;; (add-to-list 'load-path (expand-file-name "oblique-strategies" my/elisp-dir))
+(add-to-list 'load-path (expand-file-name "oblique-strategies" my/elisp-dir))
 
 ;; Reminder about Git submodules option, when cloning this project
 ;;   git clone --recurse-submodules git@github.com:maanuair/dotfiles.git
@@ -155,6 +155,13 @@
 
 (defun my/log (text) "Message the given TEXT in *Messages* with a custom, timestamped, prefix."
   (message (format "[%S] %S" (format-time-string "%Y/%m/%d %H:%M:%S:%3N %z") text)))
+
+(defun my/double-flash-mode-line ()
+  (let ((flash-sec (/ 1.0 15)))
+    (invert-face 'mode-line)
+    (run-with-timer flash-sec nil #'invert-face 'mode-line)
+    (run-with-timer (* 2 flash-sec) nil #'invert-face 'mode-line)
+    (run-with-timer (* 3 flash-sec) nil #'invert-face 'mode-line)))
 
 ;; Comes from https://stackoverflow.com/a/3417472/3899249
 (defun my/kill-all-buffers ()
@@ -363,11 +370,8 @@ From BEG to END, joining text paragraphs into a single logical line."
 (use-package emacs
   :functions my/kill-all-buffers my/kill-all-other-buffers my/map-key
   :bind (
-          ;; Disable annoying C-z
-          ;; ("C-z"         . nil)
-
-          ;; All my custom bindings starts with C-=, prefix available in all encountered modes so far.
-          ;; NB: C-= requires special config in the terminal emulator in TUI mode (see TUI comment below)
+          ;; All my custom bindings starts with C-=
+          ;; It requires special config in the terminal emulator in TUI mode (see TUI comment below)
 
           ;; Edition — Comments
           ("C-= /"     . comment-region)
@@ -377,15 +381,15 @@ From BEG to END, joining text paragraphs into a single logical line."
           ("C-= i b"  . my/insert-buffer-name)
           ("C-= i f"  . my/insert-file-name)
 
-          ;; Edition — Redo operations
+          ;; Edition — Re-something operations
           ("C-= r i"   . my/reindent)
           ("C-= r f"   . my/reformat)
 
-          ;; Edition — Undo operations
+          ;; Edition — Un-something operations
           ("C-= u t"   . my/untabify)
           ("C-= u f"   . my/unfill-region)
 
-          ;; Home markdown file
+          ;; Got to my home markdown file
           ("C-= h"     . my/find-markown-home-file)
 
           ;; Dot files
@@ -397,7 +401,7 @@ From BEG to END, joining text paragraphs into a single logical line."
           ("C-= . l"   . my/find-shell-local-script-file)
           ("C-= . z"   . my/find-zshrc-file)
 
-          ;; Buffers
+          ;; Buffers operations
           ("C-= b s"   . my/buffer-new-scratch)
           ("C-= b k a" . my/kill-all-buffers)
           ("C-= b k o" . my/kill-all-other-buffers)
@@ -428,31 +432,30 @@ From BEG to END, joining text paragraphs into a single logical line."
           ("C-= m W"   . whitespace-mode)
 
           ;; Themes
-          ;; ("C-= t d"   . (lambda () (interactive) (my/theme-load 'dichromacy t)))
           ("C-= t c 1" . (lambda () (interactive) (progn (setq catppuccin-flavor 'macchiatto) (my/theme-load 'catppuccin t)))) ;; Lightest
-          ("C-= t c 2" . (lambda () (interactive) (progn (setq catppuccin-flavor 'latte) (my/theme-load 'catppuccin t))))      ;; Light
-          ("C-= t c 3" . (lambda () (interactive) (progn (setq catppuccin-flavor 'frappe) (my/theme-load 'catppuccin t))))     ;; Dark
-          ("C-= t c 4" . (lambda () (interactive) (progn (setq catppuccin-flavor 'mocha) (my/theme-load 'catppuccin t))))      ;; Darkest
-          ("C-= t d d" . (lambda () (interactive) (my/theme-load 'doom-one t)))
-          ("C-= t d l" . (lambda () (interactive) (my/theme-load 'doom-one-light t)))
-          ("C-= t h d" . (lambda () (interactive) (my/theme-load 'humanoid-dark t)))
-          ("C-= t h l" . (lambda () (interactive) (my/theme-load 'humanoid-light t)))
-          ("C-= t j"   . (lambda () (interactive) (my/theme-load 'solo-jazz t)))
-          ("C-= t e"   . (lambda () (interactive) (my/theme-load 'seoul256 t)))
-          ("C-= t l d" . (lambda () (interactive) (my/theme-load 'lambda-dark t)))
-          ("C-= t l l" . (lambda () (interactive) (my/theme-load 'lambda-light t)))
-          ("C-= t m o" . (lambda () (interactive) (my/theme-load 'modus-operandi t)))
-          ("C-= t m v" . (lambda () (interactive) (my/theme-load 'modus-vivendi t)))
+          ("C-= t c 2" . (lambda () (interactive) (progn (setq catppuccin-flavor 'latte)      (my/theme-load 'catppuccin t)))) ;; Light
+          ("C-= t c 3" . (lambda () (interactive) (progn (setq catppuccin-flavor 'frappe)     (my/theme-load 'catppuccin t)))) ;; Dark
+          ("C-= t c 4" . (lambda () (interactive) (progn (setq catppuccin-flavor 'mocha)      (my/theme-load 'catppuccin t)))) ;; Darkest
           ("C-= t n i" . (lambda () (interactive) (my/theme-load nil)))
-          ("C-= t n o" . (lambda () (interactive) (my/theme-load 'nord t)))
-          ("C-= t s d" . (lambda () (interactive) (my/theme-load 'solarized-dark t)))
-          ("C-= t s l" . (lambda () (interactive) (my/theme-load 'solarized-light t)))
           ("C-= t p d" . (lambda () (interactive) (my/theme-load 'spacemacs-dark t)))
           ("C-= t p l" . (lambda () (interactive) (my/theme-load 'spacemacs-light t)))
-          ("C-= t z"   . (lambda () (interactive) (my/theme-load 'zenburn t)))
 
-          ;; Preferred light themes:
-          ;; catppuccin-latte, solo-jazz, humanoid-light, modus-operandi, spacemacs-light, doom-nord-light, doom-opera-light, doom-one-light, seoul256, solarized-light
+          ;; Older, no more used, themes
+          ;; ("C-= t d"   . (lambda () (interactive) (my/theme-load 'dichromacy t)))
+          ;; ("C-= t d d" . (lambda () (interactive) (my/theme-load 'doom-one t)))
+          ;; ("C-= t d l" . (lambda () (interactive) (my/theme-load 'doom-one-light t)))
+          ;; ("C-= t h d" . (lambda () (interactive) (my/theme-load 'humanoid-dark t)))
+          ;; ("C-= t h l" . (lambda () (interactive) (my/theme-load 'humanoid-light t)))
+          ;; ("C-= t j"   . (lambda () (interactive) (my/theme-load 'solo-jazz t)))
+          ;; ("C-= t e"   . (lambda () (interactive) (my/theme-load 'seoul256 t)))
+          ;; ("C-= t l d" . (lambda () (interactive) (my/theme-load 'lambda-dark t)))
+          ;; ("C-= t l l" . (lambda () (interactive) (my/theme-load 'lambda-light t)))
+          ;; ("C-= t m o" . (lambda () (interactive) (my/theme-load 'modus-operandi t)))
+          ;; ("C-= t m v" . (lambda () (interactive) (my/theme-load 'modus-vivendi t)))
+          ;; ("C-= t n o" . (lambda () (interactive) (my/theme-load 'nord t)))
+          ;; ("C-= t s d" . (lambda () (interactive) (my/theme-load 'solarized-dark t)))
+          ;; ("C-= t s l" . (lambda () (interactive) (my/theme-load 'solarized-light t)))
+          ;; ("C-= t z"   . (lambda () (interactive) (my/theme-load 'zenburn t)))
 
           ;; Elisp Navigation
           ("C-= e f"   . find-function)
@@ -461,7 +464,7 @@ From BEG to END, joining text paragraphs into a single logical line."
           ("C-= e v"   . find-variable)
 
           ;; Meta-shortcut to show all custom shortcuts
-          ;; Note: it's the only one with a "C-= C" prefix, which is precisely unmatched
+          ;; Note: it's the only one with a "C-= C" prefix, which is why he regex excludes it below :)
           ("C-= C-="   . (lambda ()
                            (interactive)
                            (progn
@@ -573,14 +576,14 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
       '(buffer-file-name "%f" (dired-directory dired-directory "%b"))
       " (" user-login-name "@" (system-name)  ")"
       ) "Sets the frame title.")
-  (indicate-buffer-boundaries     "left"      "Buffer limits in the left fringe.")
-  (indicate-empty-lines           t           "Empty lines in the left fringe.")
-  (inhibit-startup-screen         t           "No splash screen.")
-  (initial-scratch-message        nil         "No scratch message.")
-  (tool-bar-mode                  nil         "Do not show toolbar.")
-  (transient-mark-mode            t           "Highlight sactive region.")
-  ;; (visible-bell                   t           "Uses visible bell."))
-  )
+  (indicate-buffer-boundaries "left"                     "Buffer limits in the left fringe.")
+  (indicate-empty-lines       t                          "Empty lines in the left fringe.")
+  (inhibit-startup-screen     t                          "No splash screen.")
+  (initial-scratch-message    nil                        "No scratch message.")
+  (tool-bar-mode              nil                        "Do not show toolbar.")
+  (transient-mark-mode        t                          "Highlight sactive region.")
+  (visible-bell               nil                        "Don't use visible bell.")
+  (ring-bell-function         'my/double-flash-mode-line "Use this function as the visible bell."))
 
 (use-package files
   :ensure nil
@@ -896,8 +899,8 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
   :config
   (editorconfig-mode           t))              ; Enable EditorConfig
 
-(use-package emmet-mode
-  :hook (sgml-mode css-mode web-mode))
+;; (use-package emmet-mode
+;; :hook (sgml-mode css-mode web-mode))
 
 (use-package esup
   :commands esup
@@ -1013,8 +1016,15 @@ Change dictionary and mode-line lighter accordingly."
   :custom
   (free-keys-modifiers  '("" "C" "M" "s" "C-M" "C-s" "M-s")))
 
-(use-package groovy-mode
-  :mode ("\\.groovy\\'" . groovy-mode))
+(defun my/double-flash-mode-line ()
+  (let ((flash-sec (/ 1.0 15)))
+    (invert-face 'mode-line)
+    (run-with-timer flash-sec nil #'invert-face 'mode-line)
+    (run-with-timer (* 2 flash-sec) nil #'invert-face 'mode-line)
+    (run-with-timer (* 3 flash-sec) nil #'invert-face 'mode-line)))
+
+;; (use-package groovy-mode
+;;   :mode ("\\.groovy\\'" . groovy-mode))
 
 (use-package iedit
   :custom
@@ -1045,9 +1055,9 @@ Change dictionary and mode-line lighter accordingly."
   (langtool-language-tool-server-jar "~/opt/LanguageTool-6.0/languagetool-server.jar")
   (langtool-java-bin "/usr/bin/java"))
 
-(use-package lua-mode
-  :pin melpa-unstable
-  :defer 1)
+;; (use-package lua-mode
+;;   :pin melpa-unstable
+;;   :defer 1)
 
 (use-package magit
   :bind ("C-x g" . magit-status))
@@ -1076,7 +1086,7 @@ Change dictionary and mode-line lighter accordingly."
   ;; Does not seem to work. Use instead:
   ;; https://github.com/tecosaur/emacs-config/blob/master/config.org#splash-screen
   :bind (
-          ("C-= x o"   . oblique-strategy)
+          ("C-= x o"   . my/oblique-strategy)
           ("C-= x O"   . insert-oblique-strategy))
   :custom
   (oblique-edition "strategies/oblique-strategies-condensed.txt" "Version to draw a strategy from."))
@@ -1102,25 +1112,25 @@ Change dictionary and mode-line lighter accordingly."
   :after ox
   :pin melpa-unstable)
 
-(use-package ox-hugo
-  :after ox
-  :pin melpa-unstable
-  :commands (org-hugo-new-subtree-post-capture-template)
-  :init
-  ;; Define a template for Hugo posts
-  (defun org-hugo-new-subtree-post-capture-template ()
-    "Returns `org-capture' template string for new Hugo post. See `org-capture-templates' for more information."
-    (let* (
-            (title (read-from-minibuffer "Post Title: ")) ; Prompt to enter the post title
-            (fname (org-hugo-slug title)))                ; Slug it
-      (mapconcat #'identity
-		    `(
-		       ,(concat "* IDEA " title)
-		       ":PROPERTIES:"
-		       ,(concat ":export_file_name: " fname)
-		       ":END:"
-		       "%?\n")                                        ; Place the cursor here finally
-		    "\n"))))
+;; (use-package ox-hugo
+;;   :after ox
+;;   :pin melpa-unstable
+;;   :commands (org-hugo-new-subtree-post-capture-template)
+;;   :init
+;;   ;; Define a template for Hugo posts
+;;   (defun org-hugo-new-subtree-post-capture-template ()
+;;     "Returns `org-capture' template string for new Hugo post. See `org-capture-templates' for more information."
+;;     (let* (
+;;             (title (read-from-minibuffer "Post Title: ")) ; Prompt to enter the post title
+;;             (fname (org-hugo-slug title)))                ; Slug it
+;;       (mapconcat #'identity
+;; 		    `(
+;; 		       ,(concat "* IDEA " title)
+;; 		       ":PROPERTIES:"
+;; 		       ,(concat ":export_file_name: " fname)
+;; 		       ":END:"
+;; 		       "%?\n")                                        ; Place the cursor here finally
+;; 		    "\n"))))
 
 (use-package pandoc-mode
   :config
@@ -1130,10 +1140,10 @@ Change dictionary and mode-line lighter accordingly."
 ;; More info found here:
 ;;  - https://docs.microsoft.com/en-us/archive/blogs/dotnetinterop/run-powershell-as-a-shell-within-emacs
 ;;  - https://www.reddit.com/r/emacs/comments/m3cx27/powershellwindows_terminal_from_emacs/
-(use-package powershell
-  :pin melpa-unstable
-  :mode
-  ("\\.ps1\\'" . powershell-mode))
+;; (use-package powershell
+;;   :pin melpa-unstable
+;;   :mode
+;;   ("\\.ps1\\'" . powershell-mode))
 
 (use-package string-inflection
   :bind (
@@ -1143,9 +1153,9 @@ Change dictionary and mode-line lighter accordingly."
           ("C-= s i U"   . string-inflection-capital-underscore)
           ("C-= s i k"   . string-inflection-kebab-case)))
 
-(use-package rust-mode
-  :custom
-  (rust-format-on-save t))
+;; (use-package rust-mode
+;;   :custom
+;;   (rust-format-on-save t))
 
 (use-package treemacs
   :defer 5
@@ -1187,38 +1197,38 @@ Change dictionary and mode-line lighter accordingly."
   :pin melpa-unstable
   :requires autothemer
   :config
-  (setq catppuccin-flavor 'latte)
+  (setq catppuccin-flavor 'frappe)
   (my/theme-load 'catppuccin t))
 
-(use-package doom-themes
-  :config
-  (doom-themes-visual-bell-config))
+;; (use-package doom-themes
+;;  :config
+;;  (doom-themes-visual-bell-config))
 
-(use-package modus-themes
-  :init
-  ;; Add all your customizations prior to loading the themes, if any
+;; (use-package modus-themes
+;;   :init
+;;   ;; Add all your customizations prior to loading the themes, if any
 
-  ;; Make headings larger in height relative to the main text.
-  (setq modus-themes-scale-headings t)
+;;   ;; Make headings larger in height relative to the main text.
+;;   (setq modus-themes-scale-headings t)
 
-  ;; Use a more prominent background color hl-line-mode
-  (setq modus-themes-intense-hl-line t)
+;;   ;; Use a more prominent background color hl-line-mode
+;;   (setq modus-themes-intense-hl-line t)
 
-  :config
-  (let
-    ((line (face-attribute 'mode-line :underline)))
-    (set-face-attribute 'mode-line          nil :overline   line)
-    (set-face-attribute 'mode-line-inactive nil :overline   line)
-    (set-face-attribute 'mode-line-inactive nil :underline  line)
-    (set-face-attribute 'mode-line          nil :box        nil)
-    (set-face-attribute 'mode-line-inactive nil :box        nil)
-    (set-face-attribute 'mode-line-inactive nil :background "#f6f6f6")) ;; "#d33682"))
-  )
+;;   :config
+;;   (let
+;;     ((line (face-attribute 'mode-line :underline)))
+;;     (set-face-attribute 'mode-line          nil :overline   line)
+;;     (set-face-attribute 'mode-line-inactive nil :overline   line)
+;;     (set-face-attribute 'mode-line-inactive nil :underline  line)
+;;     (set-face-attribute 'mode-line          nil :box        nil)
+;;     (set-face-attribute 'mode-line-inactive nil :box        nil)
+;;     (set-face-attribute 'mode-line-inactive nil :background "#f6f6f6")) ;; "#d33682"))
+;;   )
 
-(use-package humanoid-themes
-  :defer t
-  :pin melpa-stable
-  :defer t)
+;;(use-package humanoid-themes
+;;  :defer t
+;;  :pin melpa-stable
+;;  :defer t)
 
 ;; (use-package lambda-themes
 ;;   :ensure nil
@@ -1228,28 +1238,28 @@ Change dictionary and mode-line lighter accordingly."
 ;;   (lambda-themes-set-variable-pitch t)
 ;;   )
 
-(use-package nord-theme
-  :defer t
-  :pin melpa-stable)
+;; (use-package nord-theme
+;;   :defer t
+;;   :pin melpa-stable)
 
-(use-package seoul256-theme
-  :pin melpa-unstable
-  :defer t
-  :config
-  (setq seoul256-background 253))
+;; (use-package seoul256-theme
+;;   :pin melpa-unstable
+;;   :defer t
+;;   :config
+;;   (setq seoul256-background 253))
 
-(use-package solarized-theme
-  :defer t)
+;; (use-package solarized-theme
+;;  :defer t)
 
 (use-package spacemacs-theme
   :pin melpa-stable
   :defer t)
 
-(use-package solo-jazz-theme
-  :defer t)
+;; (use-package solo-jazz-theme
+;;  :defer t)
 
-(use-package zenburn-theme
-  :defer t)
+;; (use-package zenburn-theme
+;;  :defer t)
 
 ;; Key bindings reminders:
 ;; C-u C-SPC    Move cursor to previous marked position in current buffer.
