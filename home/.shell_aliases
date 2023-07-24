@@ -27,9 +27,10 @@ alias fgrep="fgrep --color=auto"
 alias git-scan-all='find . -name .git -execdir echo -n "👁️ " \; -execdir pwd \; -execdir git st \; -execdir echo -- \;'
 
 alias grep="grep --color=auto"
+
 # Only run for bash, not zsh
-if [[ "$(getShell)" == "bash" ]]; then
-  myOutTab "Bash detected: 'ls' aliases setting up now."
+# if [[ "$(getShell)" == "bash" ]]; then
+#   myOutTab "Bash detected: 'ls' aliases setting up now."
   # OS dependent aliases for colourised 'ls'.
   # Test the *BSD + Darwin "ls -G" color option vs GNU's one "ls --color=auto"
   if [[ "$(uname -s)" == "Darwin" ]]; then
@@ -39,11 +40,11 @@ if [[ "$(getShell)" == "bash" ]]; then
   else
     alias ls="ls -F --color=auto"
     alias l="ls -aF --color=auto"
-    alias ll="-alhF --color=auto"
+    alias ll="ls -alhF --color=auto"
   fi
-else
-    myOutTab "Zsh detected: 'ls' aliases will be set up by Oh My Zsh."
-fi
+# else
+#     myOutTab "Zsh detected: 'ls' aliases will be set up by Oh My Zsh."
+# fi
 
 alias mv="mv -i"
 
