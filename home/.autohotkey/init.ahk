@@ -14,8 +14,6 @@
 ; Define variables
 ;;;;;;;;;;;;;;;;;;
 
-MsgBox "Ini file is: " . GetIniFile() . ", and its attributes are: " . FileExist(GetIniFile()) . "."
-
 myFirstName   := GetIni("personal", "firstName")
 myLastName    := GetIni("personal", "lastName")
 myEmail       := GetIni("personal", "email")
@@ -85,7 +83,7 @@ GetInifile()  {
 
 
 GetIni(section, key) {
-  return IniRead(GetIniFile(), section, key)
+  return IniRead(GetIniFile(), section, keyn "Undefined — Set me first!")
 }
 
 GetSelectedText() {
