@@ -225,6 +225,11 @@
   (interactive)
   (equal system-type 'windows-nt))
 
+(defun my/is-wsl ()
+  "Return t when the system is a WSL (Windows Subsystem for Linux)."
+  (interactive)
+  (string-match "-[Mm]icrosoft" operating-system-release))
+
 (defun my/markdownlint-clean ()
   "Perform some cleaning in Markdown files, for markdownlint-cli to be happy."
   (interactive)
@@ -566,6 +571,50 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
     ;; Make title bar transparent
     (add-to-list 'default-frame-alist'(ns-transparent-titlebar . t))
     (add-to-list 'default-frame-alist'(ns-appearance . light)))
+
+  ;; Specific settings for Emacs running in WSL
+  (when (my/is-wsl)
+    ;; Key bindings
+    (global-set-key (kbd "C-z") 'undo)
+
+    ;; And now, complicate characters to type on a AZERTY keyboard with WSL...
+    ;; Actually, some keys on AZERTY keyboars are obtained using the AltGr key: ~#{[|`\@]}
+    ;; It appears AltGr in Emacs WSL is not directly bindable, but <AltGr> plus the target key is bindable as C-<char>
+    ;; This is the reason why these sequences are binded below
+    (defun insert-tilda () (interactive) (insert "~"))
+    (global-set-key (kbd "C-~") 'insert-tilda )
+
+    (defun insert-hash () (interactive) (insert "#"))
+    (global-set-key (kbd "C-#") 'insert-hash)
+
+    (defun insert-lcurly () (interactive) (insert "{"))
+    (global-set-key (kbd "C-{") 'insert-lcurly)
+
+    ;; Note: C-[ is the ASCII control character ESC, and binding it is a very bad idea. Why?
+    ;; Because it will break all sequences starting with ESC, includin all "M-" bindings: ESC is actually the meta prefix!
+    ;; As a rsult it needs aspecil treatment see the exaustive explanation at https://emacs.stackexchange.com/questions/7832/how-to-bind-c-for-real
+    ;; But despite the (long) workaround detailed, I prefer another simple kludge
+    ;: Indeed, I just bind the actual AZERTY sequence Control-AltGr-Shift-[, so really detected as C-⅜ by Emacs running in WSL.
+    (defun insert-lbracket () (interactive) (insert "["))
+    (global-set-key (kbd "C-⅜") 'insert-lbracket)
+
+    (defun insert-pipe () (interactive) (insert "|"))
+    (global-set-key (kbd "C-|") 'insert-pipe)
+
+    (defun insert-backquote () (interactive) (insert "`"))
+    (global-set-key (kbd "C-`") 'insert-backquote)
+
+    (defun insert-backslash () (interactive) (insert "\\"))
+    (global-set-key (kbd "C-\\") 'insert-backslash)
+
+    (defun insert-at () (interactive) (insert "@"))
+    (global-set-key (kbd "C-@") 'insert-at)
+
+    (defun insert-rbracket () (interactive) (insert "]"))
+    (global-set-key (kbd "C-]") 'insert-rbracket)
+
+    (defun insert-rcurly () (interactive) (insert "}"))
+    (global-set-key (kbd "C-}") 'insert-rcurly))
 
   :custom
   (cursor-type                   'hbar        "Uses the horizontal bar cursor." )
