@@ -27,8 +27,9 @@ myWorkPhoneNumber := GetIni("work", "phoneNumber")
 myLinkedInProfile := GetIni("work", "linkedInProfile")
 
 
-MsgBox ("Path used is: " . A_ScriptDir . "\privateSettings.ini")
-MsgBox ("First name is: " . myFirstName)
+; Debug info
+; MsgBox ("Path used is: " . A_ScriptDir . "\privateSettings.ini")
+; MsgBox ("First name is: " . myFirstName)
 
 ; Send texts
 ;;;;;;;;;;;;
@@ -80,7 +81,6 @@ MsgBox ("First name is: " . myFirstName)
 GetInifile()  {
   return A_ScriptDir . "\privateSettings.ini"
 }
-
 
 GetIni(section, key) {
   return IniRead(GetIniFile(), section, keyn "Undefined — Set me first!")
