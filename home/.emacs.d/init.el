@@ -352,10 +352,12 @@ From BEG to END, joining text paragraphs into a single logical line."
   :custom
   (apropos-do-all t "More extensive search"))
 
+(use-package ahk-mode
+  :mode ("\\.ahk\\'"))
+
 (use-package conf-mode
   :ensure nil
-  :mode ("\\.cfg\\'" . conf-javaprop-mode)
-  )
+  :mode ("\\.cfg\\'" . conf-javaprop-mode))
 
 (use-package copyright
   :ensure nil
