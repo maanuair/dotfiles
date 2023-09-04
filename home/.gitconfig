@@ -54,6 +54,5 @@
   path = ~/.gitconfig-h
 [includeIf "gitdir:~/*itL*/"]
   path = ~/.gitconfig-l
-[user]
-	name = Emmanuel Roubion
-	email = emmanuel.roubion@gmail.com
+[includeIf "gitdir:~/*itV*/"]
+  path = ~/.gitconfig-v
