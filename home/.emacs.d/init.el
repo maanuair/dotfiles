@@ -228,7 +228,10 @@
 (defun my/is-wsl ()
   "Return t when the system is a WSL (Windows Subsystem for Linux)."
   (interactive)
-  (string-match "-[Mm]icrosoft" operating-system-release))
+  (and
+    (eq system-type 'gnu/linux)
+    (getenv "WSLENV")
+    t))
 
 (defun my/markdownlint-clean ()
   "Perform some cleaning in Markdown files, for markdownlint-cli to be happy."
@@ -579,8 +582,8 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
     ;; Key bindings
     (global-set-key (kbd "C-z") 'undo)
 
-    ;; And now, complicate characters to type on a AZERTY keyboard with WSL...
-    ;; Actually, some keys on AZERTY keyboars are obtained using the AltGr key: ~#{[|`\@]}
+    ;; And now, some difficult characters to type on a AZERTY keyboard within WSL...
+    ;; Some keys on AZERTY keyboars are obtained using the AltGr key: ~#{[|`\@]}
     ;; It appears AltGr in Emacs WSL is not directly bindable, but <AltGr> plus the target key is bindable as C-<char>
     ;; This is the reason why these sequences are binded below
     (defun insert-tilda () (interactive) (insert "~"))
@@ -706,8 +709,8 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
     (find-file my/todos-file)
     (split-window-right)
     (find-file-other-window my/agendas-file))
-  ;; Use a nice readable proportional fonts
 
+  ;; Use a nice readable proportional fonts
   (let* ((variable-tuple
            (cond
 	           ;; Terminal only ?
@@ -754,23 +757,25 @@ COMMAND. PREFIX or SUFFIX can wrap the key when passing to
       `(org-table                 ((t (:inherit fixed-pitch :foreground "#83a598"))))
       `(org-tag                   ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
       `(org-verbatim              ((t (:inherit (shadow fixed-pitch)))))))
-  :bind (
-          ("C-= o a"  . (lambda () (interactive) (find-file my/agendas-file)))
-          ("C-= o m"  . (lambda () (interactive) (find-file my/meta-file)))
-          ("C-= o t"  . (lambda () (interactive) (find-file my/todos-file)))
-          ("C-= o o"  . (lambda () (interactive) (my/show-org))))
-  :mode ("\\.org\\'"  . org-mode)
-  :hook (
-          ;; (org-mode    . org-num-mode)        ;; Best with (org-bullets-bullet-list '("\u200b")
-          (org-mode    . variable-pitch-mode)
-          (org-mode    . visual-line-mode))
+  :bind
+  (
+    ("C-= o a"  . (lambda () (interactive) (find-file my/agendas-file)))
+    ("C-= o m"  . (lambda () (interactive) (find-file my/meta-file)))
+    ("C-= o t"  . (lambda () (interactive) (find-file my/todos-file)))
+    ("C-= o o"  . (lambda () (interactive) (my/show-org))))
+  :mode
+  ("\\.org\\'"  . org-mode)
+  :hook
+  ( ;; (org-mode    . org-num-mode)        ;; Best with (org-bullets-bullet-list '("\u200b")
+    (org-mode    . variable-pitch-mode)
+    (org-mode    . visual-line-mode))
   :custom
                                         ; (org-agenda-files                       (directory-files-recursively
                                         ;                                           (file-name-directory "~/Org/MyTodos.org") "org$"))
   (org-blank-before-new-entry             '(
                                              (heading . nil)
                                              (plain-list-item . nil))
-    "Removes gap when you add a new heading.")
+                                                                "Removes gap when you add a new heading.")
 
   (org-catch-invisible-edits              'error)
   (org-descriptive-links                  nil                    "Do not decorate hyperlinks.")
@@ -1148,6 +1153,14 @@ Change dictionary and mode-line lighter accordingly."
 ;;   :custom
 ;;   ;; (org-bullets-bullet-list '("◉" "○" "●" "►" "•"))
 ;;   (org-bullets-bullet-list '("\u200b"))) ;; Zero width space, best used with (org-num-mode)
+
+(use-package ob-http
+  :after org
+  :config
+  (org-babel-do-load-languages
+    'org-babel-load-languages
+    (append org-babel-load-languages
+      '((http . t)))))
 
 (use-package org-superstar
   :after org
