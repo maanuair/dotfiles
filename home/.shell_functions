@@ -230,9 +230,11 @@ function setupEnvVars () {
   export PAGER=/usr/bin/less
 
   # Set up common PATHs
-  for dir in "$HOME/bin" # "$HOME/.npm_packages/bin" "$HOME/go/bin"
+  # Former directories included: "$HOME/.npm_packages/bin" "$HOME/go/bin"
+  for dir in "$HOME/bin" "$HOME/.local/bin"
   do
-    if [[ -d "$dir" ]]; then
+    if [[ -d "$dir" ]]
+    then
       export PATH="${dir}:$PATH"
     else
       myOutTab "Directory $dir does not exist, cannot be added to PATH"
