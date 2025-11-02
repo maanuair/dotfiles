@@ -1,4 +1,4 @@
--- Copyright © 2016, 2018, 2019, 2020, 2021, 2022, 2023 Emmanuel Roubion
+-- Copyright © 2016, 2018, 2019, 2020, 2021, 2022, 2023, 2025 Emmanuel Roubion
 --
 -- Author: Emmanuel Roubion
 -- URL: https://github.com/maanuair/dotfiles
@@ -91,7 +91,7 @@ end
 function utils.qwantSelection ()
   local text = utils.getTrimmedSelectedText()
   log.f("Captured the text '%s'", text)
-  local uri = "https://org.qwant.com/?q=" .. text .. "&t=all"
+  local uri = "https://www.qwant.com/?q=" .. text .. "&t=web"
   log.f("Browse '%s'", uri)
   utils.browseUrl(uri)
 end
@@ -249,10 +249,10 @@ function utils.toggleMenuBar()
     tell application "System Preferences"
       activate
       set bounds of window 1 to {0, 0, 0, 0}
-      set the current pane to pane id "com.apple.preference.general"
+      set the current pane to pane id "com.apple.preference.dock"
       delay 1
       tell application "System Events" to tell process "System Preferences"
-        click checkbox "Masquer/afficher automatiquement la barre des menus" of window 1
+        click checkbox "Masquer/afficher automatiquement la barre des menus sur le bureau" of window 1
       end tell
       quit
     end tell

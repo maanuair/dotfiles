@@ -1,4 +1,4 @@
--- Copyright © 2019, 2020, 2021, 2023 Emmanuel Roubion
+-- Copyright © 2019, 2020, 2021, 2023, 2025 Emmanuel Roubion
 --
 -- Author: Emmanuel Roubion
 -- URL: https://github.com/maanuair/dotfiles
@@ -64,7 +64,7 @@ function utilsAccount.getPhoneNumber()
 end
 
 -- Returns the alt. phone number for this account
-function utilsAccount.getPhoneNumber()
+function utilsAccount.getAltPhoneNumber()
    return "undefined-SetMeFirst"
 end
 
