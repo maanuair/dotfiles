@@ -1,4 +1,4 @@
-# Copyright © 2021, 2022, 2023 Emmanuel Roubion -*- mode: shell-script ;-*-
+# Copyright © 2021, 2022, 2023, 2025 Emmanuel Roubion -*- mode: shell-script ;-*-
 #
 # Author: Emmanuel Roubion
 # URL: https://github.com/maanuair/dotfiles
@@ -182,7 +182,7 @@ export myDebugEnable=true
 function myOut () {
   # A litle bit of blue
   if [[ "$myOutEnabled" == 'true' ]]; then
-    printf "%s [${ANSI_fg_BE}DOT-INFOR${ANSI_reset}] ${@}${ANSI_reset}\n" `date "+%H:%M:%S"`
+    printf "%s [${ANSI_fg_BE}DOT-INFO${ANSI_reset}] ${@}${ANSI_reset}\n" `date "+%H:%M:%S"`
   fi;
 }
 
@@ -204,7 +204,7 @@ function myErrTab () {
 function myDebug () {
   # And a little bit of black on gren
   if [[ "$myDebugEnabled" == 'true' ]]; then
-    printf "%s [${ANSI_fg_BK}${ANSI_bg_GN}DOT-DEBUG${ANSI_reset}] ${@}\n" `date "+%H:%M:%S"`
+    printf "%s [${ANSI_fg_BK}${ANSI_bg_GN}DOT-DBUG${ANSI_reset}] ${@}\n" `date "+%H:%M:%S"`
   fi
 }
 
@@ -233,8 +233,7 @@ function setupEnvVars () {
   # Former directories included: "$HOME/.npm_packages/bin" "$HOME/go/bin"
   for dir in "$HOME/bin" "$HOME/.local/bin"
   do
-    if [[ -d "$dir" ]]
-    then
+    if [[ -d "$dir" ]]; then
       export PATH="${dir}:$PATH"
     else
       myOutTab "Directory $dir does not exist, cannot be added to PATH"
@@ -246,59 +245,24 @@ function setupEnvVars () {
     # DICTIONARY: used by Hunspell, required on osx only apparently
     export DICTIONARY=en_GB
 
-    # EDITOR: which emacs to use?
-    myOutTab "Choosing emacs to use..."
+    local HOME_BIN="$HOME/bin"
+    local EMACS_APP="/Applications/Emacs.app"
 
     # Prefer emacs in $HOME/bin, if there...
-    local EMACS="$HOME/bin/emacs"
-    if [[ ! -x "$EMACS" ]]; then
-      # Otherwise, take the one in /Applications
-      EMACS="/Applications/Emacs.app/Contents/MacOS/Emacs"
+    if [[ -x "$HOME_BIN/emacs" ]]; then
+	EMACS="${HOME_BIN}/emacs"
+    else
+	# Otherwise, take the one in /Applications
+	EMACS="${EMACS_APP}/Contents/MacOS/Emacs"
     fi
 
     # Set EDITOR
     export EDITOR="${EMACS}"
     myOutTab "Using EDITOR=${EMACS}"
 
-    # Now, emacsclient
-    local EMACSCLIENT="$HOME/bin/ec"
-    if [[ ! -x "$EMACSCLIENT" ]]; then
-      EMACSCLIENT="/Applications/Emacs.app/Contents/MacOS/Emacs"
-    fi
-
-    # GROOVY_HOME: I had to use Groovy sometimes...
-    local GHOME="$(brew --prefix)/opt/groovy/libexec"
-    if [[ -d "$GHOME" ]]; then
-      export GROOVY_HOME="$GHOME"
-    fi
-
-    # GEM_HOME: setup the RubyGems env, for sudo-less cocoapods
-    local GEM_HOME="${HOME}/.gem"
-    if [[ -d "${GEM_HOME}" ]]; then
-      export GEM_HOME
-      export PATH="${PATH}:${GEM_HOME}/ruby/2.0.0/bin"
-    fi
-
-    # ANDROID_HOME: I even used Android Studio at some point :)
-    local AHOME="${HOME}/Library/Android/sdk"
-    if [[ -d "$AHOME" ]]; then
-      export ANDROID_HOME="$AHOME"
-      export ANDROID_SDK_ROOT="$AHOME"
-      export PATH="${PATH}:${AHOME}/tools:${AHOME}/tools/bin:${AHOME}/platform-tools:${AHOME}/emulator"
-    fi
-
-    # Visual Studio Code
-    local VSC_HOME="/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
-    if [[ -d "$VSC_HOME" ]]; then
-      export PATH="${PATH}:${VSC_HOME}"
-    fi
-
-    # QT5
-    local QT_HOME="/usr/local/opt/qt@5"
-    if [[ -d "$QT_HOME" ]]; then
-      export PATH="$PATH:$QT_HOME/bin"
-      # export LDFLAGS="-L$QTH_OME/lib"
-      # export CPPFLAGS="-I$QT_HOME5/include"
+    # Add Emacs.app executables in PATH, to invoke it from CLI
+    if [[ -d "${EMACS_APP}" ]]; then
+      export PATH=$PATH:"${EMACS_APP}/Contents/MacOS":"${EMACS_APP}/Contents/MacOS/bin"
     fi
 
     # bat command theme

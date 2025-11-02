@@ -124,14 +124,14 @@ function main () {
 
   # A few completion options
   setopt MENU_COMPLETE # Insert the first match immediately upon ambiguous completion
-  # setopt LIST_BEEP     # Beep on ambiguous completion
+  setopt LIST_BEEP   # Beep on ambiguous completion
 
   # Now set all up!
   setupAliases
   setupEnvVars
-  setupNode
+  # setupNode
   setupGit
-  setupRust
+  # setupRust
   setupLocalScript
 
   # Umask: neither group nor others have any perms:

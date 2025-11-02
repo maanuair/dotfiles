@@ -1,4 +1,4 @@
-# Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023 Emmanuel Roubion -*- mode: shell-script ;-*-
+# Copyright © 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2025 Emmanuel Roubion -*- mode: shell-script ;-*-
 #
 # Author: Emmanuel Roubion
 # URL: https://github.com/maanuair/dotfiles
@@ -30,7 +30,7 @@ alias grep="grep --color=auto"
 
 # Only run for bash, not zsh
 # if [[ "$(getShell)" == "bash" ]]; then
-#   myOutTab "Bash detected: 'ls' aliases setting up now."
+  # myOutTab "Bash detected: 'ls' aliases setting up now."
   # OS dependent aliases for colourised 'ls'.
   # Test the *BSD + Darwin "ls -G" color option vs GNU's one "ls --color=auto"
   if [[ "$(uname -s)" == "Darwin" ]]; then
